@@ -72,6 +72,7 @@ class AuthController {
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.error:
         print("Error");
+        // TODO: Add some error!
         return false;
       case FacebookLoginStatus.cancelledByUser:
         print("CancelledByUser");

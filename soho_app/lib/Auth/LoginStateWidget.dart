@@ -5,10 +5,10 @@
 /// Created by: Martha Elena Loera
 
 import 'package:flutter/material.dart';
-import 'package:soho_app/main.dart';
 import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/SohoApp.dart';
 
-class LoginStateWidget extends State<SohoHomePage> {
+class LoginStateWidget extends State<SohoApp> {
   
   @override
   Widget build(BuildContext context) {
@@ -120,7 +120,7 @@ class LoginStateWidget extends State<SohoHomePage> {
     var facebookLoginResult = await AuthController().initiateFacebookLogin();
 
     if (facebookLoginResult) {
-      // TODO: Go to HOME PAGE
+      //
     } else {
       // TODO: Show some error
     }
