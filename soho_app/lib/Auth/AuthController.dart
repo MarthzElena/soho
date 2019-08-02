@@ -12,81 +12,76 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 class AuthController {
 
   final storage = new FlutterSecureStorage();
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   // Returns a SohoAuthObject if there's a token saved
   Future<FirebaseUser> getSavedAuthObject() async{
 
-    // First check if there's a current  user in FireBase
-    FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
+    // Get the user from the saved credentials
+    // Read the token (if any)
+    String token = await storage.read(key: Constants.KEY_AUTH_TOKEN);
+    String provider = await storage.read(key: Constants.KEY_AUTH_PROVIDER);
+    bool tokenValid = token != null && token.isNotEmpty;
+    bool providerValid = provider != null && provider.isNotEmpty;
 
-    if (currentUser != null) {
-      print("**There's a user!!");
-      // Return  the  found user
-      return currentUser;
+    if (tokenValid && providerValid) {
 
-    } else {
-      // Get the user from the saved credentials
-      // Read the token (if any)
-      String token = await storage.read(key: Constants.KEY_AUTH_TOKEN);
-      String provider = await storage.read(key: Constants.KEY_AUTH_PROVIDER);
-      bool tokenValid = token != null && token.isNotEmpty;
-      bool providerValid = provider != null && provider.isNotEmpty;
-
-      if (tokenValid && providerValid) {
-
-        switch (provider) {
-          case Constants.KEY_FACEBOOK_PROVIDER:
-            {
-              // Facebook Login
-
+      switch (provider) {
+        case Constants.KEY_FACEBOOK_PROVIDER:
+          {
+            // Facebook Login
+            var facebookUser = firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: token));
+            if (facebookUser != null) {
+              return facebookUser;
             }
-            break;
+          }
+          break;
 
-          case Constants.KEY_GOOGLE_PROVIDER:
-            {
-              // Google Login
-            }
-            break;
+        case Constants.KEY_GOOGLE_PROVIDER:
+          {
+            // Google Login
+          }
+          break;
 
-          case Constants.KEY_EMAIL_PROVIDER:
-            {
-              // Email Login
-            }
-            break;
-
-        }
+        case Constants.KEY_EMAIL_PROVIDER:
+          {
+            // Email Login
+          }
+          break;
 
       }
 
-      print("** No user, do osme login!");
-      // TODO: FIX THIS
-      return null;
     }
+
+    return null;
 
   }
 
-  Future<bool> initiateFacebookLogin() async {
+  Future<FirebaseUser> initiateFacebookLogin() async {
     var facebookLogin = FacebookLogin();
     var facebookLoginResult =
     await facebookLogin.logInWithReadPermissions(['email']);
+
     switch (facebookLoginResult.status) {
       case FacebookLoginStatus.error:
         print("Error");
         // TODO: Add some error!
-        return false;
+        return null;
       case FacebookLoginStatus.cancelledByUser:
         print("CancelledByUser");
-        return false;
+        return null;
       case FacebookLoginStatus.loggedIn:
-        print("LoggedIn");
         // Save auth data and provider
         await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_FACEBOOK_PROVIDER);
         await storage.write(key: Constants.KEY_AUTH_TOKEN, value: facebookLoginResult.accessToken.token);
 
-        return true;
+        // Save user to  Firebase
+        var facebookUser = firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookLoginResult.accessToken.token));
+
+        return facebookUser;
 
       default:
-        return false;
+        return null;
     }
   }
 

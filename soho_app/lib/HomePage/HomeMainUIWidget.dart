@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soho_app/SohoApp.dart';
 
-class SohoHomePageState extends State<SohoApp> {
+class HomeMainUIWidget extends State<SohoApp> {
 
   // This method is rerun every time setState is called
   @override

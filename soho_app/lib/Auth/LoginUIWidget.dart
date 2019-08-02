@@ -6,9 +6,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:soho_app/Auth/AuthController.dart';
-import 'package:soho_app/SohoApp.dart';
+import 'package:soho_app/Auth/AuthWidget.dart';
 
-class LoginStateWidget extends State<SohoApp> {
+class LoginUIWidget extends State<AuthWidget> {
   
   @override
   Widget build(BuildContext context) {
@@ -117,12 +117,14 @@ class LoginStateWidget extends State<SohoApp> {
 
   void facebookLoginPressed() async {
 
-    var facebookLoginResult = await AuthController().initiateFacebookLogin();
+    var facebookUser = await AuthController().initiateFacebookLogin();
 
-    if (facebookLoginResult) {
-      //
+    if (facebookUser != null) {
+      // TODO: Do something with this user
+      print("User is VALID!!!!!!");
     } else {
       // TODO: Show some error
+      print("FACEBOOK Login ERROR");
     }
   }
 
