@@ -5,36 +5,44 @@ import 'package:soho_app/SohoApp.dart';
 import 'package:soho_app/Auth/AuthWidget.dart';
 import 'package:soho_app/HomePage/HomePageWidget.dart';
 
-void setUpRouter(Router router) {
+class Routes {
 
-  // Main route
-  router.define(
-      '/',
-      handler: Handler(
-          handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-            return SohoApp();
-          }),
-      transitionType: TransitionType.native
-  );
+  static String root = "/";
+  static String auth = "Auth";
+  static String homePage = "HomePage";
 
-  // Auth
-  router.define(
-      'Auth',
-      handler: Handler(
-          handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-            return AuthWidget();
-          }),
-      transitionType: TransitionType.native
-  );
+  static void setUpRouter(Router router) {
 
-  // Soho Home
-  router.define(
-      'Home',
-      handler: Handler(
-        handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-          return HomePageWidget();
-        }),
-      transitionType: TransitionType.native
-  );
+    // Main route
+    router.define(
+        root,
+        handler: Handler(
+            handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+              return SohoApp();
+            }),
+        transitionType: TransitionType.native
+    );
+
+    // Auth
+    router.define(
+        auth,
+        handler: Handler(
+            handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+              return AuthWidget();
+            }),
+        transitionType: TransitionType.native
+    );
+
+    // Soho Home
+    router.define(
+        homePage,
+        handler: Handler(
+            handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+              return HomePageWidget();
+            }),
+        transitionType: TransitionType.native
+    );
+
+  }
 
 }
