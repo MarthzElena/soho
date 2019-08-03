@@ -3,7 +3,9 @@ import 'package:soho_app/SohoApp.dart';
 
 
 void main() {
-  runApp(SohoApp());
+  runApp(MaterialApp(
+    home: SohoApp(),
+  ));
 }
 
 

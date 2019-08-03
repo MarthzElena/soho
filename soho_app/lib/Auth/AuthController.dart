@@ -30,7 +30,10 @@ class AuthController {
         case Constants.KEY_FACEBOOK_PROVIDER:
           {
             // Facebook Login
-            var facebookUser = firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: token));
+            var facebookUser = firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: token)).catchError((error) {
+              //TODO: handle error!!
+              return null;
+            });
             if (facebookUser != null) {
               return facebookUser;
             }
