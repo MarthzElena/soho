@@ -12,5 +12,6 @@ class Constants {
   static const KEY_FACEBOOK_PROVIDER = "KEY_FACEBOOK_PROVIDER";
   static const KEY_GOOGLE_PROVIDER = "KEY_GOOGLE_PROVIDER";
   static const KEY_EMAIL_PROVIDER = "KEY_EMAIL_PROVIDER";
+  static const KEY_SAVED_EMAIL = "KEY_SAVED_EMAIL";
 
 }

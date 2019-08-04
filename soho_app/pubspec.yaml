@@ -26,6 +26,7 @@ dependencies:
   get_it: ^1.0.3+2
   scoped_model: ^1.0.1
   fluro: ^1.5.1
+  after_layout: ^1.0.7+2
 
 
   # The following adds the Cupertino Icons font to your application.
