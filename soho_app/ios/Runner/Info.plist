@@ -41,36 +41,28 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-        <key>CFBundleURLSchemes</key>
-        <array>
-            <string>fb356784424958223</string>
-        </array>
-        </dict>
-    </array>
-    <key>FacebookAppID</key>
-    <string>356784424958223</string>
-    <key>FacebookDisplayName</key>
-    <string>SOHO App</string>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>fbapi</string>
-        <string>fb-messenger-share-api</string>
-        <string>fbauth2</string>
-        <string>fbshareextension</string>
-    </array>
-    <key>CFBundleURLTypes</key>
-    <array>
-    	<dict>
-    		<key>CFBundleTypeRole</key>
-    		<string>Editor</string>
-    		<key>CFBundleURLSchemes</key>
-    		<array>
-    			<string>com.googleusercontent.apps.109154806584-je0cfh626v3kh4bo47jphp8r1jmekq7u</string>
-    		</array>
-    	</dict>
-    </array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb356784424958223</string>
+				<string>com.googleusercontent.apps.109154806584-je0cfh626v3kh4bo47jphp8r1jmekq7u</string>
+			</array>
+		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>356784424958223</string>
+	<key>FacebookDisplayName</key>
+	<string>SOHO App</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
 </dict>
 </plist>
