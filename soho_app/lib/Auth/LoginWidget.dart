@@ -115,7 +115,7 @@ class _LoginState extends State<LoginWidget> {
                           textWidthBasis: TextWidthBasis.parent,
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {Navigator.pushNamed(context, Routes.register);},
                           child: Text(
                             'Crear Cuenta',
                             style: TextStyle(
