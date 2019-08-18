@@ -16,4 +16,13 @@ class Constants {
 
   /// Firebase Database keys
   static const DATABASE_KEY_USERS = "usuarios";
+
+  /// Dictionary keys
+  static const DICT_KEY_EMAIL = "email";
+  static const DICT_KEY_NAME = "nombre";
+  static const DICT_KEY_LAST_NAME = "apellidos";
+  static const DICT_KEY_BIRTH_DATE = "fecha_nacimiento";
+  static const DICT_KEY_ID = "id";
+  static const DICT_KEY_GENDER = "sexo";
+  static const DICT_KEY_PHONE = "telefono";
 }

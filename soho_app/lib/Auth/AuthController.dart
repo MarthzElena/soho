@@ -134,6 +134,54 @@ class AuthController {
     return emailUser;
 
   }
+  
+  Future<FirebaseUser> createUserWithEmail(Map<String, String> user, String password) async {
+    // Create Firebase user
+    var userID = "";
+    var userAuthToken = "";
+    FirebaseUser newUser;
+    await firebaseAuth.createUserWithEmailAndPassword(email: user[Constants.DICT_KEY_EMAIL], password: password).then((registeredUser) {
+      if (registeredUser != null) {
+        // Add provider ID to user
+        userID = registeredUser.uid;
+      }
+      newUser = registeredUser;
+    }).catchError((error) {
+      // TODO: Handle error
+      return null;
+    });
+
+    // Check if user  and credentials are valid
+    if (newUser != null && userAuthToken.isNotEmpty && userID.isNotEmpty) {
+      // Save credentials
+      await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_EMAIL_PROVIDER);
+      await newUser.getIdToken(refresh: true).then((userToken) {
+        userAuthToken = userToken;
+      }).catchError((error) {
+        // TODO: Handle error\
+        return null;
+      });
+
+      // Save token to local storage
+      await storage.write(key: Constants.KEY_AUTH_TOKEN, value: userAuthToken);
+      // Add id to dictionary
+      user[Constants.DICT_KEY_ID] = userID;
+      // Save user to DataBase
+      var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+      var newUserRef = usersRef.child(userID);
+      await newUserRef.set(user).then((_) {
+        newUserRef.push();
+      });
+
+      return newUser;
+
+    } else {
+      // TODO: HAndle error!
+      return null;
+    }
+
+
+  }
 
   Future<void> logoutEmailUSer() async {
     // Logout from Firebase
@@ -187,7 +235,7 @@ class AuthController {
 
         var savedUser = usersRef.child(userId);
 
-        savedUser.once().then((item){
+        await savedUser.once().then((item){
           if (item.value == null) {
             var newUserRef = usersRef.child(userId);
             // Create the dictionary and parse it

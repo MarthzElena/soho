@@ -26,109 +26,105 @@ class _LoginState extends State<LoginWidget> {
       child: ScopedModelDescendant<LoginState>(builder: (builder, child, model) {
         return Scaffold(
           body: SafeArea(
-            child: Padding(
+            child: ListView(
               padding: EdgeInsets.only(left: 20.0, top: 70.0, right: 20.0, bottom: 0.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text('Soho'),
-                  Text('Iniciar Sesión'),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 0.0, top: 77, right: 0.0, bottom: 0.0),
-                    child: Text('Email'),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
-                        hintText: 'ejemplo@mail.com'
-                    ),
-                    onChanged: (value) {
-                      // TODO: Validate text
-                      model.emailInput = value;
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 0.0, top: 23, right: 0.0, bottom: 0.0),
-                    child: Text('Contraseña'),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
+              children: <Widget>[
+                Text('Soho'),
+                Text('Iniciar Sesión'),
+                Padding(
+                  padding: const EdgeInsets.only(left: 0.0, top: 77, right: 0.0, bottom: 0.0),
+                  child: Text('Email'),
+                ),
+                TextField(
+                  decoration: InputDecoration(
                       border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
-                    ),
-                    onChanged: (value) {
-                      // TODO: Validate text
-                      model.passwordInput = value;
-                    },
+                      hintText: 'ejemplo@mail.com'
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 0.0, top: 32.0, right: 0.0, bottom: 16.0),
-                      child: RaisedButton(
-                        onPressed: () => emailLoginPressed(context: context,  email: model.emailInput, password: model.passwordInput),
-                        child: Text(
-                          'Iniciar sesión',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ),
+                  onChanged: (value) {
+                    // TODO: Validate text
+                    model.emailInput = value;
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 0.0, top: 23, right: 0.0, bottom: 0.0),
+                  child: Text('Contraseña'),
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      'O también puedes',
-                      textAlign: TextAlign.center,
-                      textWidthBasis: TextWidthBasis.parent,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 0.0, top: 16.0, right: 0.0, bottom: 24.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: RaisedButton(
-                        onPressed: () => facebookLoginPressed(context),
-                        child: Text(
-                          'Iniciar sesión usando Facebook',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
+                  onChanged: (value) {
+                    // TODO: Validate text
+                    model.passwordInput = value;
+                  },
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 0.0, top: 32.0, right: 0.0, bottom: 16.0),
                     child: RaisedButton(
-                      onPressed: () => googleLoginPressed(context),
+                      onPressed: () => emailLoginPressed(context: context,  email: model.emailInput, password: model.passwordInput),
                       child: Text(
-                        'Iniciar sesión usando Google',
+                        'Iniciar sesión',
                         style: TextStyle(fontSize: 14),
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 0.0, top: 24.0, right: 0.0, bottom: 0.0),
-                    child: Row(
-                      children: <Widget>[
-                        Text(
-                          '¿No tienes una cuenta? ',
-                          textAlign: TextAlign.center,
-                          textWidthBasis: TextWidthBasis.parent,
-                        ),
-                        InkWell(
-                          onTap: () {Navigator.pushNamed(context, Routes.register);},
-                          child: Text(
-                            'Crear Cuenta',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline
-                            ),
-                          ),
-                        ),
-                      ],
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    'O también puedes',
+                    textAlign: TextAlign.center,
+                    textWidthBasis: TextWidthBasis.parent,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 0.0, top: 16.0, right: 0.0, bottom: 24.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: RaisedButton(
+                      onPressed: () => facebookLoginPressed(context),
+                      child: Text(
+                        'Iniciar sesión usando Facebook',
+                        style: TextStyle(fontSize: 14),
+                      ),
                     ),
                   ),
-                ],
-              ),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: RaisedButton(
+                    onPressed: () => googleLoginPressed(context),
+                    child: Text(
+                      'Iniciar sesión usando Google',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 0.0, top: 24.0, right: 0.0, bottom: 0.0),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        '¿No tienes una cuenta? ',
+                        textAlign: TextAlign.center,
+                        textWidthBasis: TextWidthBasis.parent,
+                      ),
+                      InkWell(
+                        onTap: () {Navigator.pushNamed(context, Routes.register);},
+                        child: Text(
+                          'Crear Cuenta',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         );
