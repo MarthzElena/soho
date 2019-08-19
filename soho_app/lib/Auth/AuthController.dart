@@ -6,6 +6,7 @@
 /// Created by: Martha Elena Loera
 ///
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -122,16 +123,26 @@ class AuthController {
       return null;
     });
 
-    // Save credentials
-    await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_EMAIL_PROVIDER);
-    String userToken = await emailUser.getIdToken(refresh: true).catchError((error) {
-      // TODO: Handle error
-      return null;
-    });
-    await storage.write(key: Constants.KEY_AUTH_TOKEN, value: userToken);
+    if (emailUser != null) {
+      // Save credentials
+      await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_EMAIL_PROVIDER);
+      String userToken = await emailUser.getIdToken(refresh: true).catchError((error) {
+        // TODO: Handle error
+        return null;
+      });
+      await storage.write(key: Constants.KEY_AUTH_TOKEN, value: userToken);
 
-    // Return user
-    return emailUser;
+      // Save user to Database
+      var userID = emailUser.uid;
+      // Only userID is valid since already a user
+      var user = AuthControllerUtilities.createUserDictionary("", "", userEmail, userID, "", "", "");
+      await saveUserToDatabase(user);
+
+      // Return user
+      return emailUser;
+    } else {
+      return null;
+    }
 
   }
   
@@ -312,7 +323,17 @@ class AuthController {
 
       } else {
         // Get user data from database
-        // TODO: Do something with this user
+        var user = AuthControllerUtilities.createUserDictionary(
+            item.value[Constants.DICT_KEY_LAST_NAME],
+            item.value[Constants.DICT_KEY_NAME],
+            item.value[Constants.DICT_KEY_EMAIL],
+            item.value[Constants.DICT_KEY_ID],
+            item.value[Constants.DICT_KEY_BIRTH_DATE],
+            item.value[Constants.DICT_KEY_GENDER],
+            item.value[Constants.DICT_KEY_PHONE]
+        );
+        // Save locally
+        Application.currentUser = user;
       }
     });
   }

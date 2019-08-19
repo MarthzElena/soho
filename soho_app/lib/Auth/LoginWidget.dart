@@ -53,6 +53,7 @@ class _LoginState extends State<LoginWidget> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
                   ),
+                  obscureText: true,
                   onChanged: (value) {
                     // TODO: Validate text
                     model.passwordInput = value;
