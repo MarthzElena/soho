@@ -152,7 +152,7 @@ class AuthController {
     });
 
     // Check if user  and credentials are valid
-    if (newUser != null && userAuthToken.isNotEmpty && userID.isNotEmpty) {
+    if (newUser != null && userID.isNotEmpty) {
       // Save credentials
       await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_EMAIL_PROVIDER);
       await newUser.getIdToken(refresh: true).then((userToken) {
@@ -163,7 +163,9 @@ class AuthController {
       });
 
       // Save token to local storage
-      await storage.write(key: Constants.KEY_AUTH_TOKEN, value: userAuthToken);
+      if (userAuthToken.isNotEmpty) {
+        await storage.write(key: Constants.KEY_AUTH_TOKEN, value: userAuthToken);
+      }
       // Add id to dictionary
       user[Constants.DICT_KEY_ID] = userID;
       // Save user to DataBase
@@ -227,29 +229,19 @@ class AuthController {
         var lastName = profile['last_name'].toString();
         var userId = profile['id'].toString();
         // TODO: Get this values later!
-        var birthDate = profile['user_birthday'];
-        var gender = profile['user_gender'];
+        var birthDate = profile['user_birthday'] == null ? "" : profile['user_birthday'];
+        var gender = profile['user_gender'] == null ? "" : profile['user_gender'];
 
-        // Check if user already exists in DataBase, and save if not
-        var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
-
-        var savedUser = usersRef.child(userId);
-
-        await savedUser.once().then((item){
-          if (item.value == null) {
-            var newUserRef = usersRef.child(userId);
-            // Create the dictionary and parse it
-            var user = AuthControllerUtilities.createUserDictionary(lastName, firstName, email, userId, "", "", "");
-            // Push the new user reference to the database
-            newUserRef.set(user).then((_) {
-              newUserRef.push();
-            });
-
-          } else {
-            // Get user data from database
-            // TODO: Do something with this user
-          }
-        });
+        var user = AuthControllerUtilities.createUserDictionary(
+            lastName,
+            firstName,
+            email,
+            userId,
+            birthDate,
+            gender,
+            ""
+        );
+        await saveUserToDatabase(user);
 
         return facebookUser;
 
@@ -277,6 +269,18 @@ class AuthController {
       return null;
     });
 
+    // Create user dictionary for Database
+    var user = AuthControllerUtilities.createUserDictionary(
+        "",
+        googleUser.displayName,
+        googleUser.email,
+        googleUser.uid,
+        "",
+        "",
+        googleUser.phoneNumber == null ? "" : googleUser.phoneNumber
+    );
+    await saveUserToDatabase(user);
+
     // Make sure to save credentials only if login is completed
     await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER);
     await storage.write(key: Constants.KEY_AUTH_TOKEN, value: googleAuth.accessToken);
@@ -292,5 +296,25 @@ class AuthController {
     await deleteAuthStoredValues();
   }
 
+  Future<void> saveUserToDatabase(Map<String, String> user) async {
+    // Check if user already exists in DataBase, and save if not
+    var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+    var userId = user[Constants.DICT_KEY_ID];
+    var savedUser = usersRef.child(userId);
+
+    await savedUser.once().then((item){
+      if (item.value == null) {
+        var newUserRef = usersRef.child(userId);
+        // Push the new user reference to the database
+        newUserRef.set(user).then((_) {
+          newUserRef.push();
+        });
+
+      } else {
+        // Get user data from database
+        // TODO: Do something with this user
+      }
+    });
+  }
 
 }

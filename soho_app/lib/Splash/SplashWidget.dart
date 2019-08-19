@@ -39,7 +39,8 @@ class _SplashWidgetState extends State<SplashWidget>  with AfterLayoutMixin {
       // Check if there's a valid user
       AuthController().getSavedAuthObject().then((user) {
         if (user != null) {
-          // TODO: Do something with this user
+          // TODO: Query user from Database and save to app
+
           Navigator.pushNamed(context, Routes.homePage);
         } else {
           // Go to Login
