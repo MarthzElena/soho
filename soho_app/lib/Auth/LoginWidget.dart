@@ -62,12 +62,28 @@ class _LoginState extends State<LoginWidget> {
                 SizedBox(
                   width: double.infinity,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 0.0, top: 32.0, right: 0.0, bottom: 16.0),
+                    padding: const EdgeInsets.only(left: 0.0, top: 32.0, right: 0.0, bottom: 0.0),
                     child: RaisedButton(
                       onPressed: () => emailLoginPressed(context: context,  email: model.emailInput, password: model.passwordInput),
                       child: Text(
                         'Iniciar sesión',
                         style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 0.0, top: 0.0, right: 0.0, bottom: 25.0),
+                    child: InkWell(
+                      onTap: resetPasswordPressed,
+                      child: Text(
+                        'Reestablecer contraseña',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
                     ),
                   ),
@@ -171,6 +187,22 @@ class _LoginState extends State<LoginWidget> {
         print("****** Email Login ERROR");
       }
     });
+
+  }
+
+  Future<void> resetPasswordPressed() async {
+    var email = loginState.emailInput;
+
+    // TODO: Need to define if we'll use same login view or specific ResetPW view
+    if (email.isNotEmpty) {
+      await AuthController().resetUserPassword(email).then((success) {
+        if (success) {
+          // TODO: Show success
+        } else {
+          // TODO: Handle error
+        }
+      });
+    }
 
   }
 

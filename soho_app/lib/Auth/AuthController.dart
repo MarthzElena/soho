@@ -307,6 +307,18 @@ class AuthController {
     await deleteAuthStoredValues();
   }
 
+  Future<bool> resetUserPassword(String email) async {
+    // Use Firebase Auth to send email
+    var success = await firebaseAuth.sendPasswordResetEmail(email: email).then((_) {
+      return true;
+    }).catchError((error) {
+      // TODO: Handle error (`ERROR_INVALID_EMAIL`, `ERROR_USER_NOT_FOUND`)
+      return false;
+    });
+
+    return success;
+  }
+
   Future<void> saveUserToDatabase(Map<String, String> user) async {
     // Check if user already exists in DataBase, and save if not
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
