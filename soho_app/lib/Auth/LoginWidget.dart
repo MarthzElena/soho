@@ -27,12 +27,11 @@ class _LoginState extends State<LoginWidget> {
         return Scaffold(
           body: SafeArea(
             child: ListView(
-              padding: EdgeInsets.only(left: 20.0, top: 70.0, right: 20.0, bottom: 0.0),
+              padding: EdgeInsets.only(left: 20.0, top: 50.0, right: 20.0, bottom: 0.0),
               children: <Widget>[
-                Text('Soho'),
-                Text('Iniciar Sesión'),
+                Text('Soho - Iniciar Sesión'),
                 Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 77, right: 0.0, bottom: 0.0),
+                  padding: const EdgeInsets.only(left: 0.0, top: 40.0, right: 0.0, bottom: 0.0),
                   child: Text('Email'),
                 ),
                 TextField(
@@ -120,7 +119,7 @@ class _LoginState extends State<LoginWidget> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 24.0, right: 0.0, bottom: 0.0),
+                  padding: const EdgeInsets.only(left: 0.0, top: 24.0, right: 0.0, bottom: 20.0),
                   child: Row(
                     children: <Widget>[
                       Text(

@@ -21,6 +21,14 @@ class RegisterWidget extends StatefulWidget {
 
 class _RegisterState  extends State<RegisterWidget> {
   RegisterState registerState = locator<RegisterState>();
+  FocusNode _textFocus = new FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _textFocus.addListener(_onFieldFocusChanged);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,163 +38,188 @@ class _RegisterState  extends State<RegisterWidget> {
       child: ScopedModelDescendant<RegisterState>(builder: (builder, child, model) {
         return Scaffold(
           body: SafeArea(
-            child: ListView(
-              padding: EdgeInsets.only(left: 20.0, top: 20.0, right: 20.0, bottom: 0.0),
-              children: <Widget>[
-                Text('Soho'),
-                Text('Registrar cuenta nueva'),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 20, right: 0.0, bottom: 0.0),
-                  child: Text('Nombre(s)'),
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
+            child: Form(
+              key: registerState.key,
+              autovalidate: registerState.autoValidate,
+              child: ListView(
+                padding: EdgeInsets.only(left: 20.0, top: 20.0, right: 20.0, bottom: 0.0),
+                children: <Widget>[
+                  Text('Soho - Registrar cuenta nueva'),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0.0, top: 20, right: 0.0, bottom: 0.0),
+                    child: Text('Nombre(s)'),
                   ),
-                  onChanged: (value) {
-                    // TODO: Validate text
-                    model.nameInput = value;
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 10, right: 0.0, bottom: 0.0),
-                  child: Text('Apellido(s)'),
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
-                  ),
-                  onChanged: (value) {
-                    // TODO: Validate text
-                    model.lastNameInput = value;
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 10, right: 0.0, bottom: 0.0),
-                  child: Text('Correo electrónico'),
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
-                    hintText: 'ejemplo@correo.com',
-                  ),
-                  onChanged: (value) {
-                    // TODO: Validate text
-                    model.emailInput = value;
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 10, right: 0.0, bottom: 0.0),
-                  child: Text('Teléfono celular'),
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
-                    hintText: '33 3333 3333',
-                  ),
-                  onChanged: (value) {
-                    // TODO: Validate text
-                    model.phoneNumber = value;
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 10, right: 0.0, bottom: 0.0),
-                  child: Text('Contraseña'),
-                ),
-                TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
-                  ),
-                  onChanged: (value) {
-                    // TODO: Validate text
-                    model.passwordInput = value;
-                  },
-                ),
-                // TODO: Add inputs for gender and birth date
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 10.0, right: 0.0, bottom: 0.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: RaisedButton(
-                      onPressed: () => createAccountPressed(context),
-                      child: Text('Crear Cuenta'),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
                     ),
+                    keyboardType: TextInputType.text,
+                    validator: (String input) {
+                      if (input.isEmpty) {
+                        return "El nombre es requerido!";
+                      } else {
+                        return null;
+                      }
+                    },
+                    focusNode: _textFocus,
+                    onEditingComplete: _validateInputs,
+                    onSaved: (value) {
+                      print(value);
+                      model.nameInput = value;
+                    },
                   ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0.0, top: 10, right: 0.0, bottom: 0.0),
+                    child: Text('Apellido(s)'),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
+                    ),
+                    onChanged: (value) {
+                      // TODO: Validate text
+                      model.lastNameInput = value;
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0.0, top: 10, right: 0.0, bottom: 0.0),
+                    child: Text('Correo electrónico'),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
+                      hintText: 'ejemplo@correo.com',
+                    ),
+                    onChanged: (value) {
+                      // TODO: Validate text
+                      model.emailInput = value;
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0.0, top: 10, right: 0.0, bottom: 0.0),
+                    child: Text('Teléfono celular'),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
+                      hintText: '33 3333 3333',
+                    ),
+                    onChanged: (value) {
+                      // TODO: Validate text
+                      model.phoneNumber = value;
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0.0, top: 10, right: 0.0, bottom: 0.0),
+                    child: Text('Contraseña'),
+                  ),
+                  TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
+                    ),
+                    onChanged: (value) {
+                      // TODO: Validate text
+                      model.passwordInput = value;
+                    },
+                  ),
+                  // TODO: Add inputs for gender and birth date
+                  Padding(
                     padding: const EdgeInsets.only(left: 0.0, top: 10.0, right: 0.0, bottom: 0.0),
-                    child: Text(
-                      'O también puedes',
-                      textAlign: TextAlign.center,
-                      textWidthBasis: TextWidthBasis.parent,
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: RaisedButton(
+                        onPressed: () => createAccountPressed(context),
+                        child: Text('Crear Cuenta'),
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 10.0, right: 0.0, bottom: 10.0),
-                  child: SizedBox(
+                  SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 0.0, top: 10.0, right: 0.0, bottom: 0.0),
+                      child: Text(
+                        'O también puedes',
+                        textAlign: TextAlign.center,
+                        textWidthBasis: TextWidthBasis.parent,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0.0, top: 10.0, right: 0.0, bottom: 10.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: RaisedButton(
+                        onPressed: () => facebookLoginPressed(context),
+                        child: Text(
+                          'Iniciar sesión usando Facebook',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
                     width: double.infinity,
                     child: RaisedButton(
-                      onPressed: () => facebookLoginPressed(context),
+                      onPressed: () => googleLoginPressed(context),
                       child: Text(
-                        'Iniciar sesión usando Facebook',
+                        'Iniciar sesión usando Google',
                         style: TextStyle(fontSize: 14),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: RaisedButton(
-                    onPressed: () => googleLoginPressed(context),
-                    child: Text(
-                      'Iniciar sesión usando Google',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 10.0, right: 0.0, bottom: 0.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        '¿Ya tienes una cuenta? ',
-                        textAlign: TextAlign.center,
-                        textWidthBasis: TextWidthBasis.parent,
-                      ),
-                      InkWell(
-                        onTap: () {Navigator.pushNamed(context, Routes.login);},
-                        child: Text(
-                          'Iniciar Sesión',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0.0, top: 10.0, right: 0.0, bottom: 20.0),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          '¿Ya tienes una cuenta? ',
+                          textAlign: TextAlign.center,
+                          textWidthBasis: TextWidthBasis.parent,
+                        ),
+                        InkWell(
+                          onTap: () {Navigator.pushNamed(context, Routes.login);},
+                          child: Text(
+                            'Iniciar Sesión',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
       }),
     );
   }
-  
+
+  void _onFieldFocusChanged() {
+    _validateInputs();
+  }
+
+  void _validateInputs() {
+    if (registerState.key.currentState.validate()) {
+      registerState.key.currentState.save();
+    } else {
+      registerState.autoValidate = true;
+    }
+  }
+
   Future<void> createAccountPressed(BuildContext context) async {
     // Create user dictionary
     var user = AuthControllerUtilities.createUserDictionary(
         registerState.lastNameInput,
         registerState.nameInput,
         registerState.emailInput,
-        "",
-        registerState.birthInput,
-        registerState.genderInput,
+        "", // ID is empty since will be defined later
+        "", // Birthday will be defined later
+        "", // Gender will be defined later
         registerState.phoneNumber
     );
 

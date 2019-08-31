@@ -309,6 +309,7 @@ class AuthController {
 
   Future<bool> resetUserPassword(String email) async {
     // Use Firebase Auth to send email
+    // TODO: Edit email template on amazon console
     var success = await firebaseAuth.sendPasswordResetEmail(email: email).then((_) {
       return true;
     }).catchError((error) {

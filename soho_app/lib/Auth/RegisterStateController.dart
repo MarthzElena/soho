@@ -1,15 +1,17 @@
 import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter/material.dart';
 
 class RegisterState extends Model {
 
-  // TODO: Validate email and password
+  // Validation tools
+  final GlobalKey<FormState> key = GlobalKey<FormState>();
+  bool autoValidate = false;
+
+  // Registration field values
   String nameInput = "";
   String lastNameInput = "";
   String emailInput = "";
   String passwordInput = "";
-  // This needs to be defined
-  String genderInput = "";
-  String birthInput = "";
   String phoneNumber = "";
 
 
