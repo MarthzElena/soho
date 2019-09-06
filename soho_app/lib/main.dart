@@ -12,9 +12,10 @@ void main() {
   final Router _router = Router();
   Routes.setUpRouter(_router);
   setUpLocator();
-
+  
   runApp(MaterialApp(
     home: SohoApp(),
+    theme: ThemeData(fontFamily: 'InterUI'),
     debugShowCheckedModeBanner: false,
     onGenerateRoute: _router.generator,
   ));

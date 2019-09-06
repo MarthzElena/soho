@@ -5,6 +5,8 @@ import 'package:after_layout/after_layout.dart';
 
 import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Utils/Application.dart';
+import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 
 class SplashWidget extends StatefulWidget {
 
@@ -38,18 +40,20 @@ class _SplashWidgetState extends State<SplashWidget>  with AfterLayoutMixin {
   @override
   void afterFirstLayout(BuildContext context) {
 
-    Timer(Duration(seconds: 2), () {
-      // Check if there's a valid user
-      AuthController().getSavedAuthObject().then((user) {
-        if (user != null) {
-          // TODO: Query user from Database and save to app
-
+    // Check if there's a valid user
+    AuthController().getSavedAuthObject().then((user) {
+      if (user != null) {
+        // TODO: Query user from Database and save to app
+        // Get the categories for HomePage
+        SquareHTTPRequest.getSquareCategories().then((categories) {
+          Application.sohoCategories = categories;
           Navigator.pushNamed(context, Routes.homePage);
-        } else {
-          // Go to Login
-          Navigator.pushNamed(context, Routes.login);
-        }
-      });
+        });
+
+      } else {
+        // Go to Login
+        Navigator.pushNamed(context, Routes.login);
+      }
     });
 
   }

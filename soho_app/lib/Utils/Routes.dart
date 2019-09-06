@@ -52,7 +52,7 @@ class Routes {
           handlerFunc: (BuildContext context, Map<String, dynamic> params) {
             return HomePageWidget();
           }),
-      transitionType: TransitionType.native
+      transitionType: TransitionType.fadeIn
     );
 
   }
