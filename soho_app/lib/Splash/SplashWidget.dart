@@ -39,21 +39,13 @@ class _SplashWidgetState extends State<SplashWidget>  with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) {
-
-    // Check if there's a valid user
-    AuthController().getSavedAuthObject().then((user) {
-      if (user != null) {
-        // TODO: Query user from Database and save to app
-        // Get the categories for HomePage
-        SquareHTTPRequest.getSquareCategories().then((categories) {
-          Application.sohoCategories = categories;
-          Navigator.pushNamed(context, Routes.homePage);
-        });
-
-      } else {
-        // Go to Login
-        Navigator.pushNamed(context, Routes.login);
-      }
+    // Give some time to the splash to show
+    Timer(Duration(seconds: 1), () {
+      // Get the categories for HomePage
+      SquareHTTPRequest.getSquareCategories().then((categories) {
+        Application.sohoCategories = categories;
+        Navigator.pushNamed(context, Routes.homePage);
+      });
     });
 
   }

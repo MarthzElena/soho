@@ -90,82 +90,101 @@ class _HomePageState extends State<HomePageWidget> {
   Widget _createCategoriesList(AssetImage backgroundImage, List<CategoryObject> list) {
     return ListView(
       children: <Widget>[
-        Padding(  // Home  Bar
-          padding: EdgeInsets.only(top: 12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
+        Container(
+          height: 60.0,
+          child: Stack(
+            alignment: Alignment.centerLeft,
+            fit: StackFit.expand,
             children: <Widget>[
-              FlatButton(
-                  onPressed: null,
-                  padding: EdgeInsets.all(0.0),
-                  child: Image.asset('assets/home/ic_menu.png')
+              Align(
+                alignment: Alignment.centerLeft,
+                child: FlatButton(
+                    onPressed: null,
+                    padding: EdgeInsets.all(0.0),
+                    child: Image.asset('assets/home/ic_menu.png')
+                ),
               ),
-              Image(
-                  image: AssetImage('assets/home/menu_logo.png')
+              Align(
+                alignment: Alignment.center,
+                child: Image(
+                    image: AssetImage('assets/home/menu_logo.png')
+                )
               ),
-              FlatButton(
-                  onPressed: null,
-                  padding: EdgeInsets.all(0.0),
-                  child: Image.asset('assets/home/menu_search.png')
+              Align(
+                alignment: Alignment.centerRight,
+                child: FlatButton(
+                    onPressed: null,
+                    padding: EdgeInsets.all(0.0),
+                    child: Image.asset('assets/home/menu_search.png')
+                )
               )
             ],
           ),
-        ),
+        ), // Home  Bar
         Stack( //  Background image and text
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: 31),
+              padding: EdgeInsets.only(top: 27.0),
               child: Align(
                 alignment: Alignment.topRight,
                 child: Image(
                     image: backgroundImage
                 ),
               ),
-            ),
+            ), // Background image
             Padding(
-              padding: EdgeInsets.only(top: 49.0, left: 17.0),
+              padding: EdgeInsets.only(top: 49.0),
               child: Column(
                 children: <Widget>[
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'Disfruta una auténtica',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17.0,
+                  Padding(
+                    padding: EdgeInsets.only(left: 17.0),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'Disfruta una auténtica',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17.0,
+                        ),
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'ceremonia',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          fontSize: 29.0
+                  Padding(
+                    padding: EdgeInsets.only(left: 16.0),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'ceremonia',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            fontSize: 29.0,
+                            letterSpacing: 1.0
+                        ),
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'DE TÉ',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          fontSize: 51.0
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'DE TÉ',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            fontSize: 51.0,
+                            letterSpacing: 0.0
+                        ),
                       ),
                     ),
                   )
                 ],
               ),
-            )
+            ) // Header text
           ],
-        ),
+        ), // Header image
         Padding(
-            padding: EdgeInsets.only(top: 10.0),
+            padding: EdgeInsets.only(top: 10.0, bottom: 48.0),
             child: CarouselSlider(
               viewportFraction: 0.5,
               height: 245.0,
@@ -221,7 +240,17 @@ class _HomePageState extends State<HomePageWidget> {
                 );
               }).toList(),
             )
-        )
+        ), // Categories carousel
+        Padding(
+          padding: EdgeInsets.only(left: 16.0),
+          child: Text(
+            'Pedido recientemente',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16.0
+            ),
+          ),
+        ) // Pedido recientemente
       ],
     );
   }
