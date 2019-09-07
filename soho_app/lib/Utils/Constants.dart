@@ -25,4 +25,7 @@ class Constants {
   static const DICT_KEY_ID = "id";
   static const DICT_KEY_GENDER = "sexo";
   static const DICT_KEY_PHONE = "telefono";
+
+  /// UI Constants
+  static const APP_BAR_HEIGHT = 54.0;
 }

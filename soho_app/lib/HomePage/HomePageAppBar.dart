@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:soho_app/Utils/Constants.dart';
+
 class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget{
 
   @override
@@ -9,6 +11,7 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget{
       body: Container(
         color: Colors.white,
         width: MediaQuery.of(context).size.width,
+        height: preferredSize.height,
         child: Row(
           children: <Widget>[
             FlatButton(
@@ -38,5 +41,5 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget{
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(54.0);
+  Size get preferredSize => Size.fromHeight(Constants.APP_BAR_HEIGHT);
 }

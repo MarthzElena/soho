@@ -15,7 +15,7 @@ class HomePageWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
+
     return _HomePageState();
   }
 }
@@ -179,7 +179,9 @@ class _HomePageState extends State<HomePageWidget> {
                                   color: Color.fromARGB(255, 242, 242, 242)
                               ),
                               child: GestureDetector(
-                                // onTap: , TODO: Go to view detail
+                                onTap: () {
+                                  Navigator.pushNamed(context, Routes.categoryDetail);
+                                },
                               ),
                             ),
                             Padding(

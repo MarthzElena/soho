@@ -5,6 +5,7 @@ import 'package:soho_app/SohoApp.dart';
 import 'package:soho_app/Auth/LoginWidget.dart';
 import 'package:soho_app/HomePage/HomePageWidget.dart';
 import 'package:soho_app/Auth/RegisterWidget.dart';
+import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsWidget.dart';
 
 class Routes {
 
@@ -12,6 +13,7 @@ class Routes {
   static String login = "Login";
   static String homePage = "HomePage";
   static String register = "Register";
+  static String categoryDetail = "CategoryDetail";
 
   static void setUpRouter(Router router) {
 
@@ -53,6 +55,17 @@ class Routes {
             return HomePageWidget();
           }),
       transitionType: TransitionType.fadeIn
+    );
+    
+    // Category Detail
+    router.define(
+        categoryDetail,
+        handler: Handler(
+          handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+            return CategoryItemsWidget();
+          }
+        ),
+      transitionType: TransitionType.inFromRight
     );
 
   }
