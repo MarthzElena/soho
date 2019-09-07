@@ -20,6 +20,9 @@ PODS:
   - Firebase/Database (6.5.0):
     - Firebase/CoreOnly
     - FirebaseDatabase (~> 6.0.0)
+  - Firebase/Storage (6.5.0):
+    - Firebase/CoreOnly
+    - FirebaseStorage (~> 3.4.0)
   - firebase_auth (0.0.1):
     - Firebase/Auth (~> 6.0)
     - Firebase/Core
@@ -29,6 +32,9 @@ PODS:
     - Flutter
   - firebase_database (0.0.1):
     - Firebase/Database
+    - Flutter
+  - firebase_storage (0.0.1):
+    - Firebase/Storage
     - Flutter
   - FirebaseAnalytics (6.0.4):
     - FirebaseCore (~> 6.1)
@@ -57,6 +63,10 @@ PODS:
     - FirebaseCore (~> 6.0)
     - GoogleUtilities/Environment (~> 6.0)
     - GoogleUtilities/UserDefaults (~> 6.0)
+  - FirebaseStorage (3.4.0):
+    - FirebaseAuthInterop (~> 1.0)
+    - FirebaseCore (~> 6.0)
+    - GTMSessionFetcher/Core (~> 1.1)
   - Flutter (1.0.0)
   - flutter_facebook_login (0.0.1):
     - FBSDKCoreKit (= 4.39.1)
@@ -116,6 +126,7 @@ DEPENDENCIES:
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
+  - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
   - flutter_facebook_login (from `.symlinks/plugins/flutter_facebook_login/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
@@ -133,6 +144,7 @@ SPEC REPOS:
     - FirebaseCore
     - FirebaseDatabase
     - FirebaseInstanceID
+    - FirebaseStorage
     - GoogleAppMeasurement
     - GoogleSignIn
     - GoogleToolboxForMac
@@ -148,6 +160,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_database:
     :path: ".symlinks/plugins/firebase_database/ios"
+  firebase_storage:
+    :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: ".symlinks/flutter/ios"
   flutter_facebook_login:
@@ -165,12 +179,14 @@ SPEC CHECKSUMS:
   firebase_auth: 00d6e1ab6d890cd6d3c624df61702e3a7072d1e3
   firebase_core: b3b02d0b5e9d01aab5e50ba7cbcf84c73cb6883c
   firebase_database: 74cceb9604f7fb691d8bd9573daa62efab785619
+  firebase_storage: 52b0c06e27af628b627be28d32b4b540f6b67cf7
   FirebaseAnalytics: 3fb375bc9d13779add4039716f868d233a473fad
   FirebaseAuth: a06ad63e9bf4c86165b54cceb1c14d4f4c38d419
   FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
   FirebaseCore: aecf02fb2274ec361b9bebeac112f5daa18273bd
   FirebaseDatabase: f48e067716864be2b855cf716b927ef375d6cfa0
   FirebaseInstanceID: 662b8108a09fe9ed01aafdedba100fde8536b0f6
+  FirebaseStorage: 618dd8fd886b30adf6e5d1915b1f5c18cb5c3944
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   flutter_facebook_login: be61e24a4b7d621515353c6b4583d1981bdaa3d6
   flutter_secure_storage: 0c5779648ff644110e507909b77a57e620cbbf8b
