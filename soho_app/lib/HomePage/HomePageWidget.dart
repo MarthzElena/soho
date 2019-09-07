@@ -9,6 +9,7 @@ import 'package:soho_app/HomePage/HomePageStateController.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Application.dart';
+import 'package:soho_app/HomePage/HomePageAppBar.dart';
 
 class HomePageWidget extends StatefulWidget {
 
@@ -37,18 +38,22 @@ class _HomePageState extends State<HomePageWidget> {
         // Previously load the categories
         // Check for empty categories is still needed
         if (Application.sohoCategories.isNotEmpty) {
-          return Scaffold(
-            body: SafeArea(
-              child: Container(
+          return SafeArea(
+            child: Scaffold(
+              drawer: Drawer(), // TODO: Add menu!
+              appBar: HomePageAppBar(),
+              body: Container(
                 color: Colors.white,
                 child: _createCategoriesList(backgroundImage, Application.sohoCategories),
               ),
             ),
           );
         } else {
-          return Scaffold(
-            body: SafeArea(
-              child: Container(
+          return SafeArea(
+            child: Scaffold(
+              drawer: Drawer(), // TODO: Add menu!
+              appBar: HomePageAppBar(),
+              body: Container(
                 color: Colors.white,
                 child: new FutureBuilder(
                     future: SquareHTTPRequest.getSquareCategories(),
@@ -90,38 +95,7 @@ class _HomePageState extends State<HomePageWidget> {
   Widget _createCategoriesList(AssetImage backgroundImage, List<CategoryObject> list) {
     return ListView(
       children: <Widget>[
-        Container(
-          height: 60.0,
-          child: Stack(
-            alignment: Alignment.centerLeft,
-            fit: StackFit.expand,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.centerLeft,
-                child: FlatButton(
-                    onPressed: null,
-                    padding: EdgeInsets.all(0.0),
-                    child: Image.asset('assets/home/ic_menu.png')
-                ),
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Image(
-                    image: AssetImage('assets/home/menu_logo.png')
-                )
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: FlatButton(
-                    onPressed: null,
-                    padding: EdgeInsets.all(0.0),
-                    child: Image.asset('assets/home/menu_search.png')
-                )
-              )
-            ],
-          ),
-        ), // Home  Bar
-        Stack( //  Background image and text
+        Stack(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(top: 27.0),
@@ -182,7 +156,7 @@ class _HomePageState extends State<HomePageWidget> {
               ),
             ) // Header text
           ],
-        ), // Header image
+        ), // //  Background image and text
         Padding(
             padding: EdgeInsets.only(top: 10.0, bottom: 48.0),
             child: CarouselSlider(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -18,9 +20,10 @@ class SquareHTTPRequest {
   static const _categoryParam = "CATEGORY";
   static const _itemParam = "ITEM";
   static var _requestHeader = {
-    "Accept" : "application/json",
-    "Content-Type" : "application/json; charset=utf-8",
-    "Authorization" : "Bearer $_token",
+    HttpHeaders.acceptHeader : "application/json",
+    HttpHeaders.contentTypeHeader : "application/x-www-form-urlencoded",
+    HttpHeaders.authorizationHeader : "Bearer $_token",
+    HttpHeaders.acceptEncodingHeader : "gzip, deflate"
   };
 
   /// Returns a list with the CategoryObject items to populate the Category carousel in HomePageWidget
