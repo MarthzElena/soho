@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'dart:convert';
 
 import 'package:soho_app/Auth/AuthController.dart';
 import 'package:soho_app/SohoMenu/CategoryObject.dart';
@@ -10,6 +11,7 @@ import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/HomePage/HomePageAppBar.dart';
+import 'package:soho_app/Utils/Constants.dart';
 
 class HomePageWidget extends StatefulWidget {
 
@@ -180,7 +182,9 @@ class _HomePageState extends State<HomePageWidget> {
                               ),
                               child: GestureDetector(
                                 onTap: () {
-                                  Navigator.pushNamed(context, Routes.categoryDetail);
+                                  var categoryObject = jsonEncode(category);
+                                  var route = "CategoryDetail/$categoryObject";
+                                  Navigator.pushNamed(context, route);
                                 },
                               ),
                             ),

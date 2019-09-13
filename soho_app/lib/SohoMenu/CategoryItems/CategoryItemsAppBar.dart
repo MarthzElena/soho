@@ -21,7 +21,7 @@ class _CategoryItemsAppBarState extends State<CategoryItemsAppBar> {
 
   _CategoryItemsAppBarState({
     @required this.height
-});
+  });
 
   @override
   Widget build(BuildContext context) {
