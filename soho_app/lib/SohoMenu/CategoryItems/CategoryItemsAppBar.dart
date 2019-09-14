@@ -32,6 +32,7 @@ class _CategoryItemsAppBarState extends State<CategoryItemsAppBar> {
         width: MediaQuery.of(context).size.width,
         height: height,
         child: Row(
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             FlatButton(
                 onPressed: () {

@@ -26,6 +26,9 @@ class Constants {
   static const DICT_KEY_GENDER = "sexo";
   static const DICT_KEY_PHONE = "telefono";
 
+  /// Category Items
+  static const PARAM_CATEGORY_NAME = "DIC_KEY_CATEGORY_NAME";
+
   /// UI Constants
   static const APP_BAR_HEIGHT = 54.0;
 }

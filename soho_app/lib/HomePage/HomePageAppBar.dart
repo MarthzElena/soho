@@ -14,12 +14,15 @@ class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget{
         height: preferredSize.height,
         child: Row(
           children: <Widget>[
-            FlatButton(
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-                padding: EdgeInsets.all(0.0),
-                child: Image.asset('assets/home/ic_menu.png')
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FlatButton(
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  padding: EdgeInsets.all(0.0),
+                  child: Image.asset('assets/home/ic_menu.png')
+              ),
             ),
             Expanded(
               child: Padding(

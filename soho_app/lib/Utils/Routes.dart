@@ -17,7 +17,7 @@ class Routes {
   static String categoryDetail = "CategoryDetail/:category";
   static String categoryDetailRoute = "CategoryDetail/";
 
-  static Handler _categoryDetailHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) => CategoryItemsWidget(categoryName: params['category'][0]));
+  static Handler _categoryDetailHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) => CategoryItemsWidget(categoryObjectString: params['category'][0]));
 
   static void setUpRouter(Router router) {
 

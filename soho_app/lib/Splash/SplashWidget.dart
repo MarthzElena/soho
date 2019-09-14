@@ -7,6 +7,9 @@ import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/Auth/AuthController.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
+import 'dart:convert';
+
+import 'dart:io';
 
 class SplashWidget extends StatefulWidget {
 
@@ -39,8 +42,10 @@ class _SplashWidgetState extends State<SplashWidget>  with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) {
+
+//    test();
     // Give some time to the splash to show
-    Timer(Duration(seconds: 1), () {
+    Timer(Duration(milliseconds: 50), () {
       // Get the categories for HomePage
       SquareHTTPRequest.getSquareCategories().then((categories) {
         Application.sohoCategories = categories;
@@ -48,6 +53,15 @@ class _SplashWidgetState extends State<SplashWidget>  with AfterLayoutMixin {
       });
     });
 
+  }
+
+  Future test() async {
+    HttpClientRequest request = await HttpClient().post('https://connect.squareup.com', 4049, '/v2/catalog/list?types=CATEGORY');
+    request.headers.contentType = ContentType.json;
+    request.headers.add("Authorization", "Bearer EAAAEOjIOtjeZhu3M35n3uhYp4iQCBfOxfseiRthdNaFzS9o4P99IW48fP6uTEcZ");
+    request.headers.add("Accept",  "application/json");
+    HttpClientResponse response = await request.close();
+    await response.transform(utf8.decoder /*5*/).forEach(print);
   }
 
 }

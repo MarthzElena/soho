@@ -11,6 +11,8 @@ import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/HomePage/HomePageAppBar.dart';
+import 'package:soho_app/HomePage/HomePageMenu/LoggedInUserMenuWidget.dart';
+import 'package:soho_app/HomePage/HomePageMenu/NoUserMenuWidget.dart';
 import 'package:soho_app/Utils/Constants.dart';
 
 class HomePageWidget extends StatefulWidget {
@@ -32,7 +34,7 @@ class _HomePageState extends State<HomePageWidget> {
 
     // TODO: Replace this with  an image from the cloud (since it will be changing)
     var backgroundImage = AssetImage('assets/home/tmp_background_home.png');
-
+    Widget drawer = LoggedInUserMenuWidget();
 
     return ScopedModel<HomePageState>(
       model: homePageState,
@@ -42,7 +44,7 @@ class _HomePageState extends State<HomePageWidget> {
         if (Application.sohoCategories.isNotEmpty) {
           return SafeArea(
             child: Scaffold(
-              drawer: Drawer(), // TODO: Add menu!
+              drawer: drawer,
               appBar: HomePageAppBar(),
               body: Container(
                 color: Colors.white,
@@ -53,7 +55,7 @@ class _HomePageState extends State<HomePageWidget> {
         } else {
           return SafeArea(
             child: Scaffold(
-              drawer: Drawer(), // TODO: Add menu!
+              drawer: drawer,
               appBar: HomePageAppBar(),
               body: Container(
                 color: Colors.white,
