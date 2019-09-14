@@ -64,6 +64,7 @@ flutter:
     - assets/splash/
     - assets/home/
     - assets/category_detail/
+    - assets/menu/
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.io/assets-and-images/#from-packages
