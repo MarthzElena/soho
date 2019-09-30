@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 class CategoryObject {
   static String keyName = "name";
   static String keySquareId = "squareID";
-  static String keyImage = "image";
+  static String keyImageUrl = "image";
   static String keySubtitle = "subtitle";
 
   /// String for category  name on Square (used for filtered search)
   String name = "";
 
-  /// Image for category  on carousel
-  Image image;
+  /// URL Image for category on carousel
+  String imageUrl;
 
   /// Category  Square ID
   String squareID = "";
@@ -25,14 +25,14 @@ class CategoryObject {
   CategoryObject.fromJson(Map<String, dynamic> json)
       : name = json[keyName],
       squareID = json[keySquareId],
-      image = json[keyImage],
+      imageUrl = json[keyImageUrl],
       subtitle = json[keySubtitle];
 
   Map<String, dynamic> toJson() =>
       {
         keyName : name,
         keySquareId : squareID,
-        keyImage : image,
+        keyImageUrl : imageUrl,
         keySubtitle : subtitle
       };
 }

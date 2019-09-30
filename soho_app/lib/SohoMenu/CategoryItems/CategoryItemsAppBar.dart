@@ -28,7 +28,8 @@ class _CategoryItemsAppBarState extends State<CategoryItemsAppBar> {
 
     return Scaffold(
       body: Container(
-        color: Color.fromARGB(100, 240, 236, 238),
+        constraints: BoxConstraints.expand(),
+        color: Color.fromARGB(100, 243, 241, 242),
         width: MediaQuery.of(context).size.width,
         height: height,
         child: Row(

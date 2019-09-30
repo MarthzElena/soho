@@ -56,12 +56,25 @@ class _SplashWidgetState extends State<SplashWidget>  with AfterLayoutMixin {
   }
 
   Future test() async {
-    HttpClientRequest request = await HttpClient().post('https://connect.squareup.com', 4049, '/v2/catalog/list?types=CATEGORY');
-    request.headers.contentType = ContentType.json;
-    request.headers.add("Authorization", "Bearer EAAAEOjIOtjeZhu3M35n3uhYp4iQCBfOxfseiRthdNaFzS9o4P99IW48fP6uTEcZ");
-    request.headers.add("Accept",  "application/json");
-    HttpClientResponse response = await request.close();
-    await response.transform(utf8.decoder /*5*/).forEach(print);
+    Stream<String> streamResult;
+
+    print("start");
+    HttpClient client = HttpClient();
+    client.getUrl(Uri.parse("https://connect.squareup.com/v2/catalog/list?types=CATEGORY")).then((request) {
+      request.headers.contentType = ContentType.json;
+      request.headers.add("Authorization", "Bearer EAAAEOjIOtjeZhu3M35n3uhYp4iQCBfOxfseiRthdNaFzS9o4P99IW48fP6uTEcZ");
+      request.headers.add("Accept",  "application/json");
+      return request.close();
+    }).then((response) {
+      print("Result");
+
+      streamResult = response.transform(utf8.decoder);
+
+
+    });
+
+    print("End");
+
   }
 
 }

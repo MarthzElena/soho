@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePageWidget> {
 
     // TODO: Replace this with  an image from the cloud (since it will be changing)
     var backgroundImage = AssetImage('assets/home/tmp_background_home.png');
-    Widget drawer = LoggedInUserMenuWidget();
+    Widget drawer = Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget();
 
     return ScopedModel<HomePageState>(
       model: homePageState,
@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePageWidget> {
                               ),
                               child: GestureDetector(
                                 onTap: () {
-                                  var categoryObject = jsonEncode(category);
+                                  var categoryObject = jsonEncode(category.toJson());
                                   var route = "CategoryDetail/$categoryObject";
                                   Navigator.pushNamed(context, route);
                                 },
