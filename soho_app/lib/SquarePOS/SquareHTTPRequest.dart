@@ -86,7 +86,7 @@ class SquareHTTPRequest {
   /// Return a list of CategoryItemObjects to populate the category detail view
   ///
   ///
-  static Future<CategoryItemObject> getCategoryDetail(String categoryId) async {
+  static Future<CategoryItemObject> getCategoryDetail(String categoryId, String categoryName) async {
     // Init empty list for result
     CategoryItemObject categoryDetails = CategoryItemObject();
     var categorySearchArrayResult = await getItemsForCategory(categoryId);
@@ -96,16 +96,13 @@ class SquareHTTPRequest {
       //  Get item_data
       var itemData = categoryItem["item_data"];
       var productName = itemData["name"].toString();
-      // Create ProductItemObject
-      var productItemObject = ProductItemObject(productName, productId);
       // TODO: Add AVAILABLE inventory check!
       // Ignore "foto" items
       if (productName.compareTo("foto") != 0) {
-        // Attempt to get subcategory, if none is found item WON'T have subcategory
-        var descriptionDetailsObject = json.decode(itemData["description"]);
-        var productSubcategory = descriptionDetailsObject["subcategoria"] == null ? "" : descriptionDetailsObject["subcategoria"].toString();
+        // Create ProductItemObject
+        var productItemObject = ProductItemObject(nameAndSubCategory: productName, itemID: productId, categoryName: categoryName);
         // Add missing details to ProductItemObject
-        productItemObject.description = descriptionDetailsObject["descripcion"] == null ? "" : descriptionDetailsObject["descripcion"];
+        productItemObject.description = itemData["description"];
         productItemObject.imageUrl = itemData["image_url"] == null ? "" : itemData["image_url"].toString();
         // Get variations
         var variationsArray = itemData["variations"];
@@ -138,7 +135,7 @@ class SquareHTTPRequest {
           }
         }
         // Add product to categoryDetails
-        await categoryDetails.addProductItem(productItemObject, productSubcategory);
+        await categoryDetails.addProductItem(productItemObject);
       }
 
     }

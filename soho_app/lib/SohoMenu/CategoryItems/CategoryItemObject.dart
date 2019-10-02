@@ -6,10 +6,10 @@ class CategoryItemObject {
   /// All available products and subcategories
   List<SubcategoryItems> allItems = List<SubcategoryItems>();
 
-  Future<void> addProductItem(ProductItemObject product, String subcategory) async {
+  Future<void> addProductItem(ProductItemObject product) async {
     var elementAdded = false;
     for (var element in allItems) {
-      if (element.subcategoryName.compareTo(subcategory) == 0) {
+      if (element.subcategoryName.compareTo(product.subcategory) == 0) {
         // Add element
         element.items.add(product);
         elementAdded = true;
@@ -20,7 +20,7 @@ class CategoryItemObject {
     if (!elementAdded) {
       // Subcategory is new
       SubcategoryItems newSubcategory = SubcategoryItems();
-      newSubcategory.subcategoryName = subcategory;
+      newSubcategory.subcategoryName = product.subcategory;
       newSubcategory.items.add(product);
       allItems.add(newSubcategory);
     }
