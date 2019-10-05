@@ -96,11 +96,11 @@ class SquareHTTPRequest {
       //  Get item_data
       var itemData = categoryItem["item_data"];
       var productName = itemData["name"].toString();
-      // TODO: Add AVAILABLE inventory check!
+
       // Ignore "foto" items
       if (productName.compareTo("foto") != 0) {
         // Create ProductItemObject
-        var productItemObject = ProductItemObject(nameAndSubCategory: productName, itemID: productId, categoryName: categoryName);
+        var productItemObject = ProductItemObject(nameAndSubCategory: productName, categoryName: categoryName);
         // Add missing details to ProductItemObject
         productItemObject.description = itemData["description"];
         productItemObject.imageUrl = itemData["image_url"] == null ? "" : itemData["image_url"].toString();
@@ -108,10 +108,12 @@ class SquareHTTPRequest {
         var variationsArray = itemData["variations"];
         for (var variationItem in variationsArray) {
           var variationId = variationItem["id"];
-          // Check if variation is Regular
+          // Check if variation is REGULAR
           var variationData = variationItem["item_variation_data"];
           var variationNameArray = variationData["name"].toString().split("-");
           if (variationNameArray.length == 1) {
+            // Add PRODUCT ID
+            productItemObject.squareID = variationId;
             // Add regular price to ProductItemObject
             var priceMoney = variationData["price_money"];
             var priceValue = priceMoney["amount"];
@@ -130,17 +132,26 @@ class SquareHTTPRequest {
             priceValue = priceValue/100;
             // Create VariationItemObject
             var variationItem = VariationItemObject(variationName, variationId, priceValue);
-            // Add variation to product
-            await productItemObject.addProductVariation(variationItem, variationType);
+            // Only add variation to product if Inventory is available
+            var isVariationAvailable = await _isItemAvailable(itemId: variationId);
+            if (isVariationAvailable) {
+              await productItemObject.addProductVariation(variationItem, variationType);
+            }
           }
         }
         // Add product to categoryDetails
-        await categoryDetails.addProductItem(productItemObject);
+        bool isAvailable = await _isItemAvailable(itemId: productItemObject.squareID);
+        if (isAvailable) {
+          await categoryDetails.addProductItem(productItemObject);
+        }
       }
 
     }
 
-    return categoryDetails;
+    // Make sure items have correct order before returning
+    var orderedCategoryDetails = await _orderCategoryItems(categoryDetails);
+
+    return orderedCategoryDetails;
   }
 
   /// Request to get all the items in a specific category
@@ -152,6 +163,46 @@ class SquareHTTPRequest {
     var jsonCategorySearch = json.decode(utf8.decode(request.bodyBytes));
     var objects = jsonCategorySearch["objects"];
     return objects == null ? List() : List.from(objects);
+  }
+
+  /// Request item inventory count
+  /// Returns TRUE if count is greater than 0.
+  static Future<bool> _isItemAvailable({String itemId}) async {
+    var itemInventoryHost = _squareHost + _inventory + itemId;
+    var request = await http.get(itemInventoryHost, headers: _requestHeader);
+    var jsonInventoryResult = json.decode(utf8.decode(request.bodyBytes));
+    var countObject = jsonInventoryResult["counts"];
+    if (countObject != null) {
+      var countList = List.from(countObject);
+      if (countList.length > 0) {
+        Map<String, dynamic> countItem = countList[0];
+        String availability = countItem["state"]; // TODO: Check that state check is not needed
+        int quantity = countItem["quantity"];
+        if (quantity > 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /// Makes sure the elements without subCategory are first
+  static Future<CategoryItemObject> _orderCategoryItems(CategoryItemObject item) async {
+    if (item.allItems.first.subcategoryName.isEmpty) {
+      // Elements already ordered
+      return item;
+    } else {
+      var copy = item;
+      for (var current in item.allItems) {
+        if (current.subcategoryName.isEmpty) {
+          copy.allItems.remove(current);
+          copy.allItems.insert(0, current);
+          return copy;
+        }
+      }
+      // All items have subcategories
+      return item;
+    }
   }
 
   /// Builds a String with the body for the getItemsForCategory(categoryID) request

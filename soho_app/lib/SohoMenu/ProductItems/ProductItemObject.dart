@@ -36,8 +36,7 @@ class ProductItemObject {
   /// Available variations by subcategory
   List<VariationTypeObject> productVariations = List<VariationTypeObject>();
 
-  ProductItemObject({String nameAndSubCategory, String itemID, String categoryName}) {
-    this.squareID = itemID;
+  ProductItemObject({String nameAndSubCategory, String categoryName}) {
     this.category = categoryName;
 
     // Set product name and subcategory
