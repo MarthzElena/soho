@@ -91,12 +91,9 @@ class SquareHTTPRequest {
     CategoryItemObject categoryDetails = CategoryItemObject();
     var categorySearchArrayResult = await getItemsForCategory(categoryId);
     for (var categoryItem in categorySearchArrayResult) {
-      // ProductItemObject ID
-      var productId = categoryItem["id"].toString();
       //  Get item_data
       var itemData = categoryItem["item_data"];
       var productName = itemData["name"].toString();
-
       // Ignore "foto" items
       if (productName.compareTo("foto") != 0) {
         // Create ProductItemObject
@@ -175,9 +172,9 @@ class SquareHTTPRequest {
     if (countObject != null) {
       var countList = List.from(countObject);
       if (countList.length > 0) {
-        Map<String, dynamic> countItem = countList[0];
-        String availability = countItem["state"]; // TODO: Check that state check is not needed
-        int quantity = countItem["quantity"];
+        var countItem = countList[0];
+        var availability = countItem["state"]; // TODO: Check that state check is not needed
+        var quantity = int.tryParse(countItem["quantity"]) ?? 0;
         if (quantity > 0) {
           return true;
         }
