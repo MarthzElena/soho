@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'dart:convert';
@@ -71,7 +72,7 @@ class _CategoryItemsState extends State<CategoryItemsWidget> {
                               return Container(
                                 height: _elementsListViewHeight(context),
                                 child: ListView(
-                                  children: _getProductWidgetList(_getData(snapshot)),
+                                  children: _getproductWidgetGrid(_getData(snapshot)),
                                 ),
                               );
                             } else {
@@ -145,8 +146,8 @@ class _CategoryItemsState extends State<CategoryItemsWidget> {
 
   double _elementsListViewHeight(BuildContext context) {
     RenderBox headerBox = _headerKey.currentContext.findRenderObject();
-    // TODO: fix hardcoded number 24
-    return MediaQuery.of(context).size.height - headerBox.size.height - Constants.APP_BAR_HEIGHT - 24;
+    // TODO: Make it fill all the view
+    return MediaQuery.of(context).size.height - headerBox.size.height - Constants.APP_BAR_HEIGHT - 30;
   }
 
   List<SubcategoryItems> _getData(AsyncSnapshot snapshot) {
@@ -157,25 +158,142 @@ class _CategoryItemsState extends State<CategoryItemsWidget> {
     return List<SubcategoryItems>();
   }
 
+  List<Widget> _getproductWidgetGrid(List<SubcategoryItems> items) {
+    List<Widget> result = List<Widget>();
+    for (var item in items) {
+      var categoryText = "- ${item.subcategoryName}";
+      var subcategoryTitle = Padding(
+        padding: const EdgeInsets.only(left: 14.0, top: 40.0, bottom: 16.0),
+        child: Text(
+          categoryText,
+          style: TextStyle(
+              fontSize: 14.0,
+              color: Color.fromARGB(255, 120, 144, 144)
+          ),
+        ),
+      );
+      result.add(subcategoryTitle);
+
+      var productCarousel = CarouselSlider(
+        viewportFraction: 0.5,
+        height: 378.0,
+        enableInfiniteScroll: false,
+        items: item.items.map((product) {
+          return Builder(
+            builder: (BuildContext context) {
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.symmetric(horizontal: 20.0),
+                constraints: BoxConstraints.expand(),
+                alignment: Alignment(-1.0, 0.0),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      width: 220,
+                      height: 268,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.all(Radius.circular(8.0))
+                      ),
+                      // TODO: Add child with item image
+                    ),
+                    Text(
+                      product.name,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    Text(
+                      product.description,
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 90, 98, 101),
+                          fontSize: 12.0
+                      ),
+                    ),
+                    Text(
+                      "\$${product.price}",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500
+                      ),
+                    )
+                  ],
+                )
+              );
+            }
+          );
+        }).toList(),
+      );
+      result.add(productCarousel);
+    }
+
+    return result;
+  }
+
   List<Widget> _getProductWidgetList(List<SubcategoryItems> items) {
     List<Widget> result = List<Widget>();
     for (var item in items) {
-      var subcategoryTitle = Text(
-        item.subcategoryName,
-        style: TextStyle(
-          fontSize: 14.0,
-          color: Color.fromARGB(255, 120, 144, 144)
+      var categoryText = "- ${item.subcategoryName}";
+      var subcategoryTitle = Padding(
+        padding: const EdgeInsets.only(left: 14.0, top: 40.0),
+        child: Text(
+          categoryText,
+          style: TextStyle(
+              fontSize: 14.0,
+              color: Color.fromARGB(255, 120, 144, 144)
+          ),
         ),
       );
       result.add(subcategoryTitle);
 
       for (var product in item.items) {
-        var productWidget = Text(
-          product.name,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16.0,
-            color: Colors.black
+        var productWidget = Padding(
+          padding: const EdgeInsets.only(top: 32.0, left: 16.0, right: 16.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    product.name,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  Text(
+                    product.description,
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 90, 98, 101),
+                      fontSize: 12.0
+                    ),
+                  ),
+                  Text(
+                    "\$${product.price}",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500
+                    ),
+                  )
+                ],
+              ),
+              Container(
+                height: 95,
+                width: 95,
+                decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.all(Radius.circular(8.0))
+                ),
+                // TODO: Add child with item image
+              )
+            ],
           ),
         );
         result.add(productWidget);

@@ -40,60 +40,18 @@ class _HomePageState extends State<HomePageWidget> {
       model: homePageState,
       child: ScopedModelDescendant<HomePageState>(builder: (builder, child, model) {
         // Previously load the categories
-        // Check for empty categories is still needed
-        if (Application.sohoCategories.isNotEmpty) {
-          return SafeArea(
-            child: Scaffold(
-              drawer: drawer,
-              appBar: HomePageAppBar(),
-              body: Container(
-                color: Colors.white,
-                child: _createCategoriesList(backgroundImage, Application.sohoCategories),
-              ),
+        return SafeArea(
+          child: Scaffold(
+            drawer: drawer,
+            appBar: HomePageAppBar(),
+            body: Container(
+              color: Colors.white,
+              child: _createCategoriesList(backgroundImage, Application.sohoCategories),
             ),
-          );
-        } else {
-          return SafeArea(
-            child: Scaffold(
-              drawer: drawer,
-              appBar: HomePageAppBar(),
-              body: Container(
-                color: Colors.white,
-                child: new FutureBuilder(
-                    future: SquareHTTPRequest.getSquareCategories(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.hasData && snapshot.data != null) {
-                        return _createCategoriesList(backgroundImage, _getData(snapshot));
-                      } else {
-                        return Container(
-                          // TODO: Fix this with a spinner!!
-                          constraints: BoxConstraints.expand(),
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'LOADING...!!',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w500
-
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-                    }
-                ),
-              ),
-            ),
-          );
-        }
+          ),
+        );
       }),
     );
-  }
-
-  List<CategoryObject> _getData(AsyncSnapshot snapshot) {
-    return List.from(snapshot.data);
   }
 
   Widget _createCategoriesList(AssetImage backgroundImage, List<CategoryObject> list) {
@@ -166,6 +124,7 @@ class _HomePageState extends State<HomePageWidget> {
             child: CarouselSlider(
               viewportFraction: 0.5,
               height: 245.0,
+              enableInfiniteScroll: false,
               items: list.map((category) {
                 return Builder(
                   builder: (BuildContext context) {

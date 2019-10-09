@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:soho_app/Utils/Constants.dart';
 
 class CategoryItemsAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -68,6 +69,7 @@ class _CategoryItemsAppBarState extends State<CategoryItemsAppBar> {
   }
 
   void _swapListDistribution() {
-    print(listDistribution.image.toString());
+
+
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemObject.dart';
 import 'dart:convert';
@@ -39,9 +38,14 @@ class SquareHTTPRequest {
     var categoriesResponse = await http.get(categoriesHost, headers: _requestHeader).catchError((error) {
       var socketError = error as SocketException;
       if (socketError != null) {
-        // TODO: Show no internet connection error
+        print("Categories request ERROR");
+        print(socketError);
       }
     });
+    // Return empty array if response fails
+    if (categoriesResponse == null) {
+      return List();
+    }
     var jsonCategories = json.decode(utf8.decode(categoriesResponse.bodyBytes));
     var categoryObjects = List.from(jsonCategories["objects"]);
     // Loop categories to get each category info

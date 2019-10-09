@@ -42,38 +42,19 @@ class _SplashWidgetState extends State<SplashWidget>  with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) {
-
-//    test();
     // Give some time to the splash to show
-    Timer(Duration(milliseconds: 50), () {
+    Timer.periodic(Duration(milliseconds: 500), (timer) {
       // Get the categories for HomePage
       SquareHTTPRequest.getSquareCategories().then((categories) {
-        Application.sohoCategories = categories;
-        Navigator.pushNamed(context, Routes.homePage);
+
+        if (categories.isNotEmpty) {
+          timer.cancel();
+          Application.sohoCategories = categories;
+          Navigator.pushNamed(context, Routes.homePage);
+        }
+
       });
     });
-
-  }
-
-  Future test() async {
-    Stream<String> streamResult;
-
-    print("start");
-    HttpClient client = HttpClient();
-    client.getUrl(Uri.parse("https://connect.squareup.com/v2/catalog/list?types=CATEGORY")).then((request) {
-      request.headers.contentType = ContentType.json;
-      request.headers.add("Authorization", "Bearer EAAAEOjIOtjeZhu3M35n3uhYp4iQCBfOxfseiRthdNaFzS9o4P99IW48fP6uTEcZ");
-      request.headers.add("Accept",  "application/json");
-      return request.close();
-    }).then((response) {
-      print("Result");
-
-      streamResult = response.transform(utf8.decoder);
-
-
-    });
-
-    print("End");
 
   }
 
