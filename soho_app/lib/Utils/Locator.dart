@@ -5,6 +5,7 @@ import 'package:soho_app/Auth/RegisterStateController.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsStateController.dart';
 
 GetIt locator = GetIt();
+CategoryItemsState _categoryItemsState = CategoryItemsState();
 
 void setUpLocator() {
   // Login State
@@ -14,6 +15,6 @@ void setUpLocator() {
   // Home Page State
   locator.registerFactory<HomePageState>(() => HomePageState());
   // Category Detail State
-  locator.registerFactory<CategoryItemsState>(() => CategoryItemsState());
+  locator.registerFactory<CategoryItemsState>(() => _categoryItemsState);
 
 }
