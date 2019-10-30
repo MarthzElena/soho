@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
@@ -65,29 +66,33 @@ class ProductItemObject {
     // Check if element was added
     if (!elementAdded) {
       // Variation type is new
-      VariationTypeObject newVariation = VariationTypeObject();
-      newVariation.variationTypeName = variationType;
+      VariationTypeObject newVariation = VariationTypeObject(variationType);
       newVariation.variations.add(variation);
       productVariations.add(newVariation);
     }
   }
 
-  ProductItemObject.fromJson(Map<String, dynamic> json)
-  : name = json[keyName],
-  category = json[keyCategory],
-  subcategory = json[keySubcategory],
-  squareID = json[keySquareId],
-  description = json[keyDescription],
-  price = json[keyPrice];
+  ProductItemObject.fromJson(Map<String, dynamic> json) {
+    name = json[keyName];
+    category = json[keyCategory];
+    subcategory = json[keySubcategory];
+    imageUrl = json[keyImageUrl];
+    squareID = json[keySquareId];
+    description = json[keyDescription];
+    price = json[keyPrice];
+    productVariations = json[keyVariations];
+  }
 
   Map<String, dynamic> toJson() =>
       {
         keyName : name,
         keyCategory : category,
         keySubcategory : subcategory,
+        keyImageUrl : imageUrl,
         keySquareId : squareID,
         keyDescription : description,
-        keyPrice : price
+        keyPrice : price,
+        keyVariations : productVariations
       };
 
 }

@@ -25,16 +25,26 @@ class _SplashWidgetState extends State<SplashWidget>  with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
+
+
     
     return Scaffold(
       body: Container(
         constraints: BoxConstraints.expand(),
         alignment: Alignment.center,
         color: Colors.white,
-        child: Container(
-          child: Image(
-              image: AssetImage('assets/splash/soho_splash.png')
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Image(
+                image: AssetImage('assets/splash/soho_logo.png')
+            ),
+            Image(
+                image: AssetImage('assets/splash/green_scratch.png')
+            )
+          ],
         ),
       ),
     );

@@ -98,12 +98,12 @@ class SquareHTTPRequest {
       //  Get item_data
       var itemData = categoryItem["item_data"];
       var productName = itemData["name"].toString();
+      // Create ProductItemObject
+      var productItemObject = ProductItemObject(nameAndSubCategory: productName, categoryName: categoryName);
       // Ignore "foto" items
       if (productName.compareTo("foto") != 0) {
-        // Create ProductItemObject
-        var productItemObject = ProductItemObject(nameAndSubCategory: productName, categoryName: categoryName);
         // Add missing details to ProductItemObject
-        productItemObject.description = itemData["description"];
+        productItemObject.description = itemData["description"] == null ? "" : itemData["description"];
         productItemObject.imageUrl = itemData["image_url"] == null ? "" : itemData["image_url"].toString();
         // Get variations
         var variationsArray = itemData["variations"];

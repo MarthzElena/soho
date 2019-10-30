@@ -6,7 +6,7 @@ import 'package:soho_app/Auth/LoginWidget.dart';
 import 'package:soho_app/HomePage/HomePageWidget.dart';
 import 'package:soho_app/Auth/RegisterWidget.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsWidget.dart';
-import 'package:soho_app/Utils/Constants.dart';
+import 'package:soho_app/SohoMenu/ProductItems/ProductItemWidget.dart';
 
 class Routes {
 
@@ -15,7 +15,6 @@ class Routes {
   static String homePage = "HomePage";
   static String register = "Register";
   static String categoryDetail = "CategoryDetail/:category";
-  static String categoryDetailRoute = "CategoryDetail/";
 
   static Handler _categoryDetailHandler = Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) => CategoryItemsWidget(categoryObjectString: params['category'][0]));
 
@@ -25,9 +24,9 @@ class Routes {
     router.define(
       root,
       handler: Handler(
-          handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-            return SohoApp();
-          }),
+        handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+          return SohoApp();
+        }),
       transitionType: TransitionType.native
     );
 
@@ -35,9 +34,9 @@ class Routes {
     router.define(
       login,
       handler: Handler(
-          handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-            return LoginWidget();
-          }),
+        handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+          return LoginWidget();
+        }),
       transitionType: TransitionType.native
     );
 
@@ -55,16 +54,16 @@ class Routes {
     router.define(
       homePage,
       handler: Handler(
-          handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-            return HomePageWidget();
-          }),
+        handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+          return HomePageWidget();
+        }),
       transitionType: TransitionType.fadeIn
     );
     
     // Category Detail
     router.define(
-        categoryDetail,
-        handler: _categoryDetailHandler,
+      categoryDetail,
+      handler: _categoryDetailHandler,
       transitionType: TransitionType.inFromRight
     );
 

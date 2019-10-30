@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemObject.dart';
+import 'package:soho_app/SohoMenu/ProductItems/ProductItemWidget.dart';
 
 class CategoryItemsState extends Model {
 
@@ -10,6 +13,7 @@ class CategoryItemsState extends Model {
   Image listDistribution = Image.asset('assets/category_detail/grid_view.png');
   List<SubcategoryItems> _categoryItems = List<SubcategoryItems>();
   List<Widget> widgetsList = List<Widget>();
+  BuildContext context;
 
   void changeItemsDistribution() {
     if (isDistributionList) {
@@ -58,47 +62,52 @@ class CategoryItemsState extends Model {
         items: item.items.map((product) {
           return Builder(
               builder: (BuildContext context) {
-                return Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: EdgeInsets.symmetric(horizontal: 20.0),
-                    constraints: BoxConstraints.expand(),
-                    alignment: Alignment(-1.0, 0.0),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          width: 220,
-                          height: 268,
-                          decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.all(Radius.circular(8.0))
+                return InkWell(
+                  onTap: () {
+                    _onCategoryItemTapped(product);
+                  },
+                  child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: EdgeInsets.symmetric(horizontal: 20.0),
+                      constraints: BoxConstraints.expand(),
+                      alignment: Alignment(-1.0, 0.0),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            width: 220,
+                            height: 268,
+                            decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.all(Radius.circular(8.0))
+                            ),
+                            // TODO: Add child with item image
                           ),
-                          // TODO: Add child with item image
-                        ),
-                        Text(
-                          product.name,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold
+                          Text(
+                            product.name,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold
+                            ),
                           ),
-                        ),
-                        Text(
-                          product.description,
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 90, 98, 101),
-                              fontSize: 12.0
+                          Text(
+                            product.description,
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 90, 98, 101),
+                                fontSize: 12.0
+                            ),
                           ),
-                        ),
-                        Text(
-                          "\$${product.price}",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w500
-                          ),
-                        )
-                      ],
-                    )
+                          Text(
+                            "\$${product.price}",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w500
+                            ),
+                          )
+                        ],
+                      )
+                  ),
                 );
               }
           );
@@ -188,6 +197,13 @@ class CategoryItemsState extends Model {
 
   void _onCategoryItemTapped(ProductItemObject product) {
 
+    if (context != null) {
+      Navigator.push(
+          context,
+          new MaterialPageRoute(builder: (BuildContext context) => new ProductItemWidget(currentProduct: product))
+      );
+    }
   }
 
 }
+

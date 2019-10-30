@@ -28,7 +28,6 @@ class _CategoryItemsAppBarState extends State<CategoryItemsAppBar> {
   @override
   Widget build(BuildContext context) {
 
-    print("APP BAR COUNT: ${appBarModel.widgetsList.length}");
     return ScopedModel<CategoryItemsState>(
         model: appBarModel,
         child: ScopedModelDescendant<CategoryItemsState>(builder: (builder, child, model) {

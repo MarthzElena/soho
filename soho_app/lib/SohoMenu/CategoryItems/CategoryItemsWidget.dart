@@ -22,26 +22,22 @@ class CategoryItemsWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
 
-    return _CategoryItemsState(categoryObject: this.categoryObjectString);
+    return _CategoryItemsState();
   }
 
 }
 
 class _CategoryItemsState extends State<CategoryItemsWidget> {
   CategoryItemsState categoryItemsState = locator<CategoryItemsState>();
-  final String categoryObject;
   GlobalKey _headerKey = GlobalKey(debugLabel: "headerKey");
   final appBar = CategoryItemsAppBar();
-
-  _CategoryItemsState({
-    @required this.categoryObject
-  });
 
   @override
   Widget build(BuildContext context) {
 
-    CategoryObject category = CategoryObject.fromJson(json.decode(categoryObject));
+    CategoryObject category = CategoryObject.fromJson(json.decode(widget.categoryObjectString));
     var header = _getHeader(category);
+    categoryItemsState.context = context;
 
     return ScopedModel<CategoryItemsState>(
       model: categoryItemsState,

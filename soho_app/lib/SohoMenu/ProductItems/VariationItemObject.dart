@@ -1,13 +1,26 @@
 import 'dart:core';
-import 'package:flutter/material.dart';
 
 class VariationTypeObject {
+  static String keyTypeName = "typeName";
+  static String keyVariations = "variations";
 
   /// String for subcategory name
   String variationTypeName = "";
 
   /// Available product variations on Square
   List<VariationItemObject> variations = List<VariationItemObject>();
+
+  VariationTypeObject(this.variationTypeName);
+
+  VariationTypeObject.fromJson(Map<String, dynamic> json)
+  : variationTypeName = json[keyTypeName],
+  variations = json[keyVariations];
+
+  Map<String, dynamic> toJson() =>
+      {
+        keyTypeName : variationTypeName,
+        keyVariations : variations
+      };
 }
 
 class VariationItemObject {
