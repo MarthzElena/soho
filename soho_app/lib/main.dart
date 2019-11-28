@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
+import 'package:soho_app/Payments/card_information.dart';
+import 'package:soho_app/Payments/stripe_token.dart';
 
 import 'package:soho_app/SohoApp.dart';
 import 'package:soho_app/Utils/Locator.dart';
@@ -14,7 +16,7 @@ void main() {
   setUpLocator();
   
   runApp(MaterialApp(
-    home: SohoApp(),
+    home: CardInformationScreen(),
     theme: ThemeData(fontFamily: 'InterUI'),
     debugShowCheckedModeBanner: false,
     onGenerateRoute: _router.generator,
