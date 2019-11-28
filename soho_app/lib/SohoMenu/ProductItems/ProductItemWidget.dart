@@ -51,6 +51,8 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
   void initState(){
     super.initState();
 
+    // Set base price
+    productItemModel.selectedItemPrice = widget.currentProduct.price;
     // Init the variations
     productItemModel.initAvailableVariations(widget.currentProduct.productVariations);
   }
@@ -81,7 +83,30 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
         list.add(elementRow);
       }
     }
-    
+
+    // TODO: Fix this with proper button for adding to cart
+    // TODO: Only enable button if required variations are selected!!
+    Widget addToCart = FlatButton(
+        onPressed: () {
+          
+        },
+        child: Container(
+          color: Color.fromARGB(255, 229, 31, 79),
+          constraints: BoxConstraints.expand(
+              height: 50.0,
+              width: 343.0
+          ),
+          child: Text(
+            productItemModel.selectedItemPrice.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+        )
+    );
+    list.add(addToCart);
+
     // Add footer
     Widget footer = Image(image: AssetImage('assets/category_detail/footer.png'));
     list.add(footer);
@@ -89,6 +114,9 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
   }
 
   Widget getOptionalVariations(bool value, String variationType, VariationItemObject variationElement) {
+    // Update variation type in model
+    productItemModel.updateVariationType(isRequired: false);
+
     var widget = Row(
       children: <Widget>[
         Checkbox(
@@ -110,6 +138,9 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
   }
 
   Widget getRequiredVariations(VariationItemObject selectedVariation, String fromType) {
+    // Update variation type in model
+    productItemModel.updateVariationType(isRequired: true);
+
     var widget = Row(
       children: <Widget>[
         Radio(
