@@ -47,42 +47,37 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
         }));
   }
 
+  @override
+  void initState(){
+    super.initState();
+
+    // Init the variations
+    productItemModel.initAvailableVariations(widget.currentProduct.productVariations);
+  }
+
   List<Widget> _getOptionsList(ProductItemObject product) {
     List<Widget> list = List<Widget>();
 
     // Add default options
     list.addAll(_getDefaultOptions(product));
 
-    // Get items for variations
-    for (var variation in product.productVariations) {
+    // Set variation values
+    for (var variationType in productItemModel.availableVariations.keys) {
       Widget variationName = Text(
-        variation.variationTypeName,
+        variationType,
         style: TextStyle(
-          color: Color.fromARGB(255, 120, 144, 144),
-          fontSize: 14.0
+            color: Color.fromARGB(255, 120, 144, 144),
+            fontSize: 14.0
         ),
       );
       list.add(variationName);
 
-      for (var element in variation.variations) {
-        Widget elementRow = Row(
-          children: <Widget>[
-            Radio(
-              value: element,
-              groupValue: element,
-              onChanged: (VariationItemObject selectedVariation) {
-                productItemModel.addVariation(selectedVariation, variation.variationTypeName);
-              }
-            ),
-            Text(
-              element.name,
-              style: TextStyle(
-                color: Color.fromARGB(255, 0, 42, 58),
-                fontSize: 16.0
-              ),
-            )
-          ],
-        );
+      Map<VariationItemObject, bool> current = productItemModel.availableVariations[variationType];
+      for (var variationElement in current.keys) {
+        var value = current[variationElement];
+        // TODO: Select Radio or Checkbox depending on variation type
+//        Widget elementRow = getOptionalVariations(value, variationType, variationElement);
+        Widget elementRow = getRequiredVariations(variationElement, variationType);
         list.add(elementRow);
       }
     }
@@ -91,6 +86,49 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
     Widget footer = Image(image: AssetImage('assets/category_detail/footer.png'));
     list.add(footer);
     return list;
+  }
+
+  Widget getOptionalVariations(bool value, String variationType, VariationItemObject variationElement) {
+    var widget = Row(
+      children: <Widget>[
+        Checkbox(
+            value: value,
+            onChanged: (bool value) {
+              productItemModel.updateCheckboxValue(variationType, variationElement, value);
+            }
+        ),
+        Text(
+          variationElement.name,
+          style: TextStyle(
+              color: Color.fromARGB(255, 0, 42, 58),
+              fontSize: 16.0
+          ),
+        )
+      ],
+    );
+    return widget;
+  }
+
+  Widget getRequiredVariations(VariationItemObject selectedVariation, String fromType) {
+    var widget = Row(
+      children: <Widget>[
+        Radio(
+            value: selectedVariation,
+            groupValue: productItemModel.getSelectedVariation(fromType),
+            onChanged: (VariationItemObject selectedItem) {
+              productItemModel.addVariation(selectedVariation, fromType);
+            }
+          ),
+        Text(
+          selectedVariation.name,
+          style: TextStyle(
+            color: Color.fromARGB(255, 0, 42, 58),
+            fontSize: 16.0
+          )
+        )
+      ],
+    );
+    return widget;
   }
 
   List<Widget> _getDefaultOptions(ProductItemObject product) {

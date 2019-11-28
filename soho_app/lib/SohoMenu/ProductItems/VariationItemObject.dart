@@ -1,6 +1,7 @@
 import 'dart:core';
 
 class VariationTypeObject {
+  static String keyIsRequired = "isRequired";
   static String keyTypeName = "typeName";
   static String keyVariations = "variations";
 
@@ -14,7 +15,7 @@ class VariationTypeObject {
 
   VariationTypeObject.fromJson(Map<String, dynamic> json)
   : variationTypeName = json[keyTypeName],
-  variations = json[keyVariations];
+        variations = json[keyVariations];
 
   Map<String, dynamic> toJson() =>
       {
