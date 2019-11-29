@@ -5,7 +5,7 @@ import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 class ProductItemState extends Model {
 
   Map<String, Map<VariationItemObject, bool>> availableVariations = {};
-  List<VariationKeyValueModel> selectedVariations = List<VariationKeyValueModel>();
+  Map<String, List<VariationItemObject>> selectedVariations = {};
   double selectedItemPrice = 0.0;
   bool variationRequired = false;
 
@@ -36,20 +36,16 @@ class ProductItemState extends Model {
   }
 
   void removeVariation(VariationItemObject item, String fromType) {
-    // Get new element
-    VariationKeyValueModel newValue = VariationKeyValueModel(type: fromType, value: item);
 
-    // Search for repeated variation
-    for (var item in selectedVariations) {
-      if (item.value.name == newValue.value.name) {
-        newValue = item;
-        break;
-      }
+    // Make sure variation has values
+    if (selectedVariations[fromType] == null) {
+      // Item for variation type doesn't exist, do nothing
+      return;
     }
-
-    if (selectedVariations.remove(newValue)) {
+    // Remove item
+    if (selectedVariations[fromType].remove(item)) {
       // Update price
-      selectedItemPrice -= newValue.value.price;
+      selectedItemPrice -= item.price;
 
       notifyListeners();
     }
@@ -57,42 +53,33 @@ class ProductItemState extends Model {
   }
 
   void addVariation(VariationItemObject item, String fromType) {
-    // Add element to list
-    VariationKeyValueModel newValue = VariationKeyValueModel(type: fromType, value: item);
-
-    // Only remove repeated type if variation is required
-    if (variationRequired) {
-      // Get repeated type
-      VariationKeyValueModel repeatedType;
-      for (var element in selectedVariations) {
-        if (element.type == fromType && element.value.name != item.name) {
-          repeatedType = element;
-          break;
-        }
-      }
-      if (repeatedType != null) {
-        selectedVariations.remove(repeatedType);
-
-        // Update price
-        selectedItemPrice -= repeatedType.value.price;
-      }
+    // Check if variation type has already been added
+    if (selectedVariations[fromType] == null) {
+      selectedVariations[fromType] = List<VariationItemObject>();
     }
 
-    // Add new variation
-    selectedVariations.add(newValue);
+    // If variation is required && already selected, remove the current variation for the type value
+    if (variationRequired && selectedVariations[fromType].isNotEmpty) {
+      // First update the price
+      selectedItemPrice -= selectedVariations[fromType].first.price;
+      // Clear the list
+      selectedVariations[fromType].clear();
+    }
+    // Add the new item
+    selectedVariations[fromType].add(item);
     // Update the price
-    selectedItemPrice += newValue.value.price;
+    selectedItemPrice += item.price;
 
     notifyListeners();
+
   }
 
   VariationItemObject getSelectedVariation(String fromType) {
-    for (var variation in selectedVariations) {
-      if (variation.type == fromType) {
-        return variation.value;
-      }
+    if (selectedVariations[fromType] != null) {
+      return selectedVariations[fromType].first;
+    } else {
+      return null;
     }
-    return null;
   }
 
   void updateVariationType({bool isRequired}) {
@@ -100,11 +87,4 @@ class ProductItemState extends Model {
     notifyListeners();
   }
 
-}
-
-class VariationKeyValueModel {
-  String type;
-  VariationItemObject value;
-
-  VariationKeyValueModel({this.type, this.value});
 }

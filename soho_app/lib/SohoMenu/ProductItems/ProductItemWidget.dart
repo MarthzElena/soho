@@ -6,6 +6,9 @@ import 'package:soho_app/SohoMenu/ProductItems/ProductItemAppBar.dart';
 
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Locator.dart';
 
 import 'VariationItemObject.dart';
@@ -78,8 +81,8 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
       for (var variationElement in current.keys) {
         var value = current[variationElement];
         // TODO: Select Radio or Checkbox depending on variation type
-//        Widget elementRow = getOptionalVariations(value, variationType, variationElement);
-        Widget elementRow = getRequiredVariations(variationElement, variationType);
+        Widget elementRow = getOptionalVariations(value, variationType, variationElement);
+//        Widget elementRow = getRequiredVariations(variationElement, variationType);
         list.add(elementRow);
       }
     }
@@ -88,7 +91,18 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
     // TODO: Only enable button if required variations are selected!!
     Widget addToCart = FlatButton(
         onPressed: () {
-          
+          // Create a new item with specified settings
+          SohoOrderItem selectedItem = _getSelectedProduct(widget.currentProduct);
+          // Check if there's an ongoing order
+          if (Application.currentOrder == null) {
+            Application.currentOrder = SohoOrderObject();
+          }
+          // Save product to current order
+          Application.currentOrder.selectedProducts.add(selectedItem);
+
+          // Go back to CategoryItemsWidget
+          // TODO
+
         },
         child: Container(
           color: Color.fromARGB(255, 229, 31, 79),
@@ -208,6 +222,23 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
 
     return list;
 
+  }
+  
+  SohoOrderItem _getSelectedProduct(ProductItemObject fromProductItemObject) {
+    // Get id for category
+    String categoryId = "";
+    for (var category in Application.sohoCategories) {
+      if (category.name == fromProductItemObject.category) {
+        categoryId = category.squareID;
+        break;
+      }
+    }
+
+    // Create new item for order
+    SohoOrderItem newItem = SohoOrderItem(fromProductItemObject.name, categoryId, fromProductItemObject.squareID, fromProductItemObject.price);
+    newItem.addVariations(productItemModel.selectedVariations);
+
+    return newItem;
   }
 
 }
