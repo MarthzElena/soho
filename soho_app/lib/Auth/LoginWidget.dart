@@ -17,6 +17,7 @@ class LoginWidget extends StatefulWidget {
 
 class _LoginState extends State<LoginWidget> {
   LoginState loginState = locator<LoginState>();
+  String smsCode = "";
 
   @override
   Widget build(BuildContext context) {
@@ -26,120 +27,54 @@ class _LoginState extends State<LoginWidget> {
       child: ScopedModelDescendant<LoginState>(builder: (builder, child, model) {
         return Scaffold(
           body: SafeArea(
-            child: ListView(
-              padding: EdgeInsets.only(left: 20.0, top: 50.0, right: 20.0, bottom: 0.0),
+            child: Column(
               children: <Widget>[
-                Text('Soho - Iniciar Sesión'),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 40.0, right: 0.0, bottom: 0.0),
-                  child: Text('Email'),
+                FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('X')
                 ),
+                Text('Número de télefono'),
                 TextField(
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
-                      hintText: 'ejemplo@mail.com'
+                    border: OutlineInputBorder(borderSide: BorderSide(color: Color.fromARGB(255, 229,228,229), width: 1.0)),
+                    hintText: '(333) - (3333333)'
                   ),
                   onChanged: (value) {
-                    // TODO: Validate text
-                    model.emailInput = value;
+                    // TODO: Validate phone
+                    model.phoneInput = value;
                   },
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 23, right: 0.0, bottom: 0.0),
-                  child: Text('Contraseña'),
-                ),
+                Text('SMS code'),
                 TextField(
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26, width: 1.0)),
+                      border: OutlineInputBorder(borderSide: BorderSide(color: Color.fromARGB(255, 229,228,229), width: 1.0)),
+                      hintText: 'Type code sent by SMS'
                   ),
-                  obscureText: true,
                   onChanged: (value) {
-                    // TODO: Validate text
-                    model.passwordInput = value;
+                    // TODO: Validate phone
+                    smsCode = value;
                   },
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 0.0, top: 32.0, right: 0.0, bottom: 0.0),
-                    child: RaisedButton(
-                      onPressed: () => emailLoginPressed(context: context,  email: model.emailInput, password: model.passwordInput),
-                      child: Text(
-                        'Iniciar sesión',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ),
+                FlatButton(
+                    onPressed: () {
+                      _phoneLoginPressed(context, phoneNumber: model.phoneInput);
+                    },
+                    child: Text('Iniciar sesión con télefono')
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 0.0, top: 0.0, right: 0.0, bottom: 25.0),
-                    child: InkWell(
-                      onTap: resetPasswordPressed,
-                      child: Text(
-                        'Reestablecer contraseña',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ),
+                FlatButton(
+                    onPressed: () {
+                      _facebookLoginPressed(context);
+                    },
+                    child: Text('Iniciar sesión con Facebook!')
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    'O también puedes',
-                    textAlign: TextAlign.center,
-                    textWidthBasis: TextWidthBasis.parent,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 16.0, right: 0.0, bottom: 24.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: RaisedButton(
-                      onPressed: () => facebookLoginPressed(context),
-                      child: Text(
-                        'Iniciar sesión usando Facebook',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: RaisedButton(
-                    onPressed: () => googleLoginPressed(context),
-                    child: Text(
-                      'Iniciar sesión usando Google',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 0.0, top: 24.0, right: 0.0, bottom: 20.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        '¿No tienes una cuenta? ',
-                        textAlign: TextAlign.center,
-                        textWidthBasis: TextWidthBasis.parent,
-                      ),
-                      InkWell(
-                        onTap: () {Navigator.pushNamed(context, Routes.register);},
-                        child: Text(
-                          'Crear Cuenta',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                FlatButton(
+                    onPressed: () {
+                      _googleLoginPressed(context);
+                    },
+                    child: Text('Iniciar sesión con Google!')
+                )
               ],
             ),
           ),
@@ -148,7 +83,7 @@ class _LoginState extends State<LoginWidget> {
     );
   }
 
-  Future<void> facebookLoginPressed(BuildContext context) async {
+  Future<void> _facebookLoginPressed(BuildContext context) async {
 
     await AuthController().initiateFacebookLogin().then((facebookUser) {
       if (facebookUser != null) {
@@ -161,7 +96,7 @@ class _LoginState extends State<LoginWidget> {
     });
   }
 
-  Future<void> googleLoginPressed(BuildContext context) async {
+  Future<void> _googleLoginPressed(BuildContext context) async {
 
     await AuthController().initiateGoogleLogin().then((googleUser) {
       if (googleUser != null) {
@@ -175,34 +110,11 @@ class _LoginState extends State<LoginWidget> {
 
   }
 
-  Future<void> emailLoginPressed({BuildContext context, String email, String password}) async {
+  Future<void> _phoneLoginPressed(BuildContext context, {String phoneNumber, String code}) async {
 
-    await AuthController().initiateEmailLogin(userEmail: email, userPassword: password).then((emailUser) {
-      if (emailUser != null) {
-        // TODO: Do something with this user?
-        Navigator.pushNamed(context, Routes.homePage);
-      } else {
-        // TODO: Show some error
-        print("****** Email Login ERROR");
-      }
-    });
-
-  }
-
-  Future<void> resetPasswordPressed() async {
-    var email = loginState.emailInput;
-
-    // TODO: Need to define if we'll use same login view or specific ResetPW view
-    if (email.isNotEmpty) {
-      await AuthController().resetUserPassword(email).then((success) {
-        if (success) {
-          // TODO: Show success
-        } else {
-          // TODO: Handle error
-        }
-      });
+    if (phoneNumber.isNotEmpty) {
+      await AuthController().initiatePhoneLogin(phoneNumber, code);
     }
-
   }
 
 }
