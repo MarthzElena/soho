@@ -101,7 +101,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
           Application.currentOrder.selectedProducts.add(selectedItem);
 
           // Go back to CategoryItemsWidget
-          // TODO
+          Navigator.pop(context);
 
         },
         child: Container(
