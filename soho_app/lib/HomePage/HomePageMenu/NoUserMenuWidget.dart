@@ -67,7 +67,7 @@ class NoUserMenuWidget extends StatelessWidget {
                         width: 218,
                         child: FlatButton(
                           onPressed: () {
-//                            Navigator.pushNamed(context, Routes.login);
+                            Navigator.pushNamed(context, Routes.login);
                           },
                           child: Text(
                             'Iniciar sesión',
