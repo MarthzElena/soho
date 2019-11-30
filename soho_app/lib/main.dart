@@ -7,7 +7,6 @@ import 'package:soho_app/SohoApp.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
 
-
 void main() {
 
   // Initial config
@@ -16,7 +15,7 @@ void main() {
   setUpLocator();
   
   runApp(MaterialApp(
-    home: CardInformationScreen(),
+    home: SohoApp(),
     theme: ThemeData(fontFamily: 'InterUI'),
     debugShowCheckedModeBanner: false,
     onGenerateRoute: _router.generator,

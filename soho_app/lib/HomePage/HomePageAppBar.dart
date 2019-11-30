@@ -1,41 +1,34 @@
 import 'package:flutter/material.dart';
-
 import 'package:soho_app/Utils/Constants.dart';
 
-class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget{
-
+class HomePageAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        width: MediaQuery.of(context).size.width,
-        height: preferredSize.height,
+    return Container(
+      color: Colors.white,
+      height: preferredSize.height,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
+            Container(
+              width: 15.0,
               child: FlatButton(
                   onPressed: () {
                     Scaffold.of(context).openDrawer();
                   },
                   padding: EdgeInsets.all(0.0),
-                  child: Image.asset('assets/home/ic_menu.png')
-              ),
+                  child: Image.asset('assets/home/ic_menu.png')),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(1.0),
-                child: Image(
-                    image: AssetImage('assets/home/menu_logo.png')
-                ),
-              ),
-            ),
-            FlatButton(
-              onPressed: null,
-              padding: EdgeInsets.all(0.0),
-              child: Image.asset('assets/home/menu_search.png')
+            Image(image: AssetImage('assets/home/menu_logo.png')),
+            Container(
+              width: 16.0,
+              child: FlatButton(
+                  onPressed: null,
+                  padding: EdgeInsets.all(0.0),
+                  child: Image.asset('assets/home/menu_search.png')),
             )
           ],
         ),
