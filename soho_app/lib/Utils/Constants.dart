@@ -12,7 +12,9 @@ class Constants {
   static const KEY_FACEBOOK_PROVIDER = "KEY_FACEBOOK_PROVIDER";
   static const KEY_GOOGLE_PROVIDER = "KEY_GOOGLE_PROVIDER";
   static const KEY_EMAIL_PROVIDER = "KEY_EMAIL_PROVIDER";
+  static const KEY_PHONE_PROVIDER = "KEY_PHONE_PROVIDER";
   static const KEY_SAVED_EMAIL = "KEY_SAVED_EMAIL";
+  static const KEY_SAVED_PHONE_NUMBER = "KEY_SAVED_PHONE_NUMBER";
 
   /// Firebase Database keys
   static const DATABASE_KEY_USERS = "usuarios";

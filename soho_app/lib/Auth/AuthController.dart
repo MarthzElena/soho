@@ -6,6 +6,7 @@
 /// Created by: Martha Elena Loera
 ///
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,18 +16,16 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'AuthControllerUtilities.dart';
-
 class AuthController {
 
-  final storage = new FlutterSecureStorage();
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+  static final storage = new FlutterSecureStorage();
+  static final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  static final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
+  static final GoogleSignIn googleSignIn = GoogleSignIn();
   final FacebookLogin facebookLogin = FacebookLogin();
 
   // Returns a SohoAuthObject if there's a token saved
-  Future<FirebaseUser> getSavedAuthObject({String password = ""}) async{
+  static Future<FirebaseUser> getSavedAuthObject() async{
 
     // Get the user from the saved credentials
     // Read the token (if any)
@@ -36,6 +35,7 @@ class AuthController {
     bool providerValid = provider != null && provider.isNotEmpty;
     String savedEmail = await storage.read(key: Constants.KEY_SAVED_EMAIL);
     savedEmail = savedEmail == null ? "" : savedEmail;
+    String savedPhone = await storage.read(key: Constants.KEY_SAVED_PHONE_NUMBER);
 
     if (tokenValid && providerValid) {
 
@@ -53,25 +53,16 @@ class AuthController {
         case Constants.KEY_GOOGLE_PROVIDER:
           {
             // Google Login
-            var googleUser = await initiateGoogleLogin();
+            var googleUser = await _initiateGoogleLogin();
             if (googleUser != null) {
               return googleUser;
             }
           }
           break;
 
-        case Constants.KEY_EMAIL_PROVIDER:
+        case Constants.KEY_PHONE_PROVIDER:
           {
-            // Email Login
-            if (password.isNotEmpty && savedEmail.isNotEmpty) {
-              var emailUser = await initiateEmailLogin(userEmail: savedEmail, userPassword: password);
-              if (emailUser != null) {
-                return emailUser;
-              }
-            } else {
-              //TODO: handle error!!
-              return null;
-            }
+
           }
           break;
 
@@ -118,8 +109,10 @@ class AuthController {
   }
 
   Future<void> initiatePhoneLogin(String number, String code) async {
-    final PhoneVerificationCompleted verificationCompleted = (AuthCredential phoneAuthCredential) {
+    final PhoneVerificationCompleted verificationCompleted = (AuthCredential phoneAuthCredential) async {
       print("VERIFICATION COMPLETE");
+      // Save phone number for credentials
+      await storage.write(key: Constants.KEY_SAVED_PHONE_NUMBER, value: number);
     };
     final PhoneVerificationFailed verificationFailed = (AuthException authException) {
       print("VERIFICATION FAILED");
@@ -142,7 +135,7 @@ class AuthController {
     );
   }
 
-  Future<FirebaseUser> initiateEmailLogin({String userEmail, String userPassword}) async {
+  static Future<FirebaseUser> _initiateEmailLogin({String userEmail, String userPassword}) async {
     FirebaseUser emailUser = await firebaseAuth.signInWithEmailAndPassword(email: userEmail, password: userPassword).catchError((error) {
       // TODO: Handle error
       return null;
@@ -160,8 +153,15 @@ class AuthController {
       // Save user to Database
       var userID = emailUser.uid;
       // Only userID is valid since already a user
-      var user = AuthControllerUtilities.createUserDictionary("", "", userEmail, userID, "", "", "");
-      await saveUserToDatabase(user);
+      var user = SohoUserObject.createUserDictionary(
+          lastName: "",
+          firstName: "",
+          email: userEmail,
+          userId: userID,
+          birthDate: "",
+          gender: "",
+          phoneNumber: "");
+      await _saveUserToDatabase(user);
 
       // Return user
       return emailUser;
@@ -268,16 +268,16 @@ class AuthController {
         var birthDate = profile['user_birthday'] == null ? "" : profile['user_birthday'];
         var gender = profile['user_gender'] == null ? "" : profile['user_gender'];
 
-        var user = AuthControllerUtilities.createUserDictionary(
-            lastName,
-            firstName,
-            email,
-            userId,
-            birthDate,
-            gender,
-            ""
+        var user = SohoUserObject.createUserDictionary(
+          lastName: lastName,
+          firstName: firstName,
+          email: email,
+          userId: userId,
+          birthDate: birthDate,
+          gender: gender,
+          phoneNumber: ""
         );
-        await saveUserToDatabase(user);
+        await _saveUserToDatabase(user);
 
         return facebookUser;
 
@@ -293,7 +293,7 @@ class AuthController {
     await deleteAuthStoredValues();
   }
 
-  Future<FirebaseUser> initiateGoogleLogin() async {
+  static Future<FirebaseUser> _initiateGoogleLogin() async {
     final googleSignInAccount = await googleSignIn.signIn();
     final googleAuth = await googleSignInAccount.authentication;
 
@@ -306,16 +306,16 @@ class AuthController {
     });
 
     // Create user dictionary for Database
-    var user = AuthControllerUtilities.createUserDictionary(
-        "",
-        googleUser.displayName,
-        googleUser.email,
-        googleUser.uid,
-        "",
-        "",
-        googleUser.phoneNumber == null ? "" : googleUser.phoneNumber
+    var user = SohoUserObject.createUserDictionary(
+      lastName: "",
+      firstName: googleUser.displayName,
+      email: googleUser.email,
+      userId: googleUser.uid,
+      birthDate: "",
+      gender: "",
+      phoneNumber: googleUser.phoneNumber == null ? "" : googleUser.phoneNumber
     );
-    await saveUserToDatabase(user);
+    await _saveUserToDatabase(user);
 
     // Make sure to save credentials only if login is completed
     await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER);
@@ -332,20 +332,7 @@ class AuthController {
     await deleteAuthStoredValues();
   }
 
-  Future<bool> resetUserPassword(String email) async {
-    // Use Firebase Auth to send email
-    // TODO: Edit email template on amazon console
-    var success = await firebaseAuth.sendPasswordResetEmail(email: email).then((_) {
-      return true;
-    }).catchError((error) {
-      // TODO: Handle error (`ERROR_INVALID_EMAIL`, `ERROR_USER_NOT_FOUND`)
-      return false;
-    });
-
-    return success;
-  }
-
-  Future<void> saveUserToDatabase(Map<String, String> user) async {
+  static Future<void> _saveUserToDatabase(Map<String, String> user) async {
     // Check if user already exists in DataBase, and save if not
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
     var userId = user[Constants.DICT_KEY_ID];
@@ -360,16 +347,17 @@ class AuthController {
         });
 
       } else {
-        // Get user data from database
-        var user = AuthControllerUtilities.createUserDictionary(
-            item.value[Constants.DICT_KEY_LAST_NAME],
-            item.value[Constants.DICT_KEY_NAME],
-            item.value[Constants.DICT_KEY_EMAIL],
-            item.value[Constants.DICT_KEY_ID],
-            item.value[Constants.DICT_KEY_BIRTH_DATE],
-            item.value[Constants.DICT_KEY_GENDER],
-            item.value[Constants.DICT_KEY_PHONE]
+        // Create user data from database
+        var user = SohoUserObject(
+          lastName: item.value[Constants.DICT_KEY_LAST_NAME],
+          firstName: item.value[Constants.DICT_KEY_NAME],
+          email: item.value[Constants.DICT_KEY_EMAIL],
+          userId: item.value[Constants.DICT_KEY_ID],
+          userPhoneNumber: item.value[Constants.DICT_KEY_PHONE]
         );
+        user.userBirthDate = item.value[Constants.DICT_KEY_BIRTH_DATE];
+        user.userGender = item.value[Constants.DICT_KEY_GENDER];
+
         // Save locally
         Application.currentUser = user;
       }

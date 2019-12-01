@@ -25,8 +25,6 @@ class _SplashWidgetState extends State<SplashWidget>  with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
-
-
     
     return Scaffold(
       body: Container(
@@ -54,9 +52,11 @@ class _SplashWidgetState extends State<SplashWidget>  with AfterLayoutMixin {
   void afterFirstLayout(BuildContext context) {
     // Give some time to the splash to show
     Timer.periodic(Duration(milliseconds: 500), (timer) {
+      // Get the saved user
+      AuthController.getSavedAuthObject()
+
       // Get the categories for HomePage
       SquareHTTPRequest.getSquareCategories().then((categories) {
-
         if (categories.isNotEmpty) {
           timer.cancel();
           Application.sohoCategories = categories;

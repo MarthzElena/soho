@@ -1,10 +1,11 @@
+import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/SohoMenu/CategoryObject.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 
 class Application {
 
   // TODO: Change this to an Object instead of a map (this object must include a list of SohoOrderObject)
-  static Map<String, String> currentUser;
+  static SohoUserObject currentUser;
 
   static List<CategoryObject> sohoCategories;
 
