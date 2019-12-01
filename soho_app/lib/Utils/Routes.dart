@@ -19,10 +19,10 @@ class Routes {
 
   static void setUpRouter(Router router) {
     // Main route
-    router.define(root,
+    /*router.define(root,
         handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
       return SohoApp();
-    }), transitionType: TransitionType.native);
+    }), transitionType: TransitionType.native);*/
 
     // Auth Login
     router.define(login,

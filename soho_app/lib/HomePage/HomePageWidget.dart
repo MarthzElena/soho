@@ -51,60 +51,6 @@ class _HomePageState extends State<HomePageWidget> {
   Widget _createCategoriesList(AssetImage backgroundImage, List<CategoryObject> list) {
     return ListView(
       children: <Widget>[
-        Stack(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 27.0),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Image(image: backgroundImage),
-              ),
-            ), // Background image
-            Padding(
-              padding: EdgeInsets.only(top: 49.0),
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: 22.0),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        'Disfruta una auténtica',
-                        textAlign: TextAlign.start,
-                        style: interBoldStyle(fSize: 17.0),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 21.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'ceremonia',
-                        textAlign: TextAlign.start,
-                        style: interELStyle(
-                          fSize: 27.0,
-                          spacing: 1.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        'DE TÉ',
-                        textAlign: TextAlign.start,
-                        style: interThinStyle(fSize: 51.0),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ) // Header text
-          ],
-        ), // //  Background image and text
         Padding(
             padding: EdgeInsets.only(top: 30.0, bottom: 48.0),
             child: CarouselSlider(
