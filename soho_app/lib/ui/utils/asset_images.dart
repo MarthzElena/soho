@@ -8,3 +8,7 @@ AssetImage splashLogo = AssetImage('assets/splash/soho_logo.png');
 AssetImage homeHamburger = AssetImage('assets/home/ic_menu.png');
 AssetImage homeSearch = AssetImage('assets/home/menu_search.png');
 AssetImage homeLogo = AssetImage('assets/home/menu_logo.png');
+
+/* Detail Assets */
+AssetImage detailBack = AssetImage('assets/category_detail/back.png');
+AssetImage detailMosaic = AssetImage('assets/category_detail/grid_view.png');

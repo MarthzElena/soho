@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/ui/items/item_list.dart';
 
 class LargeItem extends StatelessWidget {
   final dynamic category;
@@ -21,7 +22,6 @@ class LargeItem extends StatelessWidget {
         children: <Widget>[
           Container(
             height: 190.0,
-            // decoration attribute is TEMPORAL
             decoration: BoxDecoration(
               color: Color(0xffF3F1F2),
               borderRadius: BorderRadius.circular(8.0),
@@ -29,8 +29,13 @@ class LargeItem extends StatelessWidget {
             child: GestureDetector(
               onTap: () {
                 var categoryObject = jsonEncode(category.toJson());
-                var route = "CategoryDetail/$categoryObject";
-                Navigator.pushNamed(context, route);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ItemList(
+                      categoryObjectString: categoryObject,
+                    ),
+                  ),
+                );
               },
             ),
           ),
