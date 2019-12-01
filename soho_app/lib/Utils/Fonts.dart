@@ -62,10 +62,16 @@ TextStyle interItalicStyle({double fSize = 16.0, Color color = Colors.black}) =>
       fontFamily: 'InterUIItalic',
     );
 
-TextStyle interMediumStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
+TextStyle interMediumStyle({
+  double fSize = 16.0,
+  Color color = Colors.black,
+  TextDecoration decoration = TextDecoration.none,
+}) =>
+    TextStyle(
       color: color,
       fontSize: fSize,
       fontFamily: 'InterUIMedium',
+      decoration: decoration,
     );
 
 TextStyle interMediumIStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:soho_app/HomePage/HomePageMenu/LoggedInUserMenuWidget.dart';
+import 'package:soho_app/HomePage/HomePageMenu/NoUserMenuWidget.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar.dart';
@@ -23,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.white,
         resizeToAvoidBottomPadding: true,
         appBar: HomeAppBar(),
+        drawer: Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget(),
         body: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
