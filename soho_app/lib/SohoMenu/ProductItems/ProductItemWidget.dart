@@ -6,6 +6,9 @@ import 'package:soho_app/SohoMenu/ProductItems/ProductItemAppBar.dart';
 
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Locator.dart';
 
 import 'VariationItemObject.dart';
@@ -47,50 +50,130 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
         }));
   }
 
+  @override
+  void initState(){
+    super.initState();
+
+    // Set base price
+    productItemModel.selectedItemPrice = widget.currentProduct.price;
+    // Init the variations
+    productItemModel.initAvailableVariations(widget.currentProduct.productVariations);
+  }
+
   List<Widget> _getOptionsList(ProductItemObject product) {
     List<Widget> list = List<Widget>();
 
     // Add default options
     list.addAll(_getDefaultOptions(product));
 
-    // Get items for variations
-    for (var variation in product.productVariations) {
+    // Set variation values
+    for (var variationType in productItemModel.availableVariations.keys) {
       Widget variationName = Text(
-        variation.variationTypeName,
+        variationType,
         style: TextStyle(
-          color: Color.fromARGB(255, 120, 144, 144),
-          fontSize: 14.0
+            color: Color.fromARGB(255, 120, 144, 144),
+            fontSize: 14.0
         ),
       );
       list.add(variationName);
 
-      for (var element in variation.variations) {
-        Widget elementRow = Row(
-          children: <Widget>[
-            Radio(
-              value: element,
-              groupValue: element,
-              onChanged: (VariationItemObject selectedVariation) {
-                productItemModel.addVariation(selectedVariation, variation.variationTypeName);
-              }
-            ),
-            Text(
-              element.name,
-              style: TextStyle(
-                color: Color.fromARGB(255, 0, 42, 58),
-                fontSize: 16.0
-              ),
-            )
-          ],
-        );
+      Map<VariationItemObject, bool> current = productItemModel.availableVariations[variationType];
+      for (var variationElement in current.keys) {
+        var value = current[variationElement];
+        // TODO: Select Radio or Checkbox depending on variation type
+        Widget elementRow = getOptionalVariations(value, variationType, variationElement);
+//        Widget elementRow = getRequiredVariations(variationElement, variationType);
         list.add(elementRow);
       }
     }
-    
+
+    // TODO: Fix this with proper button for adding to cart
+    // TODO: Only enable button if required variations are selected!!
+    Widget addToCart = FlatButton(
+        onPressed: () {
+          // Create a new item with specified settings
+          SohoOrderItem selectedItem = _getSelectedProduct(widget.currentProduct);
+          // Check if there's an ongoing order
+          if (Application.currentOrder == null) {
+            Application.currentOrder = SohoOrderObject();
+          }
+          // Save product to current order
+          Application.currentOrder.selectedProducts.add(selectedItem);
+
+          // Go back to CategoryItemsWidget
+          // TODO
+
+        },
+        child: Container(
+          color: Color.fromARGB(255, 229, 31, 79),
+          constraints: BoxConstraints.expand(
+              height: 50.0,
+              width: 343.0
+          ),
+          child: Text(
+            productItemModel.selectedItemPrice.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white
+            ),
+          ),
+        )
+    );
+    list.add(addToCart);
+
     // Add footer
     Widget footer = Image(image: AssetImage('assets/category_detail/footer.png'));
     list.add(footer);
     return list;
+  }
+
+  Widget getOptionalVariations(bool value, String variationType, VariationItemObject variationElement) {
+    // Update variation type in model
+    productItemModel.updateVariationType(isRequired: false);
+
+    var widget = Row(
+      children: <Widget>[
+        Checkbox(
+            value: value,
+            onChanged: (bool value) {
+              productItemModel.updateCheckboxValue(variationType, variationElement, value);
+            }
+        ),
+        Text(
+          variationElement.name,
+          style: TextStyle(
+              color: Color.fromARGB(255, 0, 42, 58),
+              fontSize: 16.0
+          ),
+        )
+      ],
+    );
+    return widget;
+  }
+
+  Widget getRequiredVariations(VariationItemObject selectedVariation, String fromType) {
+    // Update variation type in model
+    productItemModel.updateVariationType(isRequired: true);
+
+    var widget = Row(
+      children: <Widget>[
+        Radio(
+            value: selectedVariation,
+            groupValue: productItemModel.getSelectedVariation(fromType),
+            onChanged: (VariationItemObject selectedItem) {
+              productItemModel.addVariation(selectedVariation, fromType);
+            }
+          ),
+        Text(
+          selectedVariation.name,
+          style: TextStyle(
+            color: Color.fromARGB(255, 0, 42, 58),
+            fontSize: 16.0
+          )
+        )
+      ],
+    );
+    return widget;
   }
 
   List<Widget> _getDefaultOptions(ProductItemObject product) {
@@ -139,6 +222,23 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
 
     return list;
 
+  }
+  
+  SohoOrderItem _getSelectedProduct(ProductItemObject fromProductItemObject) {
+    // Get id for category
+    String categoryId = "";
+    for (var category in Application.sohoCategories) {
+      if (category.name == fromProductItemObject.category) {
+        categoryId = category.squareID;
+        break;
+      }
+    }
+
+    // Create new item for order
+    SohoOrderItem newItem = SohoOrderItem(fromProductItemObject.name, categoryId, fromProductItemObject.squareID, fromProductItemObject.price);
+    newItem.addVariations(productItemModel.selectedVariations);
+
+    return newItem;
   }
 
 }

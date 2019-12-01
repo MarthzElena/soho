@@ -2,8 +2,8 @@ import 'package:scoped_model/scoped_model.dart';
 
 class LoginState extends Model {
 
-  // TODO: Validate email and password
-  String emailInput = "";
+  // TODO: Validate phone and password
+  String phoneInput = "";
   String passwordInput = "";
 
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:soho_app/Utils/Fonts.dart';
-import 'package:soho_app/Utils/Routes.dart';
 
 class NoUserMenuWidget extends StatelessWidget {
   @override
@@ -57,64 +56,6 @@ class NoUserMenuWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 24.0),
-                      Container(
-                        width: double.infinity,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: Color(0xff3B5998),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Entrar con Facebook',
-                            style: interBoldStyle(
-                              fSize: 14.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 24.0),
-                      Container(
-                        width: double.infinity,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: Color(0xffE51F4F),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Entrar con Gmail',
-                            style: interBoldStyle(
-                              fSize: 14.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 24.0),
-                      Center(
-                        child: Text(
-                          '¿No tienes cuenta?',
-                          style: interLightStyle(fSize: 14.0),
-                        ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Center(
-                        child: GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, Routes.register),
-                          child: Text(
-                            'Crea una cuenta aquí',
-                            style: interMediumStyle(
-                              fSize: 14.0,
-                              decoration: TextDecoration.underline,
-                              color: Color(0xffE51F4F),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20.0),
                     ],
                   ),
                 ),
@@ -152,7 +93,7 @@ class NoUserMenuWidget extends StatelessWidget {
                   ),
                 ),
               ),
-            ), // Acerca de Soho (icon + text)
+            ),
             Align(
               alignment: Alignment.bottomLeft,
               child: Padding(

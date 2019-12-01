@@ -117,6 +117,31 @@ class AuthController {
     await storage.delete(key: Constants.KEY_AUTH_PROVIDER);
   }
 
+  Future<void> initiatePhoneLogin(String number, String code) async {
+    final PhoneVerificationCompleted verificationCompleted = (AuthCredential phoneAuthCredential) {
+      print("VERIFICATION COMPLETE");
+    };
+    final PhoneVerificationFailed verificationFailed = (AuthException authException) {
+      print("VERIFICATION FAILED");
+    };
+    final PhoneCodeSent phoneCodeSent = (String verificationId, [int forceResendingToken]) async {
+      print("PHONE CODE SENT");
+      print(verificationId);
+    };
+    final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout = (String verificationId) {
+      print("PHONE RETRIEVAL TIMEOUT");
+    };
+
+    await firebaseAuth.verifyPhoneNumber(
+        phoneNumber: number,
+        timeout: const Duration(seconds: 5),
+        verificationCompleted: verificationCompleted,
+        verificationFailed: verificationFailed,
+        codeSent: phoneCodeSent,
+        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout
+    );
+  }
+
   Future<FirebaseUser> initiateEmailLogin({String userEmail, String userPassword}) async {
     FirebaseUser emailUser = await firebaseAuth.signInWithEmailAndPassword(email: userEmail, password: userPassword).catchError((error) {
       // TODO: Handle error
