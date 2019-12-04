@@ -28,6 +28,15 @@ class SohoUserObject {
   // Constructor
   SohoUserObject({this.lastName, this.firstName, this.email, this.userId, this.userPhoneNumber});
 
+  SohoUserObject.sohoUserObjectFromDictionary(Map<String, String> dictionary) {
+    this.lastName = dictionary[Constants.DICT_KEY_LAST_NAME];
+    this.firstName = dictionary[Constants.DICT_KEY_NAME];
+    this.email = dictionary[Constants.DICT_KEY_EMAIL];
+    this.userId = dictionary[Constants.DICT_KEY_ID];
+    this.userPhoneNumber = dictionary[Constants.DICT_KEY_PHONE];
+    this.userBirthDate = dictionary[Constants.DICT_KEY_BIRTH_DATE];
+    this.userGender = dictionary[Constants.DICT_KEY_GENDER];
+  }
 
   static Map<String, String> createUserDictionary({String lastName, String firstName, String email, String userId, String birthDate, String gender, String phoneNumber}) {
     // Create dictionary

@@ -100,8 +100,8 @@ class _LoginState extends State<LoginWidget> {
 
   Future<void> _googleLoginPressed(BuildContext context) async {
 
-    await authController.initiateGoogleLogin().then((googleUser) {
-      if (googleUser != null) {
+    await authController.initiateGoogleLogin().then((_) {
+      if (Application.currentUser != null) {
         // TODO: Do something with this user?
         Navigator.pushNamed(context, Routes.homePage);
       } else {

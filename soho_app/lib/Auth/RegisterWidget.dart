@@ -252,9 +252,8 @@ class _RegisterState  extends State<RegisterWidget> {
 
   Future<void> googleLoginPressed(BuildContext context) async {
 
-    await authController.initiateGoogleLogin().then((googleUser) {
-      if (googleUser != null) {
-        // TODO: Do something with this user?
+    await authController.initiateGoogleLogin().then((_) {
+      if (Application.currentUser != null) {
         Navigator.pushNamed(context, Routes.homePage);
       } else {
         // TODO: Show some error

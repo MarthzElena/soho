@@ -1,4 +1,6 @@
 
+import 'dart:collection';
+
 /// AuthController.dart
 ///
 /// This  class manages the  Authentication process of the user.
@@ -25,7 +27,7 @@ class AuthController {
   final FacebookLogin facebookLogin = FacebookLogin();
 
   // Returns a SohoAuthObject if there's a token saved
-  Future<FirebaseUser> getSavedAuthObject() async{
+  Future<bool> getSavedAuthObject() async{
 
     // Get the user from the saved credentials
     // Read the token (if any)
@@ -43,20 +45,47 @@ class AuthController {
         case Constants.KEY_FACEBOOK_PROVIDER:
           {
             // Facebook Login
-            var facebookUser = firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: token));
-            if (facebookUser != null) {
-              return facebookUser;
-            }
+            await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: token)).then((facebookUser) async {
+              if (facebookUser != null) {
+                // Get provider data
+                for (var data in facebookUser.providerData) {
+                  if (data.providerId == "facebook.com") {
+                    var userId = data.uid;
+                    var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+                    var savedUser = usersRef.child(userId);
+                    // Get user from database
+                    await savedUser.once().then((item) {
+                      if (item != null) {
+                        LinkedHashMap linkedMap = item.value;
+                        Map<String, String> dictionary = linkedMap.cast();
+                        if (dictionary != null) {
+                          SohoUserObject sohoUser = SohoUserObject.sohoUserObjectFromDictionary(dictionary);
+                          // Save locally
+                          Application.currentUser = sohoUser;
+                          return true;
+                        }
+                      }
+
+                      return false;
+                    });
+                  }
+                }
+              }
+            });
           }
           break;
 
         case Constants.KEY_GOOGLE_PROVIDER:
           {
             // Google Login
-            var googleUser = await initiateGoogleLogin();
-            if (googleUser != null) {
-              return googleUser;
-            }
+            await initiateGoogleLogin().then((_) {
+              if (Application.currentUser != null) {
+                return true;
+              } else {
+                return false;
+              }
+            });
+
           }
           break;
 
@@ -70,7 +99,7 @@ class AuthController {
 
     }
 
-    return null;
+    return false;
 
   }
 
