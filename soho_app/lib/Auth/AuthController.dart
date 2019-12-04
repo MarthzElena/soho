@@ -25,7 +25,7 @@ class AuthController {
   final FacebookLogin facebookLogin = FacebookLogin();
 
   // Returns a SohoAuthObject if there's a token saved
-  static Future<FirebaseUser> getSavedAuthObject() async{
+  Future<FirebaseUser> getSavedAuthObject() async{
 
     // Get the user from the saved credentials
     // Read the token (if any)
@@ -53,7 +53,7 @@ class AuthController {
         case Constants.KEY_GOOGLE_PROVIDER:
           {
             // Google Login
-            var googleUser = await _initiateGoogleLogin();
+            var googleUser = await initiateGoogleLogin();
             if (googleUser != null) {
               return googleUser;
             }
@@ -135,7 +135,7 @@ class AuthController {
     );
   }
 
-  static Future<FirebaseUser> _initiateEmailLogin({String userEmail, String userPassword}) async {
+  Future<FirebaseUser> initiateEmailLogin({String userEmail, String userPassword}) async {
     FirebaseUser emailUser = await firebaseAuth.signInWithEmailAndPassword(email: userEmail, password: userPassword).catchError((error) {
       // TODO: Handle error
       return null;
@@ -293,7 +293,7 @@ class AuthController {
     await deleteAuthStoredValues();
   }
 
-  static Future<FirebaseUser> _initiateGoogleLogin() async {
+  Future<FirebaseUser> initiateGoogleLogin() async {
     final googleSignInAccount = await googleSignIn.signIn();
     final googleAuth = await googleSignInAccount.authentication;
 
@@ -332,7 +332,7 @@ class AuthController {
     await deleteAuthStoredValues();
   }
 
-  static Future<void> _saveUserToDatabase(Map<String, String> user) async {
+  Future<void> _saveUserToDatabase(Map<String, String> user) async {
     // Check if user already exists in DataBase, and save if not
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
     var userId = user[Constants.DICT_KEY_ID];

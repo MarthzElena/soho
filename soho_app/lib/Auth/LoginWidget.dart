@@ -17,6 +17,7 @@ class LoginWidget extends StatefulWidget {
 
 class _LoginState extends State<LoginWidget> {
   LoginState loginState = locator<LoginState>();
+  AuthController authController = locator<AuthController>();
   String smsCode = "";
 
   @override
@@ -85,7 +86,7 @@ class _LoginState extends State<LoginWidget> {
 
   Future<void> _facebookLoginPressed(BuildContext context) async {
 
-    await AuthController().initiateFacebookLogin().then((facebookUser) {
+    await authController.initiateFacebookLogin().then((facebookUser) {
       if (facebookUser != null) {
         // TODO: Do something with this user?
         Navigator.pushNamed(context, Routes.homePage);
@@ -98,7 +99,7 @@ class _LoginState extends State<LoginWidget> {
 
   Future<void> _googleLoginPressed(BuildContext context) async {
 
-    await AuthController().initiateGoogleLogin().then((googleUser) {
+    await authController.initiateGoogleLogin().then((googleUser) {
       if (googleUser != null) {
         // TODO: Do something with this user?
         Navigator.pushNamed(context, Routes.homePage);
@@ -113,7 +114,7 @@ class _LoginState extends State<LoginWidget> {
   Future<void> _phoneLoginPressed(BuildContext context, {String phoneNumber, String code}) async {
 
     if (phoneNumber.isNotEmpty) {
-      await AuthController().initiatePhoneLogin(phoneNumber, code);
+      await authController.initiatePhoneLogin(phoneNumber, code);
     }
   }
 

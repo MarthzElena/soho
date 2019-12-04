@@ -21,6 +21,7 @@ class RegisterWidget extends StatefulWidget {
 
 class _RegisterState  extends State<RegisterWidget> {
   RegisterState registerState = locator<RegisterState>();
+  AuthController authController = locator<AuthController>();
   FocusNode _textFocus = new FocusNode();
 
   @override
@@ -223,7 +224,7 @@ class _RegisterState  extends State<RegisterWidget> {
         phoneNumber: registerState.phoneNumber
     );
 
-    await AuthController().createUserWithEmail(user, registerState.passwordInput).then((registeredUser) {
+    await authController.createUserWithEmail(user, registerState.passwordInput).then((registeredUser) {
       if (registeredUser != null) {
         // TODO: Do something with the user
         Navigator.pushNamed(context, Routes.homePage);
@@ -237,7 +238,7 @@ class _RegisterState  extends State<RegisterWidget> {
 
   Future<void> facebookLoginPressed(BuildContext context) async {
 
-    await AuthController().initiateFacebookLogin().then((facebookUser) {
+    await authController.initiateFacebookLogin().then((facebookUser) {
       if (facebookUser != null) {
         // TODO: Do something with this user?
         Navigator.pushNamed(context, Routes.homePage);
@@ -250,7 +251,7 @@ class _RegisterState  extends State<RegisterWidget> {
 
   Future<void> googleLoginPressed(BuildContext context) async {
 
-    await AuthController().initiateGoogleLogin().then((googleUser) {
+    await authController.initiateGoogleLogin().then((googleUser) {
       if (googleUser != null) {
         // TODO: Do something with this user?
         Navigator.pushNamed(context, Routes.homePage);
