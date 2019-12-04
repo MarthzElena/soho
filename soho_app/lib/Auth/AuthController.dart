@@ -228,7 +228,7 @@ class AuthController {
     await deleteAuthStoredValues();
   }
 
-  Future<FirebaseUser> initiateFacebookLogin() async {
+  Future<void> initiateFacebookLogin() async {
     // TODO: This permissions should be used: 'email,user_gender,user_birthday'
     var facebookLoginResult =
     await facebookLogin.logInWithReadPermissions(['email']).catchError((error) {
@@ -240,10 +240,12 @@ class AuthController {
       case FacebookLoginStatus.error:
         print("Error");
         // TODO: Handle error
-        return null;
+        break;
+
       case FacebookLoginStatus.cancelledByUser:
         print("CancelledByUser");
-        return null;
+        break;
+
       case FacebookLoginStatus.loggedIn:
         // Save auth data and provider
         await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_FACEBOOK_PROVIDER);
@@ -251,38 +253,39 @@ class AuthController {
 
         // Save user to  Firebase Auth
         var facebookToken = facebookLoginResult.accessToken.token;
-        var facebookUser = await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).catchError((error) {
+        await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
+          // Get user data
+          await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$facebookToken').then((graphResponse) async {
+            var profile = json.decode(graphResponse.body);
+            var email = profile['email'].toString();
+            var firstName = profile['first_name'].toString();
+            var lastName = profile['last_name'].toString();
+            var userId = profile['id'].toString();
+            // TODO: Get this values later!
+            var birthDate = profile['user_birthday'] == null ? "" : profile['user_birthday'];
+            var gender = profile['user_gender'] == null ? "" : profile['user_gender'];
+
+            var user = SohoUserObject.createUserDictionary(
+                lastName: lastName,
+                firstName: firstName,
+                email: email,
+                userId: userId,
+                birthDate: birthDate,
+                gender: gender,
+                phoneNumber: ""
+            );
+            await _saveUserToDatabase(user);
+          });
+
+
+        }).catchError((error) {
           // TODO: Handle error
-          return null;
         });
 
-        // Get user data
-        var graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,user_gender,user_birthday&access_token=$facebookToken');
-        var profile = json.decode(graphResponse.body);
-        var email = profile['email'].toString();
-        var firstName = profile['first_name'].toString();
-        var lastName = profile['last_name'].toString();
-        var userId = profile['id'].toString();
-        // TODO: Get this values later!
-        var birthDate = profile['user_birthday'] == null ? "" : profile['user_birthday'];
-        var gender = profile['user_gender'] == null ? "" : profile['user_gender'];
-
-        var user = SohoUserObject.createUserDictionary(
-          lastName: lastName,
-          firstName: firstName,
-          email: email,
-          userId: userId,
-          birthDate: birthDate,
-          gender: gender,
-          phoneNumber: ""
-        );
-        await _saveUserToDatabase(user);
-
-        return facebookUser;
+        break;
 
       default:
-        return null;
+        break;
     }
   }
 
@@ -293,35 +296,33 @@ class AuthController {
     await deleteAuthStoredValues();
   }
 
-  Future<FirebaseUser> initiateGoogleLogin() async {
+  Future<void> initiateGoogleLogin() async {
     final googleSignInAccount = await googleSignIn.signIn();
     final googleAuth = await googleSignInAccount.authentication;
 
     final googleCredential = GoogleAuthProvider.getCredential(
         idToken: googleAuth.idToken,
         accessToken: googleAuth.accessToken);
-    final googleUser = await firebaseAuth.signInWithCredential(googleCredential).catchError((error) {
+    await firebaseAuth.signInWithCredential(googleCredential).then((googleUser) async {
+      // Create user dictionary for Database
+      var user = SohoUserObject.createUserDictionary(
+          lastName: "",
+          firstName: googleUser.displayName,
+          email: googleUser.email,
+          userId: googleUser.uid,
+          birthDate: "",
+          gender: "",
+          phoneNumber: googleUser.phoneNumber == null ? "" : googleUser.phoneNumber
+      );
+      await _saveUserToDatabase(user).then((_) async {
+        // Make sure to save credentials only if login is completed
+        await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER);
+        await storage.write(key: Constants.KEY_AUTH_TOKEN, value: googleAuth.accessToken);
+      });
+
+    }).catchError((error) {
       // TODO: Handle error
-      return null;
     });
-
-    // Create user dictionary for Database
-    var user = SohoUserObject.createUserDictionary(
-      lastName: "",
-      firstName: googleUser.displayName,
-      email: googleUser.email,
-      userId: googleUser.uid,
-      birthDate: "",
-      gender: "",
-      phoneNumber: googleUser.phoneNumber == null ? "" : googleUser.phoneNumber
-    );
-    await _saveUserToDatabase(user);
-
-    // Make sure to save credentials only if login is completed
-    await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER);
-    await storage.write(key: Constants.KEY_AUTH_TOKEN, value: googleAuth.accessToken);
-
-    return googleUser;
 
   }
 
@@ -338,6 +339,20 @@ class AuthController {
     var userId = user[Constants.DICT_KEY_ID];
     var savedUser = usersRef.child(userId);
 
+    // Create Soho user
+    var sohoUser = SohoUserObject(
+        lastName: user[Constants.DICT_KEY_LAST_NAME],
+        firstName: user[Constants.DICT_KEY_NAME],
+        email: user[Constants.DICT_KEY_EMAIL],
+        userId: user[Constants.DICT_KEY_ID],
+        userPhoneNumber: user[Constants.DICT_KEY_PHONE]
+    );
+    sohoUser.userBirthDate = user[Constants.DICT_KEY_BIRTH_DATE];
+    sohoUser.userGender = user[Constants.DICT_KEY_GENDER];
+
+    // Save locally
+    Application.currentUser = sohoUser;
+
     await savedUser.once().then((item){
       if (item.value == null) {
         var newUserRef = usersRef.child(userId);
@@ -345,21 +360,6 @@ class AuthController {
         newUserRef.set(user).then((_) {
           newUserRef.push();
         });
-
-      } else {
-        // Create user data from database
-        var user = SohoUserObject(
-          lastName: item.value[Constants.DICT_KEY_LAST_NAME],
-          firstName: item.value[Constants.DICT_KEY_NAME],
-          email: item.value[Constants.DICT_KEY_EMAIL],
-          userId: item.value[Constants.DICT_KEY_ID],
-          userPhoneNumber: item.value[Constants.DICT_KEY_PHONE]
-        );
-        user.userBirthDate = item.value[Constants.DICT_KEY_BIRTH_DATE];
-        user.userGender = item.value[Constants.DICT_KEY_GENDER];
-
-        // Save locally
-        Application.currentUser = user;
       }
     });
   }

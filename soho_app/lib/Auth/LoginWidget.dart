@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Auth/LoginStateController.dart';
@@ -86,9 +87,9 @@ class _LoginState extends State<LoginWidget> {
 
   Future<void> _facebookLoginPressed(BuildContext context) async {
 
-    await authController.initiateFacebookLogin().then((facebookUser) {
-      if (facebookUser != null) {
-        // TODO: Do something with this user?
+    await authController.initiateFacebookLogin().then((_) {
+      if (Application.currentUser != null) {
+
         Navigator.pushNamed(context, Routes.homePage);
       } else {
         // TODO: Show some error

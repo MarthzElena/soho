@@ -3,6 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import 'package:soho_app/Auth/RegisterStateController.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
 
@@ -238,8 +239,8 @@ class _RegisterState  extends State<RegisterWidget> {
 
   Future<void> facebookLoginPressed(BuildContext context) async {
 
-    await authController.initiateFacebookLogin().then((facebookUser) {
-      if (facebookUser != null) {
+    await authController.initiateFacebookLogin().then((_) {
+      if (Application.currentUser != null) {
         // TODO: Do something with this user?
         Navigator.pushNamed(context, Routes.homePage);
       } else {
