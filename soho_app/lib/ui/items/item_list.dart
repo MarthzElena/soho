@@ -76,7 +76,7 @@ class _ItemListState extends State<ItemList> {
                             ),
                             builder: (BuildContext context, AsyncSnapshot snapshot) {
                               if (snapshot.hasData && snapshot.data != null) {
-                                model.updateItems(model.getData(snapshot));
+                                model.updateItems(model.getData(snapshot), context);
 
                                 return Container(
                                   child: ListView(
@@ -92,6 +92,7 @@ class _ItemListState extends State<ItemList> {
                                     Container(
                                       child: CircularProgressIndicator(),
                                     ),
+                                    SizedBox(height: 150.0),
                                   ],
                                 );
                               }

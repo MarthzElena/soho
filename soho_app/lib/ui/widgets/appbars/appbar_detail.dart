@@ -39,7 +39,7 @@ class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
                             Container(
                               width: 16.0,
                               child: FlatButton(
-                                onPressed: () => model.changeItemsDistribution(),
+                                onPressed: () => model.changeItemsDistribution(context),
                                 padding: EdgeInsets.all(0.0),
                                 child: Image(image: detailMosaic),
                               ),

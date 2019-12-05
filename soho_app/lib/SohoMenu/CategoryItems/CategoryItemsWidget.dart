@@ -60,7 +60,7 @@ class _CategoryItemsState extends State<CategoryItemsWidget> {
                           builder: (BuildContext context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData && snapshot.data != null) {
                               // Init the values in the model
-                              model.updateItems(_getData(snapshot));
+                              model.updateItems(_getData(snapshot), context);
                               return Container(
                                 height: _elementsListViewHeight(context),
                                 child: ListView(

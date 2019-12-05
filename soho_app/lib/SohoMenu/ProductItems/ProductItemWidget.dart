@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemAppBar.dart';
-
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
@@ -16,15 +13,12 @@ import 'VariationItemObject.dart';
 class ProductItemWidget extends StatefulWidget {
   final ProductItemObject currentProduct;
 
-  ProductItemWidget({
-    this.currentProduct
-  });
+  ProductItemWidget({this.currentProduct});
 
   @override
   State<StatefulWidget> createState() {
     return _ProductItemWidgetState();
   }
-
 }
 
 class _ProductItemWidgetState extends State<ProductItemWidget> {
@@ -33,7 +27,6 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     ProductItemObject product = widget.currentProduct;
 
     return ScopedModel<ProductItemState>(
@@ -41,17 +34,16 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
         child: ScopedModelDescendant<ProductItemState>(builder: (builder, child, model) {
           return SafeArea(
               child: Scaffold(
-                appBar: appBar,
-                body: ListView(
-                  children: _getOptionsList(product),
-                ),
-              )
-          );
+            appBar: appBar,
+            body: ListView(
+              children: _getOptionsList(product),
+            ),
+          ));
         }));
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
 
     // Set base price
@@ -70,10 +62,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
     for (var variationType in productItemModel.availableVariations.keys) {
       Widget variationName = Text(
         variationType,
-        style: TextStyle(
-            color: Color.fromARGB(255, 120, 144, 144),
-            fontSize: 14.0
-        ),
+        style: TextStyle(color: Color.fromARGB(255, 120, 144, 144), fontSize: 14.0),
       );
       list.add(variationName);
 
@@ -102,23 +91,16 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
 
           // Go back to CategoryItemsWidget
           // TODO
-
         },
         child: Container(
           color: Color.fromARGB(255, 229, 31, 79),
-          constraints: BoxConstraints.expand(
-              height: 50.0,
-              width: 343.0
-          ),
+          constraints: BoxConstraints.expand(height: 50.0, width: 343.0),
           child: Text(
             productItemModel.selectedItemPrice.toString(),
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white
-            ),
+            style: TextStyle(color: Colors.white),
           ),
-        )
-    );
+        ));
     list.add(addToCart);
 
     // Add footer
@@ -127,7 +109,8 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
     return list;
   }
 
-  Widget getOptionalVariations(bool value, String variationType, VariationItemObject variationElement) {
+  Widget getOptionalVariations(
+      bool value, String variationType, VariationItemObject variationElement) {
     // Update variation type in model
     productItemModel.updateVariationType(isRequired: false);
 
@@ -137,14 +120,10 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
             value: value,
             onChanged: (bool value) {
               productItemModel.updateCheckboxValue(variationType, variationElement, value);
-            }
-        ),
+            }),
         Text(
           variationElement.name,
-          style: TextStyle(
-              color: Color.fromARGB(255, 0, 42, 58),
-              fontSize: 16.0
-          ),
+          style: TextStyle(color: Color.fromARGB(255, 0, 42, 58), fontSize: 16.0),
         )
       ],
     );
@@ -162,15 +141,9 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
             groupValue: productItemModel.getSelectedVariation(fromType),
             onChanged: (VariationItemObject selectedItem) {
               productItemModel.addVariation(selectedVariation, fromType);
-            }
-          ),
-        Text(
-          selectedVariation.name,
-          style: TextStyle(
-            color: Color.fromARGB(255, 0, 42, 58),
-            fontSize: 16.0
-          )
-        )
+            }),
+        Text(selectedVariation.name,
+            style: TextStyle(color: Color.fromARGB(255, 0, 42, 58), fontSize: 16.0))
       ],
     );
     return widget;
@@ -180,12 +153,10 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
     List<Widget> list = List<Widget>();
 
     Widget productImage = Padding(
-      padding: const  EdgeInsets.only(left: 16.0, right: 16.0),
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
       child: Container(
         constraints: BoxConstraints.expand(height: 338.0),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(const Radius.circular(8.0))
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.all(const Radius.circular(8.0))),
         // TODO: child: Image()
       ),
     );
@@ -193,37 +164,25 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
 
     Widget productName = Text(
       product.name,
-      style: TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.bold,
-        fontSize: 20.0
-      ),
+      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20.0),
     );
     list.add(productName);
 
     Widget productDescription = Text(
       product.description,
-      style: TextStyle(
-        color: Color.fromARGB(255, 90, 98, 101),
-        fontSize: 14.0
-      ),
+      style: TextStyle(color: Color.fromARGB(255, 90, 98, 101), fontSize: 14.0),
     );
     list.add(productDescription);
 
     Widget productPrice = Text(
       "\$${product.price.toString()}",
-      style: TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.w500,
-        fontSize: 22.0
-      ),
+      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 22.0),
     );
     list.add(productPrice);
 
     return list;
-
   }
-  
+
   SohoOrderItem _getSelectedProduct(ProductItemObject fromProductItemObject) {
     // Get id for category
     String categoryId = "";
@@ -235,10 +194,10 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
     }
 
     // Create new item for order
-    SohoOrderItem newItem = SohoOrderItem(fromProductItemObject.name, categoryId, fromProductItemObject.squareID, fromProductItemObject.price);
+    SohoOrderItem newItem = SohoOrderItem(fromProductItemObject.name, categoryId,
+        fromProductItemObject.squareID, fromProductItemObject.price);
     newItem.addVariations(productItemModel.selectedVariations);
 
     return newItem;
   }
-
 }

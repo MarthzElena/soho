@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemObject.dart';
-import 'package:soho_app/SohoMenu/ProductItems/ProductItemObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemWidget.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 
@@ -13,7 +12,7 @@ class CategoryItemsState extends Model {
   List<Widget> widgetsList = List<Widget>();
   BuildContext context;
 
-  void changeItemsDistribution() {
+  void changeItemsDistribution(context) {
     if (isDistributionList) {
       // Change to GRIDview
       isDistributionList = false;
@@ -23,7 +22,7 @@ class CategoryItemsState extends Model {
       // Change to LISTview
       isDistributionList = true;
       listDistribution = Image.asset('assets/category_detail/grid_view.png');
-      widgetsList = _getProductWidgetList(_categoryItems);
+      widgetsList = _getProductWidgetList(_categoryItems, context);
     }
     notifyListeners();
   }
@@ -36,10 +35,10 @@ class CategoryItemsState extends Model {
     return List<SubcategoryItems>();
   }
 
-  void updateItems(List<SubcategoryItems> items) {
+  void updateItems(List<SubcategoryItems> items, context) {
     _categoryItems = items;
     if (isDistributionList) {
-      widgetsList = _getProductWidgetList(_categoryItems);
+      widgetsList = _getProductWidgetList(_categoryItems, context);
     } else {
       widgetsList = _getProductWidgetGrid(_categoryItems);
     }
@@ -66,10 +65,17 @@ class CategoryItemsState extends Model {
         height: 378.0,
         enableInfiniteScroll: false,
         items: item.items.map((product) {
-          return Builder(builder: (BuildContext context) {
-            return InkWell(
+          return Builder(builder: (context) {
+            return GestureDetector(
               onTap: () {
-                _onCategoryItemTapped(product);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => ProductItemWidget(
+                      currentProduct: product,
+                    ),
+                  ),
+                );
               },
               child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -121,7 +127,7 @@ class CategoryItemsState extends Model {
     return result;
   }
 
-  List<Widget> _getProductWidgetList(List<SubcategoryItems> items) {
+  List<Widget> _getProductWidgetList(List<SubcategoryItems> items, context) {
     List<Widget> result = List<Widget>();
     for (var item in items) {
       var categoryText = "- ${item.subcategoryName}";
@@ -138,9 +144,16 @@ class CategoryItemsState extends Model {
       result.add(subcategoryTitle);
 
       for (var product in item.items) {
-        var productWidget = InkWell(
+        var productWidget = GestureDetector(
           onTap: () {
-            _onCategoryItemTapped(product);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => ProductItemWidget(
+                  currentProduct: product,
+                ),
+              ),
+            );
           },
           child: Padding(
             padding: const EdgeInsets.only(top: 32.0, left: 16.0, right: 16.0),
@@ -174,7 +187,11 @@ class CategoryItemsState extends Model {
                   height: 95,
                   width: 95,
                   decoration: BoxDecoration(
-                      color: Colors.grey, borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8.0),
+                    ),
+                  ),
                   // TODO: Add child with item image
                 )
               ],
@@ -187,14 +204,5 @@ class CategoryItemsState extends Model {
 
     result.add(SizedBox(height: 40.0));
     return result;
-  }
-
-  void _onCategoryItemTapped(ProductItemObject product) {
-    if (context != null) {
-      Navigator.push(
-          context,
-          new MaterialPageRoute(
-              builder: (BuildContext context) => new ProductItemWidget(currentProduct: product)));
-    }
   }
 }
