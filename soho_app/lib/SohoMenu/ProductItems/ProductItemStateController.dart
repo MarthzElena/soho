@@ -1,16 +1,13 @@
-
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 
 class ProductItemState extends Model {
-
   Map<String, Map<VariationItemObject, bool>> availableVariations = {};
   Map<String, List<VariationItemObject>> selectedVariations = {};
   double selectedItemPrice = 0.0;
   bool variationRequired = false;
 
   void initAvailableVariations(List<VariationTypeObject> allVariations) {
-
     for (var variationType in allVariations) {
       Map<VariationItemObject, bool> values = {};
       for (var variation in variationType.variations) {
@@ -19,7 +16,6 @@ class ProductItemState extends Model {
       availableVariations[variationType.variationTypeName] = values;
     }
     notifyListeners();
-
   }
 
   void updateCheckboxValue(String forType, VariationItemObject forItem, bool value) {
@@ -36,7 +32,6 @@ class ProductItemState extends Model {
   }
 
   void removeVariation(VariationItemObject item, String fromType) {
-
     // Make sure variation has values
     if (selectedVariations[fromType] == null) {
       // Item for variation type doesn't exist, do nothing
@@ -49,7 +44,6 @@ class ProductItemState extends Model {
 
       notifyListeners();
     }
-
   }
 
   void addVariation(VariationItemObject item, String fromType) {
@@ -71,7 +65,6 @@ class ProductItemState extends Model {
     selectedItemPrice += item.price;
 
     notifyListeners();
-
   }
 
   VariationItemObject getSelectedVariation(String fromType) {
@@ -86,5 +79,4 @@ class ProductItemState extends Model {
     variationRequired = isRequired;
     notifyListeners();
   }
-
 }

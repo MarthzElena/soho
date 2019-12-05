@@ -2,8 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemObject.dart';
-import 'package:soho_app/SohoMenu/ProductItems/ProductItemWidget.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/ui/items/item_detail.dart';
 
 class CategoryItemsState extends Model {
   bool isDistributionList = true;
@@ -71,7 +71,7 @@ class CategoryItemsState extends Model {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => ProductItemWidget(
+                    builder: (BuildContext context) => ProductDetail(
                       currentProduct: product,
                     ),
                   ),
@@ -149,7 +149,7 @@ class CategoryItemsState extends Model {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (BuildContext context) => ProductItemWidget(
+                builder: (BuildContext context) => ProductDetail(
                   currentProduct: product,
                 ),
               ),

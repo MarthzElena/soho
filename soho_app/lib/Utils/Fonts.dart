@@ -79,3 +79,9 @@ TextStyle interMediumIStyle({double fSize = 16.0, Color color = Colors.black}) =
       fontSize: fSize,
       fontFamily: 'InterUIMediumItalic',
     );
+
+TextStyle avenirHeavyStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
+  color: color,
+  fontSize: fSize,
+  fontFamily: 'AvenirHeavy',
+);

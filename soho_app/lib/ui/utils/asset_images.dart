@@ -12,3 +12,7 @@ AssetImage homeLogo = AssetImage('assets/home/menu_logo.png');
 /* Detail Assets */
 AssetImage detailBack = AssetImage('assets/category_detail/back.png');
 AssetImage detailMosaic = AssetImage('assets/category_detail/grid_view.png');
+
+/* Product Detail Assets */
+AssetImage productShare = AssetImage('assets/category_detail/share.png');
+AssetImage productBottom = AssetImage('assets/category_detail/bottom.png');

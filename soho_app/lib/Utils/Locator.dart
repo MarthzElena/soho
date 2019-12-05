@@ -18,5 +18,5 @@ void setUpLocator() {
   // Category Detail State
   locator.registerFactory<CategoryItemsState>(() => _categoryItemsState);
   // Product Detail State
-  locator.registerFactory<ProductItemState>(() => ProductItemState());
+  locator.registerLazySingleton<ProductItemState>(() => ProductItemState());
 }
