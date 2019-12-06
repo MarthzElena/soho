@@ -30,14 +30,13 @@ class _ProductDetailState extends State<ProductDetail> {
   void initState() {
     super.initState();
     _productItemModel.selectedItemPrice = widget.currentProduct.price;
-    _productItemModel.initAvailableVariations(widget.currentProduct.productVariations);
+    _productItemModel.initAvailableVariations(widget.currentProduct.productVariations, widget.currentProduct.isVariationsRequired());
+    _productItemModel.updateShowAddToCart(shouldShow: !widget.currentProduct.isVariationsRequired());
   }
 
   @override
   Widget build(BuildContext context) {
     ProductItemObject product = widget.currentProduct;
-
-    bool isVisible = false;
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -48,7 +47,7 @@ class _ProductDetailState extends State<ProductDetail> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: ProductDetailAppBar(),
-              bottomNavigationBar: isVisible ? BottomBar() : SizedBox.shrink(),
+              bottomNavigationBar: _productItemModel.showAddToCart ? BottomBar() : SizedBox.shrink(),
               body: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
@@ -97,7 +96,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               ),
                               SizedBox(height: 16.0),
                               Text(
-                                "\$${product.price.toString()}",
+                                "\$${product.price.toString()}0",
                                 style: interMediumStyle(fSize: 22.0),
                               ),
                               ListView(
@@ -146,59 +145,11 @@ class _ProductDetailState extends State<ProductDetail> {
       for (var variationElement in current.keys) {
         var value = current[variationElement];
         // TODO: Select Radio or Checkbox depending on variation type
-        Widget elementRow = getOptionalVariations(value, variationType, variationElement);
-//        Widget elementRow = getRequiredVariations(variationElement, variationType);
+        Widget elementRow = _productItemModel.variationRequired ? getRequiredVariations(variationElement, variationType) : getOptionalVariations(value, variationType, variationElement);
         list.add(elementRow);
       }
     }
 
-    // TODO: Fix this with proper button for adding to cart
-    // TODO: Only enable button if required variations are selected!!
-    /*Widget addToCart = FlatButton(
-        onPressed: () {
-          // Create a new item with specified settings
-          SohoOrderItem selectedItem = _getSelectedProduct(widget.currentProduct);
-          // Check if there's an ongoing order
-          if (Application.currentOrder == null) {
-            Application.currentOrder = SohoOrderObject();
-          }
-          // Save product to current order
-          Application.currentOrder.selectedProducts.add(selectedItem);
-
-          // Go back to CategoryItemsWidget
-          // TODO
-        },
-        child: Container(
-          width: double.infinity,
-          height: 50.0,
-          decoration: BoxDecoration(
-            color: Color(0xffE51F4F),
-            borderRadius: BorderRadius.circular(50.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Agregar 1 a la orden',
-                  style: interBoldStyle(fSize: 14.0, color: Colors.white),
-                ),
-                Text(
-                  _productItemModel.selectedItemPrice.toString(),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ));
-    list.add(addToCart);*/
-
-    // Add footer
-    /*Widget footer = Image(image: AssetImage('assets/category_detail/footer.png'));
-    list.add(footer);*/
     return list;
   }
 
@@ -255,30 +206,6 @@ class _ProductDetailState extends State<ProductDetail> {
       ],
     );
     return widget;
-  }
-
-  List<Widget> _getDefaultOptions(ProductItemObject product) {
-    List<Widget> list = List<Widget>();
-
-    Widget productName = Text(
-      product.name,
-      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20.0),
-    );
-    list.add(productName);
-
-    Widget productDescription = Text(
-      product.description,
-      style: TextStyle(color: Color.fromARGB(255, 90, 98, 101), fontSize: 14.0),
-    );
-    list.add(productDescription);
-
-    Widget productPrice = Text(
-      "\$${product.price.toString()}",
-      style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 22.0),
-    );
-    list.add(productPrice);
-
-    return list;
   }
 
   SohoOrderItem _getSelectedProduct(ProductItemObject fromProductItemObject) {

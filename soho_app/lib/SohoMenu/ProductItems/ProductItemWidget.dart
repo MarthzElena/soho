@@ -49,7 +49,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
     // Set base price
     productItemModel.selectedItemPrice = widget.currentProduct.price;
     // Init the variations
-    productItemModel.initAvailableVariations(widget.currentProduct.productVariations);
+    productItemModel.initAvailableVariations(widget.currentProduct.productVariations, widget.currentProduct.isVariationsRequired());
   }
 
   List<Widget> _getOptionsList(ProductItemObject product) {

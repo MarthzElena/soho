@@ -62,7 +62,7 @@ class _BottomBarState extends State<BottomBar> {
                             style: interBoldStyle(fSize: 14.0, color: Colors.white),
                           ),
                           Text(
-                            model.selectedItemPrice.toString(),
+                            "\$${model.selectedItemPrice.toString()}0",
                             style: TextStyle(color: Colors.white),
                           ),
                         ],

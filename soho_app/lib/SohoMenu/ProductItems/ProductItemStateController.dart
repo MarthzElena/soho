@@ -6,8 +6,10 @@ class ProductItemState extends Model {
   Map<String, List<VariationItemObject>> selectedVariations = {};
   double selectedItemPrice = 0.0;
   bool variationRequired = false;
+  bool showAddToCart = false;
 
-  void initAvailableVariations(List<VariationTypeObject> allVariations) {
+  void initAvailableVariations(List<VariationTypeObject> allVariations, bool isRequired) {
+    availableVariations.clear();
     for (var variationType in allVariations) {
       Map<VariationItemObject, bool> values = {};
       for (var variation in variationType.variations) {
@@ -15,6 +17,9 @@ class ProductItemState extends Model {
       }
       availableVariations[variationType.variationTypeName] = values;
     }
+    // Set if variation is required
+    variationRequired = isRequired;
+
     notifyListeners();
   }
 
@@ -64,6 +69,10 @@ class ProductItemState extends Model {
     // Update the price
     selectedItemPrice += item.price;
 
+    if (!showAddToCart) {
+      updateShowAddToCart(shouldShow: true);
+    }
+
     notifyListeners();
   }
 
@@ -77,6 +86,11 @@ class ProductItemState extends Model {
 
   void updateVariationType({bool isRequired}) {
     variationRequired = isRequired;
+    notifyListeners();
+  }
+
+  void updateShowAddToCart({bool shouldShow}) {
+    showAddToCart = shouldShow;
     notifyListeners();
   }
 }

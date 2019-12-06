@@ -111,7 +111,7 @@ class CategoryItemsState extends Model {
                       ),
                       SizedBox(height: 8.0),
                       Text(
-                        "\$${product.price}",
+                        "\$${product.price}0",
                         style: interMediumStyle(fSize: 16.0),
                       )
                     ],
@@ -178,7 +178,7 @@ class CategoryItemsState extends Model {
                     ),
                     SizedBox(height: 8.0),
                     Text(
-                      "\$${product.price}",
+                      "\$${product.price}0",
                       style: interMediumStyle(fSize: 16.0),
                     )
                   ],
