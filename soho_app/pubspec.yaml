@@ -24,6 +24,7 @@ dependencies:
   stripe_payment: ^1.0.5
   auto_size_text: ^2.1.0
   shared_preferences: ^0.5.4+5
+  circular_check_box: ^1.0.1
 
   cupertino_icons: ^0.1.2
 
@@ -75,3 +76,6 @@ flutter:
     - family: InterUILight
       fonts:
         - asset: fonts/InterUI-Light-BETA.otf
+    - family: AvenirHeavy
+      fonts:
+        - asset: fonts/Avenir-Heavy.ttf

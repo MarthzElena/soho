@@ -51,7 +51,7 @@ class _CategoryItemsAppBarState extends State<CategoryItemsAppBar> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: FlatButton(
-                          onPressed: () => model.changeItemsDistribution(),
+                          onPressed: () => model.changeItemsDistribution(context),
                           padding: EdgeInsets.all(0.0),
                           child: model.listDistribution
                       ),
