@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:soho_app/Auth/AuthController.dart';
 import 'package:soho_app/HomePage/HomePageStateController.dart';
-import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 
 class NoUserMenuWidget extends StatelessWidget {
-  AuthController authController = locator<AuthController>();
+  final AuthController authController = locator<AuthController>();
 
   @override
   Widget build(BuildContext context) {

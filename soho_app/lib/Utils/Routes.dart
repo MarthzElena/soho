@@ -5,6 +5,7 @@ import 'package:soho_app/Auth/RegisterWidget.dart';
 import 'package:soho_app/HomePage/HomePageWidget.dart';
 import 'package:soho_app/SohoApp.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsWidget.dart';
+import 'package:soho_app/ui/auth/login.dart';
 
 class Routes {
   static String root = "/";
@@ -27,7 +28,7 @@ class Routes {
     // Auth Login
     router.define(login,
         handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-      return LoginWidget();
+      return LoginScreen();
     }), transitionType: TransitionType.native);
 
     // Auth Create Account
