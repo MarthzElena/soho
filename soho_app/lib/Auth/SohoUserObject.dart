@@ -19,6 +19,9 @@ class SohoUserObject {
   String userBirthDate = "";
   // User gender TODO: Define format for gender
   String userGender = "";
+  // Admin user
+  // Admin user can read QR codes
+  bool isAdmin = false;
 
   // Past orders
   List<SohoOrderObject> pastOrders = List<SohoOrderObject>();
@@ -53,5 +56,7 @@ class SohoUserObject {
     // Return value
     return map;
   }
+
+
 
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/HomePage/HomePageStateController.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
@@ -65,6 +66,7 @@ class NoUserMenuWidget extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           authController.initiateFacebookLogin().then((_) {
+                            locator<HomePageState>().updateDrawer();
                             Navigator.pop(context);
                           });
                         },

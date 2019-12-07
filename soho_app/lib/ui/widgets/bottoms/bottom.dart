@@ -7,6 +7,7 @@ import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/Utils/Routes.dart';
 
 class BottomBar extends StatefulWidget {
   final bool isGoToCheckout;
@@ -58,7 +59,13 @@ class _BottomBarState extends State<BottomBar> {
             return GestureDetector(
               onTap: () {
                 if (_productItemModel.shouldGoToCheckout()) {
-
+                  // Check if user is logged in
+                  if (Application.currentUser != null) {
+                    // TODO: Go to shopping cart
+                  } else {
+                    // Go to login
+                    Navigator.pushNamed(context, Routes.login);
+                  }
                 } else {
                   // Create a new item with specified settings
                   SohoOrderItem selectedItem = _getSelectedProduct();

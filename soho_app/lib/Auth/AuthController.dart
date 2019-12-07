@@ -133,8 +133,12 @@ class AuthController {
   }
 
   Future<void> deleteAuthStoredValues() async {
-    await storage.delete(key: Constants.KEY_AUTH_TOKEN);
-    await storage.delete(key: Constants.KEY_AUTH_PROVIDER);
+    await storage.delete(key: Constants.KEY_AUTH_TOKEN).then((_) async {
+      await storage.delete(key: Constants.KEY_AUTH_PROVIDER).then((_) async {
+        // Clear saved user locally
+        Application.currentUser = null;
+      });
+    });
   }
 
   Future<void> initiatePhoneLogin(String number, String code) async {
@@ -277,38 +281,38 @@ class AuthController {
 
       case FacebookLoginStatus.loggedIn:
         // Save auth data and provider
-        await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_FACEBOOK_PROVIDER);
-        await storage.write(key: Constants.KEY_AUTH_TOKEN, value: facebookLoginResult.accessToken.token);
+        await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_FACEBOOK_PROVIDER).then((_) async {
+          await storage.write(key: Constants.KEY_AUTH_TOKEN, value: facebookLoginResult.accessToken.token).then((_) async {
+            // Save user to  Firebase Auth
+            var facebookToken = facebookLoginResult.accessToken.token;
+            await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
+              // Get user data
+              await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$facebookToken').then((graphResponse) async {
+                var profile = json.decode(graphResponse.body);
+                var email = profile['email'].toString();
+                var firstName = profile['first_name'].toString();
+                var lastName = profile['last_name'].toString();
+                var userId = profile['id'].toString();
+                // TODO: Get this values later!
+                var birthDate = profile['user_birthday'] == null ? "" : profile['user_birthday'];
+                var gender = profile['user_gender'] == null ? "" : profile['user_gender'];
 
-        // Save user to  Firebase Auth
-        var facebookToken = facebookLoginResult.accessToken.token;
-        await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
-          // Get user data
-          await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$facebookToken').then((graphResponse) async {
-            var profile = json.decode(graphResponse.body);
-            var email = profile['email'].toString();
-            var firstName = profile['first_name'].toString();
-            var lastName = profile['last_name'].toString();
-            var userId = profile['id'].toString();
-            // TODO: Get this values later!
-            var birthDate = profile['user_birthday'] == null ? "" : profile['user_birthday'];
-            var gender = profile['user_gender'] == null ? "" : profile['user_gender'];
-
-            var user = SohoUserObject.createUserDictionary(
-                lastName: lastName,
-                firstName: firstName,
-                email: email,
-                userId: userId,
-                birthDate: birthDate,
-                gender: gender,
-                phoneNumber: ""
-            );
-            await _saveUserToDatabase(user);
+                var user = SohoUserObject.createUserDictionary(
+                    lastName: lastName,
+                    firstName: firstName,
+                    email: email,
+                    userId: userId,
+                    birthDate: birthDate,
+                    gender: gender,
+                    phoneNumber: ""
+                );
+                await _saveUserToDatabase(user);
+              });
           });
 
-
-        }).catchError((error) {
-          // TODO: Handle error
+          }).catchError((error) {
+            // TODO: Handle error
+          });
         });
 
         break;
@@ -320,9 +324,10 @@ class AuthController {
 
   Future<void> logoutFacebook() async {
     // Logout from the provider
-    await facebookLogin.logOut();
-    // Remove values from storage
-    await deleteAuthStoredValues();
+    await facebookLogin.logOut().then((_) async {
+      // Remove values from storage
+      await deleteAuthStoredValues();
+    });
   }
 
   Future<void> initiateGoogleLogin() async {

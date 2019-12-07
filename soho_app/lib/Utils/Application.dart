@@ -4,7 +4,7 @@ import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 
 class Application {
 
-  // TODO: Change this to an Object instead of a map (this object must include a list of SohoOrderObject)
+  // Current logged in user
   static SohoUserObject currentUser;
 
   static List<CategoryObject> sohoCategories;

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/HomePage/HomePageStateController.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Locator.dart';
 
 class LoggedInUserMenuWidget extends StatelessWidget {
   @override
@@ -166,7 +169,12 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 30, top: 35),
                             child: InkWell(
-                              onTap: null,
+                              onTap: () {
+                                locator<AuthController>().logoutUser().then((_) {
+                                  locator<HomePageState>().updateDrawer();
+                                  Navigator.pop(context);
+                                });
+                              },
                               child: Text(
                                 'Cerrar sesión',
                                 style: TextStyle(
