@@ -37,8 +37,6 @@ class _ProductDetailState extends State<ProductDetail> {
   Widget build(BuildContext context) {
     ProductItemObject product = widget.currentProduct;
 
-    bool isVisible = false;
-
     return WillPopScope(
       onWillPop: () async => false,
       child: ScopedModel<ProductItemState>(
@@ -48,7 +46,7 @@ class _ProductDetailState extends State<ProductDetail> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: ProductDetailAppBar(),
-              bottomNavigationBar: isVisible ? BottomBar() : SizedBox.shrink(),
+              bottomNavigationBar: model.isVisible ? BottomBar() : SizedBox.shrink(),
               body: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),

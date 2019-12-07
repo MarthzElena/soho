@@ -5,7 +5,9 @@ class ProductItemState extends Model {
   Map<String, Map<VariationItemObject, bool>> availableVariations = {};
   Map<String, List<VariationItemObject>> selectedVariations = {};
   double selectedItemPrice = 0.0;
+
   bool variationRequired = false;
+  bool isVisible = false;
 
   void initAvailableVariations(List<VariationTypeObject> allVariations) {
     for (var variationType in allVariations) {
@@ -77,6 +79,11 @@ class ProductItemState extends Model {
 
   void updateVariationType({bool isRequired}) {
     variationRequired = isRequired;
+    notifyListeners();
+  }
+
+  void changeVisible() {
+    isVisible = !isVisible;
     notifyListeners();
   }
 }
