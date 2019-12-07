@@ -2,10 +2,16 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-TextStyle interStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
+TextStyle interStyle({
+  double fSize = 16.0,
+  Color color = Colors.black,
+  TextDecoration decoration = TextDecoration.none,
+}) =>
+    TextStyle(
       color: color,
       fontSize: fSize,
       fontFamily: 'InterUI',
+      decoration: decoration,
     );
 
 TextStyle interThinStyle({double fSize = 16.0, Color color = Colors.black, spacing = 0.0}) =>
@@ -81,7 +87,7 @@ TextStyle interMediumIStyle({double fSize = 16.0, Color color = Colors.black}) =
     );
 
 TextStyle avenirHeavyStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
-  color: color,
-  fontSize: fSize,
-  fontFamily: 'AvenirHeavy',
-);
+      color: color,
+      fontSize: fSize,
+      fontFamily: 'AvenirHeavy',
+    );

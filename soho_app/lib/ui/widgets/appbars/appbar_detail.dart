@@ -6,7 +6,7 @@ import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
 class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
-  CategoryItemsState _appBarModel = locator<CategoryItemsState>();
+  final CategoryItemsState _appBarModel = locator<CategoryItemsState>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,30 +27,40 @@ class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Container(
-                          width: 10.0,
-                          child: FlatButton(
-                              onPressed: () => Navigator.pop(context),
-                              padding: EdgeInsets.all(0.0),
-                              child: Image(image: detailBack)),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: Container(
+                            width: 45.0,
+                            height: 45.0,
+                            alignment: Alignment.centerLeft,
+                            child: Image(
+                              image: detailBack,
+                            ),
+                          ),
                         ),
                         Row(
                           children: <Widget>[
-                            Container(
-                              width: 16.0,
-                              child: FlatButton(
-                                onPressed: () => model.changeItemsDistribution(context),
-                                padding: EdgeInsets.all(0.0),
-                                child: Image(image: detailMosaic),
+                            GestureDetector(
+                              onTap: () => model.changeItemsDistribution(context),
+                              child: Container(
+                                width: 45.0,
+                                height: 45.0,
+                                alignment: Alignment.center,
+                                child: Image(
+                                  image: detailMosaic,
+                                ),
                               ),
                             ),
                             SizedBox(width: 20.0),
-                            Container(
-                              width: 16.0,
-                              child: FlatButton(
-                                onPressed: null,
-                                padding: EdgeInsets.all(0.0),
-                                child: Image(image: homeSearch),
+                            GestureDetector(
+                              onTap: null,
+                              child: Container(
+                                width: 45.0,
+                                height: 45.0,
+                                alignment: Alignment.center,
+                                child: Image(
+                                  image: homeSearch,
+                                ),
                               ),
                             ),
                           ],

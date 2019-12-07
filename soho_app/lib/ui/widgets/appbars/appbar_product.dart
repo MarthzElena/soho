@@ -3,6 +3,10 @@ import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
 class ProductDetailAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final bool isLogin;
+
+  ProductDetailAppBar({this.isLogin = false});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,11 +23,14 @@ class ProductDetailAppBar extends StatelessWidget implements PreferredSizeWidget
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Container(
-                    width: 10.0,
+                    width: isLogin? 24.0 : 10.0,
                     child: FlatButton(
-                        onPressed: () => Navigator.pop(context),
-                        padding: EdgeInsets.all(0.0),
-                        child: Image(image: detailBack)),
+                      onPressed: () => Navigator.pop(context),
+                      padding: EdgeInsets.all(0.0),
+                      child: Image(
+                        image: isLogin ? menuCross : detailBack,
+                      ),
+                    ),
                   ),
                   Container(
                     width: 24.0,
