@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar.dart';
+import 'package:soho_app/ui/widgets/bottoms/bottom.dart';
 import 'package:soho_app/ui/widgets/drawer/drawer_anon.dart';
 import 'package:soho_app/ui/widgets/drawer/drawer_logged.dart';
 import 'package:soho_app/ui/widgets/featured/featured.dart';
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
         resizeToAvoidBottomPadding: true,
         appBar: HomeAppBar(),
         drawer: Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget(),
+        bottomNavigationBar: Application.currentOrder != null ? BottomBar(isGoToCheckout: true) : SizedBox.shrink(),
         body: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),

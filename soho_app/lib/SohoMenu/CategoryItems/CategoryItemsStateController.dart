@@ -48,7 +48,8 @@ class CategoryItemsState extends Model {
     List<Widget> result = List<Widget>();
     for (var item in items) {
       var categoryText = "- ${item.subcategoryName}";
-      var subcategoryTitle = Padding(
+      var subcategoryTitle = item.subcategoryName.isNotEmpty ?
+      Padding(
         padding: const EdgeInsets.only(left: 14.0, top: 40.0, bottom: 16.0),
         child: Text(
           categoryText,
@@ -57,7 +58,7 @@ class CategoryItemsState extends Model {
             color: Color(0xff789090),
           ),
         ),
-      );
+      ) : SizedBox(height: 40.0);
       result.add(subcategoryTitle);
 
       var productCarousel = CarouselSlider(
@@ -131,7 +132,8 @@ class CategoryItemsState extends Model {
     List<Widget> result = List<Widget>();
     for (var item in items) {
       var categoryText = "- ${item.subcategoryName}";
-      var subcategoryTitle = Padding(
+      var subcategoryTitle = item.subcategoryName.isNotEmpty ?
+      Padding(
         padding: const EdgeInsets.only(left: 14.0, top: 40.0),
         child: Text(
           categoryText,
@@ -140,7 +142,7 @@ class CategoryItemsState extends Model {
             color: Color(0xff789090),
           ),
         ),
-      );
+      ) : SizedBox(height: 40.0);
       result.add(subcategoryTitle);
 
       for (var product in item.items) {
