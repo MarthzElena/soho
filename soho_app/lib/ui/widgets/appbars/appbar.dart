@@ -19,25 +19,35 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Container(
-                    width: 15.0,
-                    child: FlatButton(
-                        onPressed: () {
-                          print("User? ${Application.currentUser}");
-                          Scaffold.of(context).openDrawer();
-                        },
-                        padding: EdgeInsets.all(0.0),
-                        child: Image(image: homeHamburger)),
+                  GestureDetector(
+                    onTap: () {
+                      print("User? ${Application.currentUser}");
+                      Scaffold.of(context).openDrawer();
+                    },
+                    child: Container(
+                      width: 45.0,
+                      height: 45.0,
+                      alignment: Alignment.centerLeft,
+                      child: Image(
+                        image: homeHamburger,
+                      ),
+                    ),
                   ),
                   Image(image: homeLogo),
-                  Container(
-                    width: 16.0,
-                    child: FlatButton(
-                      onPressed: null,
-                      padding: EdgeInsets.all(0.0),
-                      child: Image(image: homeSearch),
+                  GestureDetector(
+                    onTap: () {
+                      print("User? ${Application.currentUser}");
+                      Scaffold.of(context).openDrawer();
+                    },
+                    child: Container(
+                      width: 45.0,
+                      height: 45.0,
+                      alignment: Alignment.centerRight,
+                      child: Image(
+                        image: homeSearch,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ],

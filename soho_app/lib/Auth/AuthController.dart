@@ -356,6 +356,7 @@ class AuthController {
 
     }).catchError((error) {
       // TODO: Handle error
+      print('ERROR X ' + error);
     });
 
   }
