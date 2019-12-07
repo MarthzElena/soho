@@ -7,8 +7,10 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsStateController.dart';
 import 'package:soho_app/SohoMenu/CategoryObject.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_detail.dart';
+import 'package:soho_app/ui/widgets/bottoms/bottom.dart';
 import 'package:soho_app/ui/widgets/featured/featured_detail.dart';
 
 class ItemList extends StatefulWidget {
@@ -39,6 +41,7 @@ class _ItemListState extends State<ItemList> {
               backgroundColor: Color(0xffF3F1F2),
               resizeToAvoidBottomPadding: true,
               appBar: DetailAppBar(),
+              bottomNavigationBar: Application.currentOrder != null ? BottomBar(isGoToCheckout: true) : SizedBox.shrink(),
               body: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),

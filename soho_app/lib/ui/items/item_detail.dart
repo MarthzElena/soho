@@ -29,9 +29,7 @@ class _ProductDetailState extends State<ProductDetail> {
   @override
   void initState() {
     super.initState();
-    _productItemModel.selectedItemPrice = widget.currentProduct.price;
-    _productItemModel.initAvailableVariations(widget.currentProduct.productVariations, widget.currentProduct.isVariationsRequired());
-    _productItemModel.updateShowAddToCart(shouldShow: !widget.currentProduct.isVariationsRequired());
+    _productItemModel.initProduct(widget.currentProduct);
   }
 
   @override
@@ -47,7 +45,7 @@ class _ProductDetailState extends State<ProductDetail> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: ProductDetailAppBar(),
-              bottomNavigationBar: _productItemModel.showAddToCart ? BottomBar() : SizedBox.shrink(),
+              bottomNavigationBar: _productItemModel.showAddToCart ? BottomBar(isGoToCheckout: false) : SizedBox.shrink(),
               body: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
@@ -144,7 +142,6 @@ class _ProductDetailState extends State<ProductDetail> {
       Map<VariationItemObject, bool> current = _productItemModel.availableVariations[variationType];
       for (var variationElement in current.keys) {
         var value = current[variationElement];
-        // TODO: Select Radio or Checkbox depending on variation type
         Widget elementRow = _productItemModel.variationRequired ? getRequiredVariations(variationElement, variationType) : getOptionalVariations(value, variationType, variationElement);
         list.add(elementRow);
       }
@@ -206,23 +203,5 @@ class _ProductDetailState extends State<ProductDetail> {
       ],
     );
     return widget;
-  }
-
-  SohoOrderItem _getSelectedProduct(ProductItemObject fromProductItemObject) {
-    // Get id for category
-    String categoryId = "";
-    for (var category in Application.sohoCategories) {
-      if (category.name == fromProductItemObject.category) {
-        categoryId = category.squareID;
-        break;
-      }
-    }
-
-    // Create new item for order
-    SohoOrderItem newItem = SohoOrderItem(fromProductItemObject.name, categoryId,
-        fromProductItemObject.squareID, fromProductItemObject.price);
-    newItem.addVariations(_productItemModel.selectedVariations);
-
-    return newItem;
   }
 }

@@ -26,6 +26,8 @@ class SohoOrderItem {
     for (var variationName in items.keys) {
       VariationTypeObject variationType = VariationTypeObject(variationName);
       variationType.variations = items[variationName];
+
+      productVariations.add(variationType);
     }
   }
 
