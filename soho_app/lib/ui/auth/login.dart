@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               SizedBox(height: 8.0),
                               Container(
-                                width: double.infinity,
+                                width: MediaQuery.of(context).size.width,
                                 height: 40.0,
                                 child: TextField(
                                   onChanged: (value) {
@@ -143,19 +143,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               SizedBox(height: 32.0),
-                              Container(
-                                width: double.infinity,
-                                height: 50.0,
-                                decoration: BoxDecoration(
-                                  color: Color(0xffF0AB31),
-                                  borderRadius: BorderRadius.circular(50.0),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'Recibir código',
-                                    style: interBoldStyle(
-                                      fSize: 14.0,
-                                      color: Colors.white,
+                              GestureDetector(
+                                onTap: () => model.neverSatisfied(context),
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 50.0,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffF0AB31),
+                                    borderRadius: BorderRadius.circular(50.0),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Recibir código',
+                                      style: interBoldStyle(
+                                        fSize: 14.0,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
