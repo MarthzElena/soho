@@ -331,31 +331,48 @@ class AuthController {
   }
 
   Future<void> initiateGoogleLogin() async {
-    final googleSignInAccount = await googleSignIn.signIn();
-    final googleAuth = await googleSignInAccount.authentication;
+    await googleSignIn.signIn().then((googleSignInAccount) async {
 
-    final googleCredential = GoogleAuthProvider.getCredential(
-        idToken: googleAuth.idToken,
-        accessToken: googleAuth.accessToken);
-    await firebaseAuth.signInWithCredential(googleCredential).then((googleUser) async {
-      // Create user dictionary for Database
-      var user = SohoUserObject.createUserDictionary(
-          lastName: "",
-          firstName: googleUser.displayName,
-          email: googleUser.email,
-          userId: googleUser.uid,
-          birthDate: "",
-          gender: "",
-          phoneNumber: googleUser.phoneNumber == null ? "" : googleUser.phoneNumber
-      );
-      await _saveUserToDatabase(user).then((_) async {
-        // Make sure to save credentials only if login is completed
-        await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER);
-        await storage.write(key: Constants.KEY_AUTH_TOKEN, value: googleAuth.accessToken);
+      await googleSignInAccount.authentication.then((googleAuth) async {
+
+        // Get credentials
+        final googleCredential = GoogleAuthProvider.getCredential(
+            idToken: googleAuth.idToken,
+            accessToken: googleAuth.accessToken);
+
+        await firebaseAuth.signInWithCredential(googleCredential).then((googleUser) async {
+
+          // Create user dictionary for Database
+          var user = SohoUserObject.createUserDictionary(
+              lastName: "",
+              firstName: googleUser.displayName,
+              email: googleUser.email,
+              userId: googleUser.uid,
+              birthDate: "",
+              gender: "",
+              phoneNumber: googleUser.phoneNumber == null ? "" : googleUser.phoneNumber
+          );
+
+          await _saveUserToDatabase(user).then((_) async {
+
+            // Make sure to save credentials only if login is completed
+            await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER).then((_) async {
+              await storage.write(key: Constants.KEY_AUTH_TOKEN, value: googleAuth.accessToken);
+            });
+
+          });
+
+        }).catchError((fireBaseSignInError) {
+          // TODO: Handle error
+          print("Sign in Firebase error: ${fireBaseSignInError.toString()}");
+        });
+
+      }).catchError((authenticationError) {
+        print("Authentication error: ${authenticationError.toString()}");
       });
 
-    }).catchError((error) {
-      // TODO: Handle error
+    }).catchError((signInError) {
+      print("Sign in error: ${signInError.toString()}");
     });
 
   }

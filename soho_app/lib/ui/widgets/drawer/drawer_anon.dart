@@ -92,6 +92,7 @@ class NoUserMenuWidget extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           authController.initiateGoogleLogin().then((_) {
+                            locator<HomePageState>().updateDrawer();
                             Navigator.pop(context);
                           });
                         },
