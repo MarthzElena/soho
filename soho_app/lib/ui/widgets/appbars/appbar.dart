@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
@@ -22,6 +23,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     width: 15.0,
                     child: FlatButton(
                         onPressed: () {
+                          print("User? ${Application.currentUser}");
                           Scaffold.of(context).openDrawer();
                         },
                         padding: EdgeInsets.all(0.0),

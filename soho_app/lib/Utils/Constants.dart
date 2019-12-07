@@ -12,12 +12,14 @@ class Constants {
   static const KEY_FACEBOOK_PROVIDER = "KEY_FACEBOOK_PROVIDER";
   static const KEY_GOOGLE_PROVIDER = "KEY_GOOGLE_PROVIDER";
   static const KEY_EMAIL_PROVIDER = "KEY_EMAIL_PROVIDER";
+  static const KEY_PHONE_PROVIDER = "KEY_PHONE_PROVIDER";
   static const KEY_SAVED_EMAIL = "KEY_SAVED_EMAIL";
+  static const KEY_SAVED_PHONE_NUMBER = "KEY_SAVED_PHONE_NUMBER";
 
   /// Firebase Database keys
   static const DATABASE_KEY_USERS = "usuarios";
 
-  /// Dictionary keys
+  /// Dictionary keys for user
   static const DICT_KEY_EMAIL = "email";
   static const DICT_KEY_NAME = "nombre";
   static const DICT_KEY_LAST_NAME = "apellidos";
@@ -25,6 +27,9 @@ class Constants {
   static const DICT_KEY_ID = "id";
   static const DICT_KEY_GENDER = "sexo";
   static const DICT_KEY_PHONE = "telefono";
+  static const DICT_KEY_IS_ADMIN = "isAdmin";
+  static const DICT_KEY_PAST_ORDERS = "past_orders";
+  static const DICT_KEY_ONGOING_ORDERS = "ongoing_orders";
 
   /// Category Items
   static const PARAM_CATEGORY_NAME = "DIC_KEY_CATEGORY_NAME";

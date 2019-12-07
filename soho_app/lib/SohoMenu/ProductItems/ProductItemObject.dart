@@ -13,6 +13,15 @@ class ProductItemObject {
   static String keyPrice = "price";
   static String keyVariations = "variations";
 
+  // Constants for Category names
+  final String _categoryCoffee = "coffee";
+  final String _categoryTea = "tea";
+  final String _categoryDesayunos = "desayunos";
+  final String _categoryComidasCenas = "comidas y cenas";
+  final String _categoryAltaReposteria = "alta repostería";
+  final String _categoryBebidasCocteles = "bebidas y cócteles";
+  final String _categoryOtros = "otros";
+
   /// String for product name on Square
   String name = "";
 
@@ -50,6 +59,28 @@ class ProductItemObject {
       // Product has no category or value is wrong
       // Use name AS IS and leave subcategory empty
       this.name = nameAndSubCategory;
+    }
+  }
+
+  /// Defines whether the variation list for this object will be REQUIRED or OPTIONAL
+  /// TODO! Update this with FINAL values
+  bool isVariationsRequired() {
+    if (category.toLowerCase().startsWith(_categoryCoffee)) {
+      return true;
+    } else if (category.toLowerCase().startsWith(_categoryTea)) {
+      return true;
+    } else if (category.toLowerCase().startsWith(_categoryDesayunos)) {
+      return false;
+    } else if (category.toLowerCase().startsWith(_categoryComidasCenas)) {
+      return false;
+    } else if (category.toLowerCase().startsWith(_categoryAltaReposteria)) {
+      return false;
+    } else if (category.toLowerCase().startsWith(_categoryBebidasCocteles)) {
+      return false;
+    } else if (category.toLowerCase().startsWith(_categoryOtros)) {
+      return false;
+    } else {
+      return false;
     }
   }
 

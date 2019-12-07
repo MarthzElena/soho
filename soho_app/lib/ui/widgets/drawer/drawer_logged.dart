@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/HomePage/HomePageStateController.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Locator.dart';
 
 class LoggedInUserMenuWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: Replace values with User values + Add actions to each Row item
+    // TODO: Add actions to each Row item
+    var name = "";
+    if (Application.currentUser != null) {
+      name = Application.currentUser.firstName + " " + Application.currentUser.lastName;
+    }
 
     return Drawer(
       child: Container(
@@ -29,7 +37,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 48.0),
                       child: Text(
-                        'Martha Loera', // Change this with real user
+                        name,
                         style: interBoldStyle(
                           fSize: 16.0,
                           color: Colors.white,
@@ -161,7 +169,12 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 30, top: 35),
                             child: InkWell(
-                              onTap: null,
+                              onTap: () {
+                                locator<AuthController>().logoutUser().then((_) {
+                                  locator<HomePageState>().updateDrawer();
+                                  Navigator.pop(context);
+                                });
+                              },
                               child: Text(
                                 'Cerrar sesión',
                                 style: TextStyle(

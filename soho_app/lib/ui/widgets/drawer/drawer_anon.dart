@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/HomePage/HomePageStateController.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Locator.dart';
 
 class NoUserMenuWidget extends StatelessWidget {
+  AuthController authController = locator<AuthController>();
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -57,37 +63,52 @@ class NoUserMenuWidget extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 16.0),
-                      Container(
-                        width: double.infinity,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: Color(0xff3B5998),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Entrar con Facebook',
-                            style: interBoldStyle(
-                              fSize: 14.0,
-                              color: Colors.white,
+                      GestureDetector(
+                        onTap: () {
+                          authController.initiateFacebookLogin().then((_) {
+                            locator<HomePageState>().updateDrawer();
+                            Navigator.pop(context);
+                          });
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 50.0,
+                          decoration: BoxDecoration(
+                            color: Color(0xff3B5998),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Entrar con Facebook',
+                              style: interBoldStyle(
+                                fSize: 14.0,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
                       ),
                       SizedBox(height: 16.0),
-                      Container(
-                        width: double.infinity,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: Color(0xffE51F4F),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Entrar con Gmail',
-                            style: interBoldStyle(
-                              fSize: 14.0,
-                              color: Colors.white,
+                      GestureDetector(
+                        onTap: () {
+                          authController.initiateGoogleLogin().then((_) {
+                            Navigator.pop(context);
+                          });
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 50.0,
+                          decoration: BoxDecoration(
+                            color: Color(0xffE51F4F),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Entrar con Gmail',
+                              style: interBoldStyle(
+                                fSize: 14.0,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'package:soho_app/Auth/RegisterStateController.dart';
+import 'package:soho_app/Auth/SohoUserObject.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
 
 import 'AuthController.dart';
-import 'AuthControllerUtilities.dart';
 
 class RegisterWidget extends StatefulWidget {
 
@@ -21,6 +22,7 @@ class RegisterWidget extends StatefulWidget {
 
 class _RegisterState  extends State<RegisterWidget> {
   RegisterState registerState = locator<RegisterState>();
+  AuthController authController = locator<AuthController>();
   FocusNode _textFocus = new FocusNode();
 
   @override
@@ -213,17 +215,17 @@ class _RegisterState  extends State<RegisterWidget> {
 
   Future<void> createAccountPressed(BuildContext context) async {
     // Create user dictionary
-    var user = AuthControllerUtilities.createUserDictionary(
-        registerState.lastNameInput,
-        registerState.nameInput,
-        registerState.emailInput,
-        "", // ID is empty since will be defined later
-        "", // Birthday will be defined later
-        "", // Gender will be defined later
-        registerState.phoneNumber
+    var user = SohoUserObject.createUserDictionary(
+        lastName: registerState.lastNameInput,
+        firstName: registerState.nameInput,
+        email: registerState.emailInput,
+        userId: "", // ID is empty since will be defined later
+        birthDate: "", // Birthday will be defined later
+        gender: "", // Gender will be defined later
+        phoneNumber: registerState.phoneNumber
     );
 
-    await AuthController().createUserWithEmail(user, registerState.passwordInput).then((registeredUser) {
+    await authController.createUserWithEmail(user, registerState.passwordInput).then((registeredUser) {
       if (registeredUser != null) {
         // TODO: Do something with the user
         Navigator.pushNamed(context, Routes.homePage);
@@ -237,8 +239,8 @@ class _RegisterState  extends State<RegisterWidget> {
 
   Future<void> facebookLoginPressed(BuildContext context) async {
 
-    await AuthController().initiateFacebookLogin().then((facebookUser) {
-      if (facebookUser != null) {
+    await authController.initiateFacebookLogin().then((_) {
+      if (Application.currentUser != null) {
         // TODO: Do something with this user?
         Navigator.pushNamed(context, Routes.homePage);
       } else {
@@ -250,9 +252,8 @@ class _RegisterState  extends State<RegisterWidget> {
 
   Future<void> googleLoginPressed(BuildContext context) async {
 
-    await AuthController().initiateGoogleLogin().then((googleUser) {
-      if (googleUser != null) {
-        // TODO: Do something with this user?
+    await authController.initiateGoogleLogin().then((_) {
+      if (Application.currentUser != null) {
         Navigator.pushNamed(context, Routes.homePage);
       } else {
         // TODO: Show some error
