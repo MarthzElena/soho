@@ -24,120 +24,126 @@ class LoggedInUserMenuWidget extends StatelessWidget {
             children: <Widget>[
               Align(
                 alignment: Alignment.topLeft,
-                child: Container(
-                  height: 32,
-                  width: 32,
-                  color: Colors.grey,
-                ),
-              ),
-              Column(
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 48.0),
-                      child: Text(
-                        name,
-                        style: interBoldStyle(
-                          fSize: 16.0,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 48.0, top: 2.0),
-                    child: Row(
-                      children: <Widget>[
-                        Text(
-                          'Última orden: ',
-                          style: interStyle(
-                            fSize: 14.0,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          'Hace X días',
-                          style: interBoldStyle(
-                            fSize: 14.0,
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ), // Name, photo, last order date
-              Padding(
-                padding: const EdgeInsets.only(top: 113),
                 child: Column(
                   children: <Widget>[
+                    SizedBox(height: 24.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: 32.0,
+                          height: 32.0,
+                          child: CircleAvatar(
+                            radius: 50.0,
+                            backgroundColor: Colors.grey,
+                            child: Container(
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 16.0),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              name.isNotEmpty ? name : 'Nombre',
+                              style: interBoldStyle(
+                                fSize: 16.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 2.0),
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  'Última orden: ',
+                                  style: interStyle(
+                                    fSize: 12.0,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  'Hace X días',
+                                  style: interBoldStyle(
+                                    fSize: 12.0,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 115.0),
                     Row(
                       children: <Widget>[
-                        Image(image: AssetImage('assets/menu/icon_barcode.png')),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Text(
-                            'Mis órdenes',
-                            style: interStyle(
-                              fSize: 14.0,
-                              color: Color(0xffE4E4E4),
-                            ),
+                        Image(
+                          image: AssetImage('assets/menu/icon_barcode.png'),
+                          width: 24.0,
+                        ),
+                        SizedBox(width: 12.0),
+                        Text(
+                          'Mis órdenes',
+                          style: interStyle(
+                            fSize: 14.0,
+                            color: Color(0xffE4E4E4),
                           ),
                         )
                       ],
-                    ), // Mis ordenes
-                    Padding(
-                      padding: const EdgeInsets.only(top: 40),
-                      child: Row(
-                        children: <Widget>[
-                          Image(image: AssetImage('assets/menu/icon_about.png')),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Text(
-                              'Acerca de Soho',
-                              style: interStyle(
-                                fSize: 14.0,
-                                color: Color(0xffE4E4E4),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ), // Acerca de soho
-                    Padding(
-                      padding: const EdgeInsets.only(top: 40, bottom: 44),
-                      child: Row(
-                        children: <Widget>[
-                          Image(image: AssetImage('assets/menu/icon_wallet.png')),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Text(
-                              'Métodos de pago',
-                              style: interStyle(
-                                fSize: 14.0,
-                                color: Color(0xffE4E4E4),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ), // Metodos de pago
+                    ),
+                    SizedBox(height: 42.0),
                     Row(
                       children: <Widget>[
-                        Image(image: AssetImage('assets/menu/icon_locations.png')),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 13),
-                          child: Text(
-                            'Ubicación',
-                            style: interStyle(
-                              fSize: 14.0,
-                              color: Color(0xffE4E4E4),
-                            ),
+                        Image(
+                          image: AssetImage('assets/menu/icon_about.png'),
+                          width: 24.0,
+                        ),
+                        SizedBox(width: 12.0),
+                        Text(
+                          'Acerca de Soho',
+                          style: interStyle(
+                            fSize: 14.0,
+                            color: Color(0xffE4E4E4),
                           ),
                         )
                       ],
-                    ), // Ubicaciones
+                    ),
+                    SizedBox(height: 42.0),
+                    Row(
+                      children: <Widget>[
+                        Image(
+                          image: AssetImage('assets/menu/icon_wallet.png'),
+                          width: 24.0,
+                        ),
+                        SizedBox(width: 12.0),
+                        Text(
+                          'Métodos de pago',
+                          style: interStyle(
+                            fSize: 14.0,
+                            color: Color(0xffE4E4E4),
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 42.0),
+                    Row(
+                      children: <Widget>[
+                        Image(
+                          image: AssetImage('assets/menu/icon_locations.png'),
+                          width: 24.0,
+                        ),
+                        SizedBox(width: 12.0),
+                        Text(
+                          'Ubicación',
+                          style: interStyle(
+                            fSize: 14.0,
+                            color: Color(0xffE4E4E4),
+                          ),
+                        )
+                      ],
+                    ), // Name, photo, last order date
                   ],
                 ),
               ),
@@ -151,24 +157,25 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Image(image: AssetImage('assets/menu/icon_settings.png')),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Text(
-                                'Configuración',
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 228, 228, 228),
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14.0),
+                            Image(
+                              image: AssetImage('assets/menu/icon_settings.png'),
+                              width: 24.0,
+                            ),
+                            SizedBox(width: 12.0),
+                            Text(
+                              'Configuración',
+                              style: interMediumStyle(
+                                fSize: 14.0,
+                                color: Color(0xffE4E4E4),
                               ),
                             )
                           ],
                         ), // Configuracion
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 30, top: 35),
-                            child: InkWell(
+                        SizedBox(height: 36.0),
+                        Row(
+                          children: <Widget>[
+                            SizedBox(width: 36.0),
+                            GestureDetector(
                               onTap: () {
                                 locator<AuthController>().logoutUser().then((_) {
                                   locator<HomePageState>().updateDrawer();
@@ -177,14 +184,14 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               },
                               child: Text(
                                 'Cerrar sesión',
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 134, 103, 103),
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w600),
+                                style: interMediumStyle(
+                                  fSize: 14.0,
+                                  color: Color(0xff866767),
+                                ),
                               ),
                             ),
-                          ),
-                        )
+                          ],
+                        ),
                       ],
                     ),
                   ),

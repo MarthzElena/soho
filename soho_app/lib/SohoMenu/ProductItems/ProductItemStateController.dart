@@ -11,7 +11,9 @@ class ProductItemState extends Model {
   Map<String, Map<VariationItemObject, bool>> availableVariations = {};
   Map<String, List<VariationItemObject>> selectedVariations = {};
   double selectedItemPrice = 0.0;
+
   bool variationRequired = false;
+
   // Settings for Add To Cart button
   bool showAddToCart = false;
   String addToCartText = "";
@@ -28,7 +30,6 @@ class ProductItemState extends Model {
     selectedVariations.clear();
     // Set add to cart button
     setBottomToAddItem();
-
   }
 
   bool shouldGoToCheckout() {
@@ -56,7 +57,6 @@ class ProductItemState extends Model {
       // Hide button
       updateShowAddToCart(shouldShow: false);
     }
-
   }
 
   void initAvailableVariations(List<VariationTypeObject> allVariations, bool isRequired) {

@@ -7,8 +7,6 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
-import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
-import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_product.dart';
@@ -45,7 +43,9 @@ class _ProductDetailState extends State<ProductDetail> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: ProductDetailAppBar(),
-              bottomNavigationBar: _productItemModel.showAddToCart ? BottomBar(isGoToCheckout: false) : SizedBox.shrink(),
+              bottomNavigationBar: _productItemModel.showAddToCart
+                  ? BottomBar(isGoToCheckout: false)
+                  : SizedBox.shrink(),
               body: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
@@ -142,7 +142,9 @@ class _ProductDetailState extends State<ProductDetail> {
       Map<VariationItemObject, bool> current = _productItemModel.availableVariations[variationType];
       for (var variationElement in current.keys) {
         var value = current[variationElement];
-        Widget elementRow = _productItemModel.variationRequired ? getRequiredVariations(variationElement, variationType) : getOptionalVariations(value, variationType, variationElement);
+        Widget elementRow = _productItemModel.variationRequired
+            ? getRequiredVariations(variationElement, variationType)
+            : getOptionalVariations(value, variationType, variationElement);
         list.add(elementRow);
       }
     }
