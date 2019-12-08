@@ -20,6 +20,7 @@ AssetImage productBottom = AssetImage('assets/category_detail/bottom.png');
 /* Menu Assets */
 AssetImage menuCross = AssetImage('assets/menu/cross.png');
 AssetImage menuCheck = AssetImage('assets/icons/check.png');
+AssetImage menuMore = AssetImage('assets/icons/more.png');
 
 /* Auth Assets */
 AssetImage authImage = AssetImage('assets/auth/bamboo.png');
