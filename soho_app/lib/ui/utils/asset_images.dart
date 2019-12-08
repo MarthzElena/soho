@@ -37,3 +37,9 @@ AssetImage locationMail = AssetImage('assets/icons/mail.png');
 AssetImage locationPin = AssetImage('assets/icons/pin.png');
 AssetImage locationPhone = AssetImage('assets/icons/phone.png');
 AssetImage locationMap = AssetImage('assets/icons/map.png');
+
+/* Payment Assets */
+AssetImage paymentAdd = AssetImage('assets/icons/add.png');
+AssetImage paymentWallet = AssetImage('assets/payments/wallet.png');
+AssetImage masterCard = AssetImage('assets/payments/mcard.png');
+AssetImage paymentForward = AssetImage('assets/icons/forward.png');

@@ -45,6 +45,7 @@ flutter:
     - assets/auth/
     - assets/purchases/
     - assets/icons/
+    - assets/payments/
 
   fonts:
     - family: InterUI
