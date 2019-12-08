@@ -22,6 +22,7 @@ AssetImage menuCross = AssetImage('assets/menu/cross.png');
 AssetImage menuCheck = AssetImage('assets/icons/check.png');
 AssetImage menuMore = AssetImage('assets/icons/more.png');
 AssetImage menuCamera = AssetImage('assets/icons/cam.png');
+AssetImage menuPencil = AssetImage('assets/icons/pencil.png');
 
 /* Auth Assets */
 AssetImage authImage = AssetImage('assets/auth/bamboo.png');

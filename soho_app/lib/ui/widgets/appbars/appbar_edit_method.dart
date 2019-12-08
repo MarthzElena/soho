@@ -3,13 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Fonts.dart';
-import 'package:soho_app/ui/payments/add_method.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
 class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final bool isPencil;
 
-  EditMethodAppBar({this.title = 'EDITAR MÉTODO DE PAGO'});
+  EditMethodAppBar({
+    this.title = 'EDITAR MÉTODO DE PAGO',
+    this.isPencil = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +59,7 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                       onPressed: () => Navigator.pop(context),
                       padding: EdgeInsets.all(0.0),
                       child: Image(
-                        image: menuCheck,
+                        image: isPencil ? menuPencil : menuCheck,
                         width: 22.0,
                         height: 22.0,
                       ),
