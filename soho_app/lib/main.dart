@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
-import 'package:soho_app/ui/about/about.dart';
-import 'package:soho_app/ui/purchases/thanks.dart';
-import 'package:soho_app/ui/splash/splash.dart';
+import 'package:soho_app/ui/about/location.dart';
 
 Future main() async {
   final Router _router = Router();
@@ -23,7 +21,7 @@ Future main() async {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: _router.generator,
       title: 'Soho',
-      home: AboutScreen(),
+      home: LocationScreen(),
     ),
   );
 }

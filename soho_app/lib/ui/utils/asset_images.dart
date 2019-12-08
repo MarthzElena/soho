@@ -30,3 +30,10 @@ AssetImage purchasesBag = AssetImage('assets/purchases/bag.png');
 
 /* About Assets */
 AssetImage aboutImage = AssetImage('assets/purchases/conch.png');
+
+/* Location Assets */
+AssetImage locationImage = AssetImage('assets/purchases/location.png');
+AssetImage locationMail = AssetImage('assets/icons/mail.png');
+AssetImage locationPin = AssetImage('assets/icons/pin.png');
+AssetImage locationPhone = AssetImage('assets/icons/phone.png');
+AssetImage locationMap = AssetImage('assets/icons/map.png');
