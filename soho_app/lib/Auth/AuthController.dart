@@ -80,7 +80,13 @@ class AuthController {
               case Constants.KEY_PHONE_PROVIDER:
                 {
                   // Phone Login
-//                  await initiatePhoneLogin(savedPhone, "", "");
+                await firebaseAuth.currentUser().then((user) async {
+                  if (user != null) {
+                    await startSessionFromUserId(user.uid);
+                  } else {
+                    // TODO: Attempt to validate saved phone
+                  }
+                });
                 }
                 break;
 
@@ -312,6 +318,38 @@ class AuthController {
         }
       }
     }
+  }
+
+  Future<void> startSessionFromUserId(String userId) async {
+    var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+    var savedUser = usersRef.child(userId);
+
+    await savedUser.once().then((item) async {
+      if (item != null && item.value != null) {
+        LinkedHashMap linkedMap = item.value;
+        Map<String, String> user = linkedMap.cast();
+        if (user != null) {
+          // Create local user
+          var sohoUser = SohoUserObject(
+              lastName: user[Constants.DICT_KEY_LAST_NAME],
+              firstName: user[Constants.DICT_KEY_NAME],
+              email: user[Constants.DICT_KEY_EMAIL],
+              userId: user[Constants.DICT_KEY_ID],
+              userPhoneNumber: user[Constants.DICT_KEY_PHONE]
+          );
+          sohoUser.userBirthDate = user[Constants.DICT_KEY_BIRTH_DATE];
+          sohoUser.userGender = user[Constants.DICT_KEY_GENDER];
+
+          // Save locally
+          Application.currentUser = sohoUser;
+          // Update home page state
+          locator<HomePageState>().updateDrawer();
+        }
+      }
+    }).catchError((databaseError) {
+      print("Database fetch error: ${databaseError.toString()}");
+      return true;
+    });;
   }
 
   Future<void> saveUserToDatabase(Map<String, String> user) async {

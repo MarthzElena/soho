@@ -110,7 +110,8 @@ class LoginState extends Model {
           smsOTPSent,
           timeout: const Duration(seconds: 20),
           verificationCompleted: (AuthCredential phoneAuthCredential) {
-            print(phoneAuthCredential);
+            // TODO:
+            print("**** Verificatioon COMPLETE! $phoneAuthCredential");
           },
           verificationFailed: (AuthException exception) {
             // TODO: Handle error
