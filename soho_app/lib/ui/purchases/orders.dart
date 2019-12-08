@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:soho_app/Utils/Fonts.dart';
@@ -135,11 +136,239 @@ class _OrderScreenState extends State<OrderScreen> {
                         SizedBox(height: 8.0),
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 60.0,
-                          child: TextFieldSoho(
-                            controller: null,
+                          height: 40.0,
+                          child: TextField(
+                            textAlignVertical: TextAlignVertical.center,
+                            style: interLightStyle(
+                              fSize: 14.0,
+                            ),
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(10.0),
+                              hintText: '¿Alérgicos a algun ingrediente? ¿Sin cebolla?',
+                              hintStyle: interLightStyle(
+                                fSize: 14.0,
+                                color: Color(0xffC4C4C4),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(3.0),
+                                borderSide: const BorderSide(
+                                  color: Color(0xffE5E4E5),
+                                  width: 1.0,
+                                ),
+                              ),
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color(0xffE5E4E5),
+                                  width: 1.0,
+                                ),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color(0xffE5E4E5),
+                                  width: 1.0,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
+                        SizedBox(height: 24.0),
+                        Divider(
+                          height: 1.0,
+                          color: Color(0xffE5E4E5),
+                        ),
+                        SizedBox(height: 16.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              '¿Tienes un ',
+                              style: interStyle(fSize: 14.0),
+                            ),
+                            Text(
+                              'Código',
+                              style: interStyle(
+                                fSize: 14.0,
+                                color: Color(0xffE51F4F),
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16.0),
+                        Divider(
+                          height: 1.0,
+                          color: Color(0xffE5E4E5),
+                        ),
+                        SizedBox(height: 24.0),
+                        Text(
+                          'Deja una propina',
+                          style: interLightStyle(
+                            fSize: 14.0,
+                            color: Color(0xff789090),
+                          ),
+                        ),
+                        SizedBox(height: 16.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Chip(
+                              label: Text(' Otro '),
+                              labelStyle: interMediumStyle(
+                                fSize: 14.0,
+                                color: Color(0xff789090),
+                              ),
+                              backgroundColor: Colors.white,
+                              shape: StadiumBorder(
+                                side: BorderSide(
+                                  color: Color(0xff789090),
+                                ),
+                              ),
+                            ),
+                            Chip(
+                              label: Text('\$10.00'),
+                              labelStyle: interMediumStyle(
+                                fSize: 14.0,
+                                color: Color(0xff789090),
+                              ),
+                              backgroundColor: Colors.white,
+                              shape: StadiumBorder(
+                                side: BorderSide(
+                                  color: Color(0xff789090),
+                                ),
+                              ),
+                            ),
+                            Chip(
+                              label: Text('\$15.00'),
+                              labelStyle: interMediumStyle(
+                                fSize: 14.0,
+                                color: Color(0xff789090),
+                              ),
+                              backgroundColor: Colors.white,
+                              shape: StadiumBorder(
+                                side: BorderSide(
+                                  color: Color(0xff789090),
+                                ),
+                              ),
+                            ),
+                            Chip(
+                              label: Text('\$20.00'),
+                              labelStyle: interMediumStyle(
+                                fSize: 14.0,
+                                color: Color(0xff789090),
+                              ),
+                              backgroundColor: Colors.white,
+                              shape: StadiumBorder(
+                                side: BorderSide(
+                                  color: Color(0xff789090),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 24.0),
+                        Divider(
+                          height: 1.0,
+                          color: Color(0xffE5E4E5),
+                        ),
+                        SizedBox(height: 24.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Text(
+                              'Subtotal',
+                              style: interMediumStyle(
+                                fSize: 14.0,
+                                color: Color(0xff5A6265),
+                              ),
+                            ),
+                            Text(
+                              '\$200.00',
+                              style: interMediumStyle(
+                                fSize: 14.0,
+                                color: Color(0xff5A6265),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Text(
+                              'Propina',
+                              style: interMediumStyle(
+                                fSize: 14.0,
+                                color: Color(0xff5A6265),
+                              ),
+                            ),
+                            Text(
+                              '\$10.00',
+                              style: interMediumStyle(
+                                fSize: 14.0,
+                                color: Color(0xff5A6265),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Text(
+                              'Total',
+                              style: interMediumStyle(),
+                            ),
+                            Text(
+                              '\$210.00',
+                              style: interMediumStyle(fSize: 18.0),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 24.0),
+                        Divider(
+                          height: 1.0,
+                          color: Color(0xffE5E4E5),
+                        ),
+                        SizedBox(height: 24.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Image(image: purchasesVisa),
+                                SizedBox(width: 12.0),
+                                Text(
+                                  '****  ****  ****',
+                                  style: interMediumStyle(
+                                    fSize: 14.0,
+                                    color: Color(0xff5A6265),
+                                  ),
+                                ),
+                                SizedBox(width: 12.0),
+                                Text(
+                                  '8763',
+                                  style: interMediumStyle(
+                                    fSize: 14.0,
+                                    color: Color(0xff5A6265),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              'Cambiar',
+                              style: interStyle(
+                                fSize: 14.0,
+                                color: Color(0xffE51F4F),
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 36.0),
                       ],
                     ),
                   ),
