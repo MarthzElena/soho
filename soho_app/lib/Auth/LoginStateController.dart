@@ -67,9 +67,7 @@ class LoginState extends Model {
   Future<void> verifyPhone(BuildContext context) async {
     final PhoneCodeSent smsOTPSent = (String verId, [int forceCodeResend]) {
       this._phoneVerificationId = verId;
-      smsCodeDialog(context).then((_) {
-        print('**** SUCCESSSSSS');
-      });
+      smsCodeDialog(context);
     };
     try {
       await FirebaseAuth.instance.verifyPhoneNumber(
@@ -80,17 +78,17 @@ class LoginState extends Model {
             this._phoneVerificationId = verId;
           },
           codeSent:
-          smsOTPSent, // WHEN CODE SENT THEN WE OPEN DIALOG TO ENTER OTP.
+          smsOTPSent,
           timeout: const Duration(seconds: 20),
           verificationCompleted: (AuthCredential phoneAuthCredential) {
             print(phoneAuthCredential);
           },
-          verificationFailed: (AuthException exceptio) {
-            print('${exceptio.message}');
+          verificationFailed: (AuthException exception) {
+            // TODO: Handle error
+            print('Error with verification: ${exception.message}');
           });
     } catch (e) {
       handleError(e, context);
-      print("TRY CATCH error: ${e.toString()}");
     }
   }
 
@@ -99,9 +97,11 @@ class LoginState extends Model {
     switch (error.code) {
       case 'ERROR_INVALID_VERIFICATION_CODE':
         print("*** INVALID CODE!!");
+        // TODO: HAndle Error
         break;
       default:
         print("*** SOME ERROR!!");
+        // TODO: HAndle Error
 
         break;
     }
