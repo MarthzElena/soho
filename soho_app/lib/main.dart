@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/purchases/thanks.dart';
 import 'package:soho_app/ui/splash/splash.dart';
 
 Future main() async {
@@ -21,7 +22,7 @@ Future main() async {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: _router.generator,
       title: 'Soho',
-      home: SplashScreen(),
+      home: ThanksScreen(),
     ),
   );
 }
