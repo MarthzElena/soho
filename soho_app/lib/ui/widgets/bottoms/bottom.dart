@@ -61,7 +61,8 @@ class _BottomBarState extends State<BottomBar> {
                 if (_productItemModel.shouldGoToCheckout()) {
                   // Check if user is logged in
                   if (Application.currentUser != null) {
-                    // TODO: Go to shopping cart
+                    // Go to shopping cart
+                    Navigator.pushNamed(context, Routes.orderDetail);
                   } else {
                     // Go to login
                     Navigator.pushNamed(context, Routes.login);

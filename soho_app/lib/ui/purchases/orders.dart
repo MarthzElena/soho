@@ -3,19 +3,54 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_simple.dart';
-import 'package:soho_app/ui/widgets/textfields/textfield.dart';
 
 class OrderScreen extends StatefulWidget {
   @override
   _OrderScreenState createState() => _OrderScreenState();
 }
 
+class OrderElement {
+  String name = "";
+  String price = "";
+  OrderElement({this.name = "", this.price = ""});
+}
+
 class _OrderScreenState extends State<OrderScreen> {
+  List<OrderElement> orderItems = List<OrderElement>();
+
+  List<OrderElement> _prepareOrderElements() {
+    var list = List<OrderElement>();
+
+    if (Application.currentOrder != null) {
+      for (var product in Application.currentOrder.selectedProducts) {
+        var price = "\$${product.price}0";
+        var productElement = OrderElement(name: product.name, price: price);
+        list.add(productElement);
+        // Add variations
+        for (var variationType in product.productVariations) {
+          for (var variation in variationType.variations) {
+            var itemVariation = OrderElement(name: variation.name);
+            list.add(itemVariation);
+          }
+        }
+        // Add empty element for space between products
+        list.add(OrderElement());
+      }
+    } else {
+      list.add(OrderElement(name: "No olvides agregar productos a tu pedido!"));
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    orderItems = _prepareOrderElements();
+
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -113,20 +148,46 @@ class _OrderScreenState extends State<OrderScreen> {
                           color: Color(0xffE5E4E5),
                         ),
                         SizedBox(height: 18.0),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Té Negro Assam Hunwal',
-                              style: interBoldStyle(fSize: 14.0),
-                            ),
-                            Text(
-                              '\$200.00',
-                              style: avenirHeavyStyle(fSize: 16.0),
-                            ),
-                          ],
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: orderItems.length,
+                          itemBuilder: (BuildContext ctxt, int index) {
+                            var element = orderItems[index];
+                            if (element.name.isEmpty) {
+                              return SizedBox(height: 10.0);
+                            } else if (element.price.isEmpty) {
+                              return Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      element.name,
+                                      style: interLightStyle(
+                                        fSize: 14.0,
+                                        color: Color(0xff789090),
+                                      ),
+                                    ),
+                                  ]
+                              );
+                            } else {
+                              return Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      element.name,
+                                      style: interBoldStyle(fSize: 14.0),
+                                    ),
+                                    Text(
+                                      element.price,
+                                      style: avenirHeavyStyle(fSize: 16.0),
+                                    ),
+                                  ]
+                              );
+                            }
+                          },
                         ),
                         SizedBox(height: 32.0),
                         Text(
