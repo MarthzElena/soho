@@ -25,6 +25,7 @@ dependencies:
   auto_size_text: ^2.1.0
   shared_preferences: ^0.5.4+5
   circular_check_box: ^1.0.1
+  material_segmented_control: ^2.0.7
 
   cupertino_icons: ^0.1.2
 
@@ -43,6 +44,8 @@ flutter:
     - assets/menu/
     - assets/auth/
     - assets/purchases/
+    - assets/icons/
+    - assets/payments/
 
   fonts:
     - family: InterUI
