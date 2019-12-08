@@ -23,7 +23,10 @@ AssetImage menuCross = AssetImage('assets/menu/cross.png');
 /* Auth Assets */
 AssetImage authImage = AssetImage('assets/auth/bamboo.png');
 
-/* PurchasesAssets */
+/* Purchases Assets */
 AssetImage purchasesImage = AssetImage('assets/purchases/healthy.png');
 AssetImage purchasesVisa = AssetImage('assets/purchases/visa.png');
 AssetImage purchasesBag = AssetImage('assets/purchases/bag.png');
+
+/* About Assets */
+AssetImage aboutImage = AssetImage('assets/purchases/conch.png');
