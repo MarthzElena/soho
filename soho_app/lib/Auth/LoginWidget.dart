@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/HomePage/HomePageStateController.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/Utils/Locator.dart';
@@ -89,7 +90,7 @@ class _LoginState extends State<LoginWidget> {
 
     await authController.initiateFacebookLogin().then((_) {
       if (Application.currentUser != null) {
-
+        locator<HomePageState>().updateDrawer();
         Navigator.pushNamed(context, Routes.homePage);
       } else {
         // TODO: Show some error
@@ -102,7 +103,7 @@ class _LoginState extends State<LoginWidget> {
 
     await authController.initiateGoogleLogin().then((_) {
       if (Application.currentUser != null) {
-        // TODO: Do something with this user?
+        locator<HomePageState>().updateDrawer();
         Navigator.pushNamed(context, Routes.homePage);
       } else {
         // TODO: Show some error
@@ -114,9 +115,11 @@ class _LoginState extends State<LoginWidget> {
 
   Future<void> _phoneLoginPressed(BuildContext context, {String phoneNumber, String code}) async {
 
-    if (phoneNumber.isNotEmpty) {
-      await authController.initiatePhoneLogin(phoneNumber, code);
-    }
+//    if (phoneNumber.isNotEmpty) {
+//      await authController.initiatePhoneLogin(phoneNumber, "", "").then((_) {
+//        Navigator.pop(context);
+//      });
+//    }
   }
 
 }

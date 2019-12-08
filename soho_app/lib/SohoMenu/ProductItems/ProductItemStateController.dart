@@ -14,8 +14,6 @@ class ProductItemState extends Model {
 
   bool variationRequired = false;
 
-  bool isVisible = false;
-
   // Settings for Add To Cart button
   bool showAddToCart = false;
   String addToCartText = "";
@@ -142,10 +140,6 @@ class ProductItemState extends Model {
   void updateVariationType({bool isRequired}) {
     variationRequired = isRequired;
     notifyListeners();
-  }
-
-  void changeVisible() {
-    isVisible = !isVisible;
   }
 
   void updateShowAddToCart({bool shouldShow}) {

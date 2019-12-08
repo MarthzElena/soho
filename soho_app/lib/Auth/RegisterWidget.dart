@@ -225,15 +225,7 @@ class _RegisterState  extends State<RegisterWidget> {
         phoneNumber: registerState.phoneNumber
     );
 
-    await authController.createUserWithEmail(user, registerState.passwordInput).then((registeredUser) {
-      if (registeredUser != null) {
-        // TODO: Do something with the user
-        Navigator.pushNamed(context, Routes.homePage);
-      } else {
-        // TODO: Show some error
-        print("****** EMAIL Login ERROR");
-      }
-    });
+    // TODO!!!
 
   }
 
