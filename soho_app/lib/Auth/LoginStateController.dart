@@ -49,7 +49,7 @@ class LoginState extends Model {
     }
   }
 
-  Future<void> neverSatisfied(context) async {
+  Future<void> codeDialog(context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -74,13 +74,41 @@ class LoginState extends Model {
                 SizedBox(height: 24.0),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: 60.0,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      TextFieldSoho(controller: code1, length: 6),
-                    ],
+                  height: 65.0,
+                  child: TextField(
+                    textAlignVertical: TextAlignVertical.center,
+                    textAlign: TextAlign.center,
+                    maxLength: 6,
+                    style: interLightStyle(
+                      fSize: 14.0,
+                    ),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(10.0),
+                      hintText: '- - - - - -',
+                      hintStyle: interLightStyle(
+                        fSize: 14.0,
+                        color: Color(0xffC4C4C4),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(3.0),
+                        borderSide: const BorderSide(
+                          color: Color(0xffE5E4E5),
+                          width: 1.0,
+                        ),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xffE5E4E5),
+                          width: 1.0,
+                        ),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xffE5E4E5),
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 24.0),

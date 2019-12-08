@@ -144,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               SizedBox(height: 32.0),
                               GestureDetector(
-                                onTap: () => model.neverSatisfied(context),
+                                onTap: () => model.codeDialog(context),
                                 child: Container(
                                   width: double.infinity,
                                   height: 50.0,
