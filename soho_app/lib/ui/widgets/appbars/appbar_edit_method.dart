@@ -7,6 +7,10 @@ import 'package:soho_app/ui/payments/add_method.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
 class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+
+  EditMethodAppBar({this.title = 'EDITAR MÉTODO DE PAGO'});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -39,7 +43,7 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                       SizedBox(width: 10.0),
                       AutoSizeText(
-                        'EDITAR MÉTODO DE PAGO',
+                        title,
                         style: interLightStyle(fSize: 18.0),
                         maxLines: 1,
                         maxFontSize: 18.0,
