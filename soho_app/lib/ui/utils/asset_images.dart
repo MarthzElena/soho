@@ -23,6 +23,8 @@ AssetImage menuCheck = AssetImage('assets/icons/check.png');
 AssetImage menuMore = AssetImage('assets/icons/more.png');
 AssetImage menuCamera = AssetImage('assets/icons/cam.png');
 AssetImage menuPencil = AssetImage('assets/icons/pencil.png');
+AssetImage menuQR = AssetImage('assets/icons/qr.png');
+AssetImage menuDivider = AssetImage('assets/payments/div.png');
 
 /* Auth Assets */
 AssetImage authImage = AssetImage('assets/auth/bamboo.png');
