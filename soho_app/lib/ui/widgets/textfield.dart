@@ -21,6 +21,7 @@ class _TextFieldSohoState extends State<TextFieldSoho> {
         controller: widget.controller,
         keyboardType: TextInputType.number,
         style: interBoldStyle(fSize: 14.0),
+        maxLength: 1,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(10.0),
           hintText: '-',

@@ -1,14 +1,9 @@
 
 import 'dart:collection';
-
-/// AuthController.dart
-///
-/// This  class manages the  Authentication process of the user.
-///
-/// Created by: Martha Elena Loera
-///
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
+import 'package:soho_app/HomePage/HomePageStateController.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +12,7 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:soho_app/Utils/Locator.dart';
 
 class AuthController {
 
@@ -25,82 +21,77 @@ class AuthController {
   static final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
   static final GoogleSignIn googleSignIn = GoogleSignIn();
   final FacebookLogin facebookLogin = FacebookLogin();
+  String _phoneVerificationId = "";
 
   // Returns a SohoAuthObject if there's a token saved
-  Future<bool> getSavedAuthObject() async{
+  Future<void> getSavedAuthObject() async{
 
     // Get the user from the saved credentials
     // Read the token (if any)
-    String token = await storage.read(key: Constants.KEY_AUTH_TOKEN);
-    String provider = await storage.read(key: Constants.KEY_AUTH_PROVIDER);
-    bool tokenValid = token != null && token.isNotEmpty;
-    bool providerValid = provider != null && provider.isNotEmpty;
-    String savedEmail = await storage.read(key: Constants.KEY_SAVED_EMAIL);
-    savedEmail = savedEmail == null ? "" : savedEmail;
-    String savedPhone = await storage.read(key: Constants.KEY_SAVED_PHONE_NUMBER);
+    await storage.read(key: Constants.KEY_AUTH_TOKEN).then((token) async {
+      await storage.read(key: Constants.KEY_AUTH_PROVIDER).then((provider) async {
+        bool tokenValid = token != null && token.isNotEmpty;
+        bool providerValid = provider != null && provider.isNotEmpty;
+        await storage.read(key: Constants.KEY_AUTH_PHONE_NUMBER).then((phone) async {
+          String savedPhone = phone == null ? "" : phone;
 
-    if (tokenValid && providerValid) {
+          if (tokenValid && providerValid) {
 
-      switch (provider) {
-        case Constants.KEY_FACEBOOK_PROVIDER:
-          {
-            // Facebook Login
-            await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: token)).then((facebookUser) async {
-              if (facebookUser != null) {
-                // Get provider data
-                for (var data in facebookUser.providerData) {
-                  if (data.providerId == "facebook.com") {
-                    var userId = data.uid;
-                    var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
-                    var savedUser = usersRef.child(userId);
-                    // Get user from database
-                    await savedUser.once().then((item) {
-                      if (item != null) {
-                        LinkedHashMap linkedMap = item.value;
-                        Map<String, String> dictionary = linkedMap.cast();
-                        if (dictionary != null) {
-                          SohoUserObject sohoUser = SohoUserObject.sohoUserObjectFromDictionary(dictionary);
-                          // Save locally
-                          Application.currentUser = sohoUser;
-                          return true;
+            switch (provider) {
+              case Constants.KEY_FACEBOOK_PROVIDER:
+                {
+                  // Facebook Login
+                  await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: token)).then((facebookUser) async {
+                    if (facebookUser != null) {
+                      // Get provider data
+                      for (var data in facebookUser.providerData) {
+                        if (data.providerId == "facebook.com") {
+                          var userId = data.uid;
+                          var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+                          var savedUser = usersRef.child(userId);
+                          // Get user from database
+                          await savedUser.once().then((item) {
+                            if (item != null) {
+                              LinkedHashMap linkedMap = item.value;
+                              Map<String, String> dictionary = linkedMap.cast();
+                              if (dictionary != null) {
+                                SohoUserObject sohoUser = SohoUserObject.sohoUserObjectFromDictionary(dictionary);
+                                // Save locally
+                                Application.currentUser = sohoUser;
+                              }
+                            }
+                          });
                         }
                       }
-
-                      return false;
-                    });
-                  }
+                    }
+                  }).catchError((facebookLoginError) {
+                    print("Facebook Login Error: ${facebookLoginError.toString()}");
+                  });
                 }
-              }
-            });
-          }
-          break;
+                break;
 
-        case Constants.KEY_GOOGLE_PROVIDER:
-          {
-            // Google Login
-            await initiateGoogleLogin().then((_) {
-              if (Application.currentUser != null) {
-                return true;
-              } else {
-                return false;
-              }
-            });
+              case Constants.KEY_GOOGLE_PROVIDER:
+                {
+                  // Google Login
+                  await initiateGoogleLogin();
 
-          }
-          break;
+                }
+                break;
 
-        case Constants.KEY_PHONE_PROVIDER:
-          {
+              case Constants.KEY_PHONE_PROVIDER:
+                {
+                  // Phone Login
+//                  await initiatePhoneLogin(savedPhone, "", "");
+                }
+                break;
+
+            }
 
           }
-          break;
+        });
 
-      }
-
-    }
-
-    return false;
-
+      });
+    });
   }
 
   Future<void> logoutUser() async {
@@ -122,10 +113,10 @@ class AuthController {
         }
         break;
 
-      case Constants.KEY_EMAIL_PROVIDER:
+      case Constants.KEY_PHONE_PROVIDER:
         {
-          // Logout Email
-          await logoutEmailUSer();
+          // Logout Phone
+          await logoutPhoneUser();
         }
         break;
     }
@@ -135,191 +126,80 @@ class AuthController {
   Future<void> deleteAuthStoredValues() async {
     await storage.delete(key: Constants.KEY_AUTH_TOKEN).then((_) async {
       await storage.delete(key: Constants.KEY_AUTH_PROVIDER).then((_) async {
-        // Clear saved user locally
-        Application.currentUser = null;
+        await storage.delete(key: Constants.KEY_AUTH_PHONE_NUMBER).then((_) async {
+          // Clear saved user locally
+          Application.currentUser = null;
+        });
       });
     });
   }
 
-  Future<void> initiatePhoneLogin(String number, String code) async {
-    final PhoneVerificationCompleted verificationCompleted = (AuthCredential phoneAuthCredential) async {
-      print("VERIFICATION COMPLETE");
-      // Save phone number for credentials
-      await storage.write(key: Constants.KEY_SAVED_PHONE_NUMBER, value: number);
-    };
-    final PhoneVerificationFailed verificationFailed = (AuthException authException) {
-      print("VERIFICATION FAILED");
-    };
-    final PhoneCodeSent phoneCodeSent = (String verificationId, [int forceResendingToken]) async {
-      print("PHONE CODE SENT");
-      print(verificationId);
-    };
-    final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout = (String verificationId) {
-      print("PHONE RETRIEVAL TIMEOUT");
-    };
-
-    await firebaseAuth.verifyPhoneNumber(
-        phoneNumber: number,
-        timeout: const Duration(seconds: 5),
-        verificationCompleted: verificationCompleted,
-        verificationFailed: verificationFailed,
-        codeSent: phoneCodeSent,
-        codeAutoRetrievalTimeout: codeAutoRetrievalTimeout
-    );
-  }
-
-  Future<FirebaseUser> initiateEmailLogin({String userEmail, String userPassword}) async {
-    FirebaseUser emailUser = await firebaseAuth.signInWithEmailAndPassword(email: userEmail, password: userPassword).catchError((error) {
-      // TODO: Handle error
-      return null;
+  Future<void> logoutPhoneUser() async {
+    await firebaseAuth.signOut().then((_) async {
+      await deleteAuthStoredValues();
     });
-
-    if (emailUser != null) {
-      // Save credentials
-      await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_EMAIL_PROVIDER);
-      String userToken = await emailUser.getIdToken(refresh: true).catchError((error) {
-        // TODO: Handle error
-        return null;
-      });
-      await storage.write(key: Constants.KEY_AUTH_TOKEN, value: userToken);
-
-      // Save user to Database
-      var userID = emailUser.uid;
-      // Only userID is valid since already a user
-      var user = SohoUserObject.createUserDictionary(
-          lastName: "",
-          firstName: "",
-          email: userEmail,
-          userId: userID,
-          birthDate: "",
-          gender: "",
-          phoneNumber: "");
-      await _saveUserToDatabase(user);
-
-      // Return user
-      return emailUser;
-    } else {
-      return null;
-    }
-
-  }
-  
-  Future<FirebaseUser> createUserWithEmail(Map<String, String> user, String password) async {
-    // Create Firebase user
-    var userID = "";
-    var userAuthToken = "";
-    FirebaseUser newUser;
-    await firebaseAuth.createUserWithEmailAndPassword(email: user[Constants.DICT_KEY_EMAIL], password: password).then((registeredUser) {
-      if (registeredUser != null) {
-        // Add provider ID to user
-        userID = registeredUser.uid;
-      }
-      newUser = registeredUser;
-    }).catchError((error) {
-      // TODO: Handle error
-      return null;
-    });
-
-    // Check if user  and credentials are valid
-    if (newUser != null && userID.isNotEmpty) {
-      // Save credentials
-      await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_EMAIL_PROVIDER);
-      await newUser.getIdToken(refresh: true).then((userToken) {
-        userAuthToken = userToken;
-      }).catchError((error) {
-        // TODO: Handle error\
-        return null;
-      });
-
-      // Save token to local storage
-      if (userAuthToken.isNotEmpty) {
-        await storage.write(key: Constants.KEY_AUTH_TOKEN, value: userAuthToken);
-      }
-      // Add id to dictionary
-      user[Constants.DICT_KEY_ID] = userID;
-      // Save user to DataBase
-      var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
-      var newUserRef = usersRef.child(userID);
-      await newUserRef.set(user).then((_) {
-        newUserRef.push();
-      });
-
-      return newUser;
-
-    } else {
-      // TODO: HAndle error!
-      return null;
-    }
-
-
-  }
-
-  Future<void> logoutEmailUSer() async {
-    // Logout from Firebase
-    await firebaseAuth.signOut();
-    // Delete saved values for Auth
-    await deleteAuthStoredValues();
   }
 
   Future<void> initiateFacebookLogin() async {
     // TODO: This permissions should be used: 'email,user_gender,user_birthday'
-    var facebookLoginResult =
-    await facebookLogin.logInWithReadPermissions(['email']).catchError((error) {
+    await facebookLogin.logInWithReadPermissions(['email']).then((facebookLoginResult) async {
+
+      var facebookToken = facebookLoginResult.accessToken.token;
+      switch (facebookLoginResult.status) {
+        case FacebookLoginStatus.error:
+          print("Error");
+          // TODO: Handle error
+          break;
+
+        case FacebookLoginStatus.cancelledByUser:
+          print("CancelledByUser");
+          break;
+
+        case FacebookLoginStatus.loggedIn:
+        // Save auth data and provider
+          await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_FACEBOOK_PROVIDER).then((_) async {
+            await storage.write(key: Constants.KEY_AUTH_TOKEN, value: facebookToken).then((_) async {
+              // Save user to Firebase Auth
+              await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
+                // Get user data
+                await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$facebookToken').then((graphResponse) async {
+                  var profile = json.decode(graphResponse.body);
+                  var email = profile['email'].toString();
+                  var firstName = profile['first_name'].toString();
+                  var lastName = profile['last_name'].toString();
+                  var userId = profile['id'].toString();
+                  // TODO: Get this values later!
+                  var birthDate = profile['user_birthday'] == null ? "" : profile['user_birthday'];
+                  var gender = profile['user_gender'] == null ? "" : profile['user_gender'];
+
+                  var user = SohoUserObject.createUserDictionary(
+                      lastName: lastName,
+                      firstName: firstName,
+                      email: email,
+                      userId: userId,
+                      birthDate: birthDate,
+                      gender: gender,
+                      phoneNumber: ""
+                  );
+                  await _saveUserToDatabase(user);
+                });
+              });
+
+            }).catchError((error) {
+              // TODO: Handle error
+            });
+          });
+
+          break;
+
+        default:
+          break;
+      }
+
+    }).catchError((error) {
       // TODO: Handle error
       return null;
     });
-
-    switch (facebookLoginResult.status) {
-      case FacebookLoginStatus.error:
-        print("Error");
-        // TODO: Handle error
-        break;
-
-      case FacebookLoginStatus.cancelledByUser:
-        print("CancelledByUser");
-        break;
-
-      case FacebookLoginStatus.loggedIn:
-        // Save auth data and provider
-        await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_FACEBOOK_PROVIDER).then((_) async {
-          await storage.write(key: Constants.KEY_AUTH_TOKEN, value: facebookLoginResult.accessToken.token).then((_) async {
-            // Save user to  Firebase Auth
-            var facebookToken = facebookLoginResult.accessToken.token;
-            await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
-              // Get user data
-              await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$facebookToken').then((graphResponse) async {
-                var profile = json.decode(graphResponse.body);
-                var email = profile['email'].toString();
-                var firstName = profile['first_name'].toString();
-                var lastName = profile['last_name'].toString();
-                var userId = profile['id'].toString();
-                // TODO: Get this values later!
-                var birthDate = profile['user_birthday'] == null ? "" : profile['user_birthday'];
-                var gender = profile['user_gender'] == null ? "" : profile['user_gender'];
-
-                var user = SohoUserObject.createUserDictionary(
-                    lastName: lastName,
-                    firstName: firstName,
-                    email: email,
-                    userId: userId,
-                    birthDate: birthDate,
-                    gender: gender,
-                    phoneNumber: ""
-                );
-                await _saveUserToDatabase(user);
-              });
-          });
-
-          }).catchError((error) {
-            // TODO: Handle error
-          });
-        });
-
-        break;
-
-      default:
-        break;
-    }
   }
 
   Future<void> logoutFacebook() async {
@@ -384,6 +264,22 @@ class AuthController {
     await deleteAuthStoredValues();
   }
 
+  Future<bool> _isNewUser(String userId) async {
+    var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+    var savedUser = usersRef.child(userId);
+
+    DataSnapshot item = await savedUser.once().catchError((databaseError) {
+      print("Database fetch error: ${databaseError.toString()}");
+      return true;
+    });
+    if (item.value == null) {
+      return false;
+    } else {
+      Map<String, String> user = item.value.cast();
+      return user[Constants.DICT_KEY_NAME].isEmpty;
+    }
+  }
+
   Future<void> _saveUserToDatabase(Map<String, String> user) async {
     // Check if user already exists in DataBase, and save if not
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
@@ -403,7 +299,9 @@ class AuthController {
 
     // Save locally
     Application.currentUser = sohoUser;
-
+    // Update home page state
+    locator<HomePageState>().updateDrawer();
+    
     await savedUser.once().then((item){
       if (item.value == null) {
         var newUserRef = usersRef.child(userId);
@@ -411,6 +309,9 @@ class AuthController {
         newUserRef.set(user).then((_) {
           newUserRef.push();
         });
+      } else {
+        // Update user values with database
+        // TODO
       }
     });
   }

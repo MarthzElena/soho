@@ -20,8 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
       SquareHTTPRequest.getSquareCategories().then((categories) {
 
         // Get logged in user if any
-        locator<AuthController>().getSavedAuthObject().then((isLoggedIn) {
-
+        locator<AuthController>().getSavedAuthObject().then((_) {
           if (categories.isNotEmpty) {
             Application.sohoCategories = categories;
             Navigator.of(context).push(

@@ -3,6 +3,7 @@ import 'package:soho_app/Auth/AuthController.dart';
 import 'package:soho_app/HomePage/HomePageStateController.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/Utils/Routes.dart';
 
 class NoUserMenuWidget extends StatelessWidget {
   final AuthController authController = locator<AuthController>();
@@ -44,19 +45,24 @@ class NoUserMenuWidget extends StatelessWidget {
                         style: interLightStyle(fSize: 12.0),
                       ),
                       SizedBox(height: 16.0),
-                      Container(
-                        width: double.infinity,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: Color(0xffF0AB31),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Iniciar sesión',
-                            style: interBoldStyle(
-                              fSize: 14.0,
-                              color: Colors.white,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, Routes.login);
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 50.0,
+                          decoration: BoxDecoration(
+                            color: Color(0xffF0AB31),
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Iniciar sesión',
+                              style: interBoldStyle(
+                                fSize: 14.0,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),

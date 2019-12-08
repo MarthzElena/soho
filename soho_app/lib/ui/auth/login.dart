@@ -22,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
       onWillPop: () async => false,
       child: ScopedModel<LoginState>(
@@ -115,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.all(10.0),
-                                    hintText: '( 333 )  -  ( 3333333 )',
+                                    hintText: '( +521 )  -  ( 33-33-33-33-33 )',
                                     hintStyle: interLightStyle(
                                       fSize: 14.0,
                                       color: Color(0xffC4C4C4),
@@ -144,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               SizedBox(height: 32.0),
                               GestureDetector(
-                                onTap: () => model.neverSatisfied(context),
+                                onTap: () => model.verifyPhone(context),
                                 child: Container(
                                   width: double.infinity,
                                   height: 50.0,

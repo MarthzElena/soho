@@ -6,11 +6,14 @@ import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/ui/widgets/textfield.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 class LoginState extends Model {
   // TODO: Validate phone and password
   String phoneInput = "";
   String passwordInput = "";
+  String _phoneVerificationId = "";
 
   TextEditingController code1 = TextEditingController();
   TextEditingController code2 = TextEditingController();
@@ -44,17 +47,67 @@ class LoginState extends Model {
     });
   }
 
-  Future<void> phoneLoginPressed(
-    BuildContext context, {
-    String phoneNumber,
-    String code,
-  }) async {
-    if (phoneNumber.isNotEmpty) {
-      await authController.initiatePhoneLogin(phoneNumber, code);
+  signIn(BuildContext context, String smsCode) async {
+    try {
+      final AuthCredential credential = PhoneAuthProvider.getCredential(
+        verificationId: _phoneVerificationId,
+        smsCode: smsCode,
+      );
+      final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential);
+      if (user != null) {
+        print("****LOGIN SUCCESS!!!");
+      } else {
+        print("*** ERROR with user");
+      }
+    } catch (e) {
+      handleError(e, context);
     }
   }
 
-  Future<void> neverSatisfied(context) async {
+  Future<void> verifyPhone(BuildContext context) async {
+    final PhoneCodeSent smsOTPSent = (String verId, [int forceCodeResend]) {
+      this._phoneVerificationId = verId;
+      smsCodeDialog(context).then((_) {
+        print('**** SUCCESSSSSS');
+      });
+    };
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+          phoneNumber: this.phoneInput, // PHONE NUMBER TO SEND OTP
+          codeAutoRetrievalTimeout: (String verId) {
+            //Starts the phone number verification process for the given phone number.
+            //Either sends an SMS with a 6 digit code to the phone number specified, or sign's the user in and [verificationCompleted] is called.
+            this._phoneVerificationId = verId;
+          },
+          codeSent:
+          smsOTPSent, // WHEN CODE SENT THEN WE OPEN DIALOG TO ENTER OTP.
+          timeout: const Duration(seconds: 20),
+          verificationCompleted: (AuthCredential phoneAuthCredential) {
+            print(phoneAuthCredential);
+          },
+          verificationFailed: (AuthException exceptio) {
+            print('${exceptio.message}');
+          });
+    } catch (e) {
+      handleError(e, context);
+      print("TRY CATCH error: ${e.toString()}");
+    }
+  }
+
+  handleError(PlatformException error, BuildContext context) {
+    print(error);
+    switch (error.code) {
+      case 'ERROR_INVALID_VERIFICATION_CODE':
+        print("*** INVALID CODE!!");
+        break;
+      default:
+        print("*** SOME ERROR!!");
+
+        break;
+    }
+  }
+
+  Future<void> smsCodeDialog(context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -73,7 +126,7 @@ class LoginState extends Model {
                 ),
                 SizedBox(height: 8.0),
                 Text(
-                  'Enviamos un mensaje de texto con un código de 4 digitos a tu número celular.',
+                  'Enviamos un mensaje de texto con un código de 6 digitos a tu número celular.',
                   style: interLightStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 24.0),
@@ -111,7 +164,10 @@ class LoginState extends Model {
                 ),
                 SizedBox(height: 32.0),
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () {
+                    String smsCode = code1.value.text + code2.value.text + code3.value.text + code4.value.text + code5.value.text + code6.value.text;
+                    signIn(context, smsCode);
+                  },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     height: 50.0,
