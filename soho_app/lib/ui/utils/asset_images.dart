@@ -22,3 +22,6 @@ AssetImage menuCross = AssetImage('assets/menu/cross.png');
 
 /* Auth Assets */
 AssetImage authImage = AssetImage('assets/auth/bamboo.png');
+
+/* PurchasesAssets */
+AssetImage purchasesImage = AssetImage('assets/purchases/healthy.png');

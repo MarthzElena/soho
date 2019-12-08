@@ -5,7 +5,7 @@ import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
-import 'package:soho_app/ui/widgets/textfield.dart';
+import 'package:soho_app/ui/widgets/textfields/textfield.dart';
 
 class LoginState extends Model {
   // TODO: Validate phone and password
@@ -13,11 +13,6 @@ class LoginState extends Model {
   String passwordInput = "";
 
   TextEditingController code1 = TextEditingController();
-  TextEditingController code2 = TextEditingController();
-  TextEditingController code3 = TextEditingController();
-  TextEditingController code4 = TextEditingController();
-  TextEditingController code5 = TextEditingController();
-  TextEditingController code6 = TextEditingController();
 
   AuthController authController = locator<AuthController>();
 
@@ -73,22 +68,18 @@ class LoginState extends Model {
                 ),
                 SizedBox(height: 8.0),
                 Text(
-                  'Enviamos un mensaje de texto con un código de 4 digitos a tu número celular.',
+                  'Enviamos un mensaje de texto con un código de 6 digitos a tu número celular.',
                   style: interLightStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 24.0),
                 Container(
                   width: MediaQuery.of(context).size.width,
+                  height: 60.0,
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      TextFieldSoho(controller: code1),
-                      TextFieldSoho(controller: code2),
-                      TextFieldSoho(controller: code3),
-                      TextFieldSoho(controller: code4),
-                      TextFieldSoho(controller: code5),
-                      TextFieldSoho(controller: code6),
+                      TextFieldSoho(controller: code1, length: 6),
                     ],
                   ),
                 ),

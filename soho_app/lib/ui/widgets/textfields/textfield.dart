@@ -4,8 +4,9 @@ import 'package:soho_app/Utils/Fonts.dart';
 
 class TextFieldSoho extends StatefulWidget {
   final TextEditingController controller;
+  final int length;
 
-  TextFieldSoho({this.controller});
+  TextFieldSoho({this.controller, this.length = 100});
 
   @override
   _TextFieldSohoState createState() => _TextFieldSohoState();
@@ -17,6 +18,7 @@ class _TextFieldSohoState extends State<TextFieldSoho> {
     return Container(
       width: MediaQuery.of(context).size.width / 12,
       child: TextField(
+        maxLength: widget.length,
         textAlign: TextAlign.center,
         controller: widget.controller,
         keyboardType: TextInputType.number,
