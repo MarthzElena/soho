@@ -1,9 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:soho_app/Utils/Constants.dart';
+import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/ui/payments/add_method.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
-class PaymentMethodsAppBar extends StatelessWidget implements PreferredSizeWidget {
+class AddMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,29 +19,26 @@ class PaymentMethodsAppBar extends StatelessWidget implements PreferredSizeWidge
               SizedBox(height: 10.0),
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    width: 10.0,
+                    width: 22.0,
                     child: FlatButton(
                       onPressed: () => Navigator.pop(context),
                       padding: EdgeInsets.all(0.0),
                       child: Image(
-                        image: detailBack,
+                        image: menuCross,
+                        width: 22.0,
+                        height: 22.0,
                       ),
                     ),
                   ),
-                  Container(
-                    width: 24.0,
-                    child: FlatButton(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => AddMethodsScreen(),
-                        ),
-                      ),
-                      padding: EdgeInsets.all(0.0),
-                      child: Image(image: paymentAdd),
-                    ),
+                  SizedBox(width: 10.0),
+                  AutoSizeText(
+                    'INFORMACIÓN DE LA TARJETA',
+                    style: interLightStyle(fSize: 18.0),
+                    maxLines: 1,
+                    maxFontSize: 18.0,
                   ),
                 ],
               ),
