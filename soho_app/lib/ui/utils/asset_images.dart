@@ -42,4 +42,5 @@ AssetImage locationMap = AssetImage('assets/icons/map.png');
 AssetImage paymentAdd = AssetImage('assets/icons/add.png');
 AssetImage paymentWallet = AssetImage('assets/payments/wallet.png');
 AssetImage masterCard = AssetImage('assets/payments/mcard.png');
+AssetImage blueCard = AssetImage('assets/payments/card.png');
 AssetImage paymentForward = AssetImage('assets/icons/forward.png');

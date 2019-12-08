@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_add_method.dart';
 
 class AddMethodsScreen extends StatelessWidget {
@@ -162,7 +163,7 @@ class AddMethodsScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                      'Número de tarjeta',
+                                      'Fecha de Expiración',
                                       style: interStyle(fSize: 14.0),
                                     ),
                                     SizedBox(height: 8.0),
@@ -177,7 +178,7 @@ class AddMethodsScreen extends StatelessWidget {
                                         ),
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.all(10.0),
-                                          hintText: '****  ****  ****  ****',
+                                          hintText: 'DD / MM',
                                           hintStyle: interLightStyle(
                                             fSize: 14.0,
                                             color: Color(0xffC4C4C4),
@@ -213,7 +214,7 @@ class AddMethodsScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                      'Número de tarjeta',
+                                      'CVV',
                                       style: interStyle(fSize: 14.0),
                                     ),
                                     SizedBox(height: 8.0),
@@ -227,8 +228,14 @@ class AddMethodsScreen extends StatelessWidget {
                                           fSize: 14.0,
                                         ),
                                         decoration: InputDecoration(
+                                          suffixIcon: IconButton(
+                                            onPressed: () => cvvDialog(context),
+                                            icon: Icon(Icons.info),
+                                            iconSize: 20.0,
+                                            color: Color(0xff5A6265),
+                                          ),
                                           contentPadding: EdgeInsets.all(10.0),
-                                          hintText: '****  ****  ****  ****',
+                                          hintText: '***',
                                           hintStyle: interLightStyle(
                                             fSize: 14.0,
                                             color: Color(0xffC4C4C4),
@@ -271,6 +278,53 @@ class AddMethodsScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> cvvDialog(context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Image(
+                  image: menuCross,
+                  width: 22.0,
+                  height: 22.0,
+                ),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  '¿No sabes que es el código CVV?',
+                  style: interBoldStyle(fSize: 14.0),
+                ),
+                SizedBox(height: 8.0),
+                Text(
+                  'El código CVV son los tres números que se encuentran al reverso de tu tarjeta.',
+                  style: interLightStyle(fSize: 14.0),
+                ),
+                SizedBox(height: 20.0),
+                Image(
+                  image: blueCard,
+                  width: MediaQuery.of(context).size.width,
+                  height: 157.0,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
