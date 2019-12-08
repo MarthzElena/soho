@@ -1,6 +1,5 @@
 
 import 'dart:collection';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/HomePage/HomePageStateController.dart';
@@ -134,6 +133,14 @@ class AuthController {
     });
   }
 
+  Future<void> savePhoneCredentials(String phone, String token) async {
+    await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_PHONE_PROVIDER).then((_) async {
+      await storage.write(key: Constants.KEY_AUTH_TOKEN, value: token).then((_) async {
+        await storage.write(key: Constants.KEY_AUTH_PHONE_NUMBER, value: phone);
+      });
+    });
+  }
+
   Future<void> logoutPhoneUser() async {
     await firebaseAuth.signOut().then((_) async {
       await deleteAuthStoredValues();
@@ -181,7 +188,7 @@ class AuthController {
                       gender: gender,
                       phoneNumber: ""
                   );
-                  await _saveUserToDatabase(user);
+                  await saveUserToDatabase(user);
                 });
               });
 
@@ -233,7 +240,7 @@ class AuthController {
               phoneNumber: googleUser.phoneNumber == null ? "" : googleUser.phoneNumber
           );
 
-          await _saveUserToDatabase(user).then((_) async {
+          await saveUserToDatabase(user).then((_) async {
 
             // Make sure to save credentials only if login is completed
             await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER).then((_) async {
@@ -264,7 +271,7 @@ class AuthController {
     await deleteAuthStoredValues();
   }
 
-  Future<bool> _isNewUser(String userId) async {
+  Future<bool> isNewUser(String userId) async {
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
     var savedUser = usersRef.child(userId);
 
@@ -273,14 +280,41 @@ class AuthController {
       return true;
     });
     if (item.value == null) {
-      return false;
+      // Something failed, treat user as new
+      return true;
     } else {
-      Map<String, String> user = item.value.cast();
-      return user[Constants.DICT_KEY_NAME].isEmpty;
+      LinkedHashMap linkedMap = item.value;
+      Map<String, String> user = linkedMap.cast();
+      if (user == null) {
+        // Something failed, treat user as new
+        return true;
+      } else {
+        if (user[Constants.DICT_KEY_NAME].isEmpty) {
+          // User is new
+          return true;
+        } else {
+          // User is not new, update values with database and save locally
+          var sohoUser = SohoUserObject(
+              lastName: user[Constants.DICT_KEY_LAST_NAME],
+              firstName: user[Constants.DICT_KEY_NAME],
+              email: user[Constants.DICT_KEY_EMAIL],
+              userId: user[Constants.DICT_KEY_ID],
+              userPhoneNumber: user[Constants.DICT_KEY_PHONE]
+          );
+          sohoUser.userBirthDate = user[Constants.DICT_KEY_BIRTH_DATE];
+          sohoUser.userGender = user[Constants.DICT_KEY_GENDER];
+
+          // Save locally
+          Application.currentUser = sohoUser;
+          // Update home page state
+          locator<HomePageState>().updateDrawer();
+          return false;
+        }
+      }
     }
   }
 
-  Future<void> _saveUserToDatabase(Map<String, String> user) async {
+  Future<void> saveUserToDatabase(Map<String, String> user) async {
     // Check if user already exists in DataBase, and save if not
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
     var userId = user[Constants.DICT_KEY_ID];

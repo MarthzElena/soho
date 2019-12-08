@@ -5,9 +5,11 @@ import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
-import 'package:soho_app/ui/widgets/textfield.dart';
+import 'package:soho_app/ui/widgets/textfields/textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+
+import 'SohoUserObject.dart';
 
 class LoginState extends Model {
   // TODO: Validate phone and password
@@ -16,11 +18,6 @@ class LoginState extends Model {
   String _phoneVerificationId = "";
 
   TextEditingController code1 = TextEditingController();
-  TextEditingController code2 = TextEditingController();
-  TextEditingController code3 = TextEditingController();
-  TextEditingController code4 = TextEditingController();
-  TextEditingController code5 = TextEditingController();
-  TextEditingController code6 = TextEditingController();
 
   AuthController authController = locator<AuthController>();
 
@@ -53,11 +50,44 @@ class LoginState extends Model {
         verificationId: _phoneVerificationId,
         smsCode: smsCode,
       );
-      final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential);
+      final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential).catchError((signInError) {
+        print("SIGN IN ERROR: ${signInError.toString()}");
+        // TODO: HAndle error
+      });
       if (user != null) {
-        print("****LOGIN SUCCESS!!!");
+        bool isNewUser = await locator<AuthController>().isNewUser(user.uid);
+        if (isNewUser) {
+          // TODO: Get this data from Register
+          // Create user dictionary for Database
+          var userDictionary = SohoUserObject.createUserDictionary(
+              lastName: "Loera - telefono",
+              firstName: "Martha",
+              email: "",
+              userId: user.uid,
+              birthDate: "",
+              gender: "",
+              phoneNumber: phoneInput
+          );
+          // Get token
+          await user.getIdToken(refresh: true).then((token) async {
+            await locator<AuthController>().savePhoneCredentials(phoneInput, token).then((_) async {
+              await locator<AuthController>().saveUserToDatabase(userDictionary);
+              Navigator.pop(context);
+              Navigator.pop(context);
+            });
+          }).catchError((tokenError) {
+            print("token ERROR: ${tokenError.toString()}");
+            // TODO: HAndle error
+          });
+
+//          Navigator.pushNamed(context, Routes.register);
+        } else {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        }
       } else {
         print("*** ERROR with user");
+        // TODO: HAndle error
       }
     } catch (e) {
       handleError(e, context);
@@ -132,16 +162,12 @@ class LoginState extends Model {
                 SizedBox(height: 24.0),
                 Container(
                   width: MediaQuery.of(context).size.width,
+                  height: 60.0,
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      TextFieldSoho(controller: code1),
-                      TextFieldSoho(controller: code2),
-                      TextFieldSoho(controller: code3),
-                      TextFieldSoho(controller: code4),
-                      TextFieldSoho(controller: code5),
-                      TextFieldSoho(controller: code6),
+                      TextFieldSoho(controller: code1, length: 6),
                     ],
                   ),
                 ),
@@ -165,7 +191,7 @@ class LoginState extends Model {
                 SizedBox(height: 32.0),
                 GestureDetector(
                   onTap: () {
-                    String smsCode = code1.value.text + code2.value.text + code3.value.text + code4.value.text + code5.value.text + code6.value.text;
+                    String smsCode = code1.value.text;
                     signIn(context, smsCode);
                   },
                   child: Container(
