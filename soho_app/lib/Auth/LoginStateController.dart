@@ -15,9 +15,8 @@ class LoginState extends Model {
   // TODO: Validate phone and password
   String phoneInput = "";
   String passwordInput = "";
+  String smsCode = "";
   String _phoneVerificationId = "";
-
-  TextEditingController code1 = TextEditingController();
 
   AuthController authController = locator<AuthController>();
 
@@ -164,6 +163,9 @@ class LoginState extends Model {
                   width: MediaQuery.of(context).size.width,
                   height: 65.0,
                   child: TextField(
+                    onChanged: (value) {
+                      smsCode = value;
+                    },
                     textAlignVertical: TextAlignVertical.center,
                     textAlign: TextAlign.center,
                     maxLength: 6,
@@ -219,7 +221,6 @@ class LoginState extends Model {
                 SizedBox(height: 32.0),
                 GestureDetector(
                   onTap: () {
-                    String smsCode = code1.value.text;
                     signIn(context, smsCode);
                   },
                   child: Container(
