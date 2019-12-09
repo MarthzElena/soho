@@ -5,7 +5,6 @@ import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
-import 'package:soho_app/ui/widgets/textfields/textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
@@ -63,9 +62,8 @@ class LoginState extends Model {
               firstName: "Martha",
               email: "",
               userId: user.uid,
-              birthDate: "",
-              gender: "",
-              phoneNumber: phoneInput
+              phoneNumber: phoneInput,
+              isAdmin: false
           );
           // Get token
           await user.getIdToken(refresh: true).then((token) async {

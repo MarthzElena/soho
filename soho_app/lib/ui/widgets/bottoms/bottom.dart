@@ -55,7 +55,7 @@ class _BottomBarState extends State<BottomBar> {
         child: ScopedModelDescendant<ProductItemState>(
           builder: (build, child, model) {
             return GestureDetector(
-              onTap: () {
+              onTap: () async {
                 if (_productItemModel.shouldGoToCheckout()) {
                   // Check if user is logged in
                   if (Application.currentUser != null) {
@@ -67,8 +67,14 @@ class _BottomBarState extends State<BottomBar> {
                   }
                   // Set bottom to complete order
                   _productItemModel.setBottomState(ProductItemState.COMPLETE_ORDER);
-                } else if (_productItemModel.shouldGoCompleteOrder()) {
-                  // TODO: Process payment!!
+                } else if (_productItemModel.shouldGoToCompleteOrder()) {
+                  // TODO: Process payment!! (This should happen only if payment is completed)
+                  if (Application.currentOrder != null && Application.currentUser != null) {
+                    await Application.currentUser.completeOrder(Application.currentOrder).then((_) {
+                      Navigator.pushNamed(context, Routes.orderComplete);
+                    });
+
+                  }
 
                 } else {
                   // Create a new item with specified settings

@@ -52,7 +52,7 @@ class AuthController {
                           await savedUser.once().then((item) {
                             if (item != null) {
                               LinkedHashMap linkedMap = item.value;
-                              Map<String, String> dictionary = linkedMap.cast();
+                              Map<String, dynamic> dictionary = linkedMap.cast();
                               if (dictionary != null) {
                                 SohoUserObject sohoUser = SohoUserObject.sohoUserObjectFromDictionary(dictionary);
                                 // Save locally
@@ -190,9 +190,8 @@ class AuthController {
                       firstName: firstName,
                       email: email,
                       userId: userId,
-                      birthDate: birthDate,
-                      gender: gender,
-                      phoneNumber: ""
+                      phoneNumber: "",
+                      isAdmin: false
                   );
                   await saveUserToDatabase(user);
                 });
@@ -241,9 +240,8 @@ class AuthController {
               firstName: googleUser.displayName,
               email: googleUser.email,
               userId: googleUser.uid,
-              birthDate: "",
-              gender: "",
-              phoneNumber: googleUser.phoneNumber == null ? "" : googleUser.phoneNumber
+              phoneNumber: googleUser.phoneNumber == null ? "" : googleUser.phoneNumber,
+              isAdmin: false
           );
 
           await saveUserToDatabase(user).then((_) async {
@@ -290,25 +288,23 @@ class AuthController {
       return true;
     } else {
       LinkedHashMap linkedMap = item.value;
-      Map<String, String> user = linkedMap.cast();
+      Map<String, dynamic> user = linkedMap.cast();
       if (user == null) {
         // Something failed, treat user as new
         return true;
       } else {
-        if (user[Constants.DICT_KEY_NAME].isEmpty) {
+        if (user[SohoUserObject.keyName].isEmpty) {
           // User is new
           return true;
         } else {
           // User is not new, update values with database and save locally
           var sohoUser = SohoUserObject(
-              lastName: user[Constants.DICT_KEY_LAST_NAME],
-              firstName: user[Constants.DICT_KEY_NAME],
-              email: user[Constants.DICT_KEY_EMAIL],
-              userId: user[Constants.DICT_KEY_ID],
-              userPhoneNumber: user[Constants.DICT_KEY_PHONE]
+              lastName: user[SohoUserObject.keyLastName],
+              firstName: user[SohoUserObject.keyName],
+              email: user[SohoUserObject.keyEmail],
+              userId: user[SohoUserObject.keyUserId],
+              userPhoneNumber: user[SohoUserObject.keyPhone]
           );
-          sohoUser.userBirthDate = user[Constants.DICT_KEY_BIRTH_DATE];
-          sohoUser.userGender = user[Constants.DICT_KEY_GENDER];
 
           // Save locally
           Application.currentUser = sohoUser;
@@ -327,18 +323,16 @@ class AuthController {
     await savedUser.once().then((item) async {
       if (item != null && item.value != null) {
         LinkedHashMap linkedMap = item.value;
-        Map<String, String> user = linkedMap.cast();
+        Map<String, dynamic> user = linkedMap.cast();
         if (user != null) {
           // Create local user
           var sohoUser = SohoUserObject(
-              lastName: user[Constants.DICT_KEY_LAST_NAME],
-              firstName: user[Constants.DICT_KEY_NAME],
-              email: user[Constants.DICT_KEY_EMAIL],
-              userId: user[Constants.DICT_KEY_ID],
-              userPhoneNumber: user[Constants.DICT_KEY_PHONE]
+              lastName: user[SohoUserObject.keyLastName],
+              firstName: user[SohoUserObject.keyName],
+              email: user[SohoUserObject.keyEmail],
+              userId: user[SohoUserObject.keyUserId],
+              userPhoneNumber: user[SohoUserObject.keyPhone]
           );
-          sohoUser.userBirthDate = user[Constants.DICT_KEY_BIRTH_DATE];
-          sohoUser.userGender = user[Constants.DICT_KEY_GENDER];
 
           // Save locally
           Application.currentUser = sohoUser;
@@ -352,33 +346,41 @@ class AuthController {
     });;
   }
 
-  Future<void> saveUserToDatabase(Map<String, String> user) async {
+  Future<void> updateUserInDatabase(Map<String, dynamic> user) async {
+    // Get user from database
+    var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+    var userId = user[SohoUserObject.keyUserId];
+    var userDB = usersRef.child(userId);
+
+    await userDB.set(user);
+
+  }
+
+  Future<void> saveUserToDatabase(Map<String, dynamic> user) async {
     // Check if user already exists in DataBase, and save if not
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
-    var userId = user[Constants.DICT_KEY_ID];
+    var userId = user[SohoUserObject.keyUserId];
     var savedUser = usersRef.child(userId);
 
     // Create Soho user
     var sohoUser = SohoUserObject(
-        lastName: user[Constants.DICT_KEY_LAST_NAME],
-        firstName: user[Constants.DICT_KEY_NAME],
-        email: user[Constants.DICT_KEY_EMAIL],
-        userId: user[Constants.DICT_KEY_ID],
-        userPhoneNumber: user[Constants.DICT_KEY_PHONE]
+        lastName: user[SohoUserObject.keyLastName],
+        firstName: user[SohoUserObject.keyName],
+        email: user[SohoUserObject.keyEmail],
+        userId: user[SohoUserObject.keyUserId],
+        userPhoneNumber: user[SohoUserObject.keyPhone]
     );
-    sohoUser.userBirthDate = user[Constants.DICT_KEY_BIRTH_DATE];
-    sohoUser.userGender = user[Constants.DICT_KEY_GENDER];
 
     // Save locally
     Application.currentUser = sohoUser;
     // Update home page state
     locator<HomePageState>().updateDrawer();
     
-    await savedUser.once().then((item){
+    await savedUser.once().then((item) async {
       if (item.value == null) {
         var newUserRef = usersRef.child(userId);
         // Push the new user reference to the database
-        newUserRef.set(user).then((_) {
+        await newUserRef.set(user).then((_) {
           newUserRef.push();
         });
       } else {

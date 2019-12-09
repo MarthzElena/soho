@@ -5,13 +5,24 @@ class VariationTypeObject {
   static String keyTypeName = "typeName";
   static String keyVariations = "variations";
 
+  VariationTypeObject(this.variationTypeName);
+
   /// String for subcategory name
   String variationTypeName = "";
 
   /// Available product variations on Square
   List<VariationItemObject> variations = List<VariationItemObject>();
 
-  VariationTypeObject(this.variationTypeName);
+  Map<String, dynamic> getJson() {
+    var dict = Map<String, dynamic>();
+    dict[keyTypeName] = variationTypeName;
+    var variationsArray = [];
+    for (var item in variations) {
+      variationsArray.add(item.toJson());
+    }
+    dict[keyVariations] = variationsArray;
+    return dict;
+  }
 
   VariationTypeObject.fromJson(Map<String, dynamic> json)
   : variationTypeName = json[keyTypeName],

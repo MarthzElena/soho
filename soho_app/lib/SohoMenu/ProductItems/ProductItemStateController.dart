@@ -37,7 +37,7 @@ class ProductItemState extends Model {
     return addToCartText == GO_TO_CHECKOUT_TEXT;
   }
 
-  bool shouldGoCompleteOrder() {
+  bool shouldGoToCompleteOrder() {
     return addToCartText == COMPLETE_ORDER;
   }
 

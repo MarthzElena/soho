@@ -1,12 +1,11 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:soho_app/Auth/LoginWidget.dart';
 import 'package:soho_app/Auth/RegisterWidget.dart';
 import 'package:soho_app/HomePage/HomePageWidget.dart';
-import 'package:soho_app/SohoApp.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsWidget.dart';
 import 'package:soho_app/ui/auth/login.dart';
 import 'package:soho_app/ui/purchases/orders.dart';
+import 'package:soho_app/ui/purchases/thanks.dart';
 
 class Routes {
   static String root = "/";
@@ -15,6 +14,7 @@ class Routes {
   static String register = "Register";
   static String categoryDetail = "CategoryDetail/:category";
   static String orderDetail = "OrderDetail";
+  static String orderComplete = "OrderComplete";
 
   static Handler _categoryDetailHandler = Handler(
       handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
@@ -47,6 +47,12 @@ class Routes {
     router.define(orderDetail,
         handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
           return OrderScreen();
+        }));
+
+    // Order completed
+    router.define(orderComplete,
+        handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+          return ThanksScreen();
         }));
   }
 }

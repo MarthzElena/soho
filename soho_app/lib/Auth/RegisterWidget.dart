@@ -220,9 +220,8 @@ class _RegisterState  extends State<RegisterWidget> {
         firstName: registerState.nameInput,
         email: registerState.emailInput,
         userId: "", // ID is empty since will be defined later
-        birthDate: "", // Birthday will be defined later
-        gender: "", // Gender will be defined later
-        phoneNumber: registerState.phoneNumber
+        phoneNumber: registerState.phoneNumber,
+        isAdmin: false
     );
 
     // TODO!!!
