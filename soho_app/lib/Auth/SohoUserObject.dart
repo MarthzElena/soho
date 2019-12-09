@@ -49,6 +49,7 @@ class SohoUserObject {
     // Update values in database
     var userJson = getJson();
     print(userJson);
+    // TODO: Update inventory oof products!
     await locator<AuthController>().updateUserInDatabase(userJson);
   }
 

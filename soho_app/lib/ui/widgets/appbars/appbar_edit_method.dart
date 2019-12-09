@@ -26,7 +26,7 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: <Widget>[
               SizedBox(height: 10.0),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Row(
                     mainAxisSize: MainAxisSize.max,
