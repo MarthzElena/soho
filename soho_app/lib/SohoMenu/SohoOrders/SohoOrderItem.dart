@@ -50,20 +50,17 @@ class SohoOrderItem {
     return dict;
   }
 
-  SohoOrderItem.fromJson(Map<String, dynamic> json)
-  : name = json[keyProductName],
-  categoryID = json[keyCategoryId],
-  productID = json[keyProductId],
-  price = json[keyProductPrice],
-  productVariations = json[keyProductVariations];
-
-  Map<String, dynamic> toJson() =>
-      {
-        keyProductName : name,
-        keyCategoryId : categoryID,
-        keyProductId : productID,
-        keyProductPrice : price,
-        keyProductVariations : productVariations
-      };
+  SohoOrderItem.fromJson(Map<dynamic, dynamic> json) {
+    name = json[keyProductName];
+    categoryID = json[keyCategoryId];
+    productID = json[keyProductId];
+    price = json[keyProductPrice] + 0.0;
+    if (json[keyProductVariations] != null) {
+      var productsArray = json[keyProductVariations];
+      for (var product in productsArray) {
+        productVariations.add(VariationTypeObject.fromJson(product));
+      }
+    }
+  }
 
 }

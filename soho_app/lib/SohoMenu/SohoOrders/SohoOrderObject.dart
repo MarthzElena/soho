@@ -49,18 +49,16 @@ class SohoOrderObject {
     return dict;
   }
 
-  SohoOrderObject.fromJson(Map<String, dynamic> json)
-  : selectedProducts = json[keySelectedProducts],
-  completionDate = setCompletionDateFromString(json[keyCompletionDate]),
-  isOrderCompleted = json[keyIsCompleted],
-  isQRCodeValid = json[keyIsQRCodeValid];
-
-  Map<String, dynamic> toJson() =>
-      {
-        keySelectedProducts : selectedProducts,
-        keyCompletionDate : completionDate.toIso8601String(),
-        keyIsCompleted : isOrderCompleted,
-        keyIsQRCodeValid : isQRCodeValid
-      };
+  SohoOrderObject.fromJson(Map<dynamic, dynamic> json) {
+    completionDate = setCompletionDateFromString(json[keyCompletionDate]);
+    isOrderCompleted = json[keyIsCompleted];
+    isQRCodeValid = json[keyIsQRCodeValid];
+    if (json[keySelectedProducts] != null) {
+      var dictProducts = json[keySelectedProducts];
+      for (var product in dictProducts) {
+        selectedProducts.add(SohoOrderItem.fromJson(product));
+      }
+    }
+  }
 
 }

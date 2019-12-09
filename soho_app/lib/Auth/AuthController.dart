@@ -326,14 +326,7 @@ class AuthController {
         Map<String, dynamic> user = linkedMap.cast();
         if (user != null) {
           // Create local user
-          var sohoUser = SohoUserObject(
-              lastName: user[SohoUserObject.keyLastName],
-              firstName: user[SohoUserObject.keyName],
-              email: user[SohoUserObject.keyEmail],
-              userId: user[SohoUserObject.keyUserId],
-              userPhoneNumber: user[SohoUserObject.keyPhone]
-          );
-
+          var sohoUser = SohoUserObject.fromJson(user);
           // Save locally
           Application.currentUser = sohoUser;
           // Update home page state
@@ -385,7 +378,16 @@ class AuthController {
         });
       } else {
         // Update user values with database
-        // TODO
+        if (item.value != null) {
+          LinkedHashMap linkedMap = item.value;
+          Map<String, dynamic> userDict = linkedMap.cast();
+          if (userDict != null) {
+            // Save locally
+            Application.currentUser = SohoUserObject.fromJson(user);
+            // Update home page state
+            locator<HomePageState>().updateDrawer();
+          }
+        }
       }
     });
   }

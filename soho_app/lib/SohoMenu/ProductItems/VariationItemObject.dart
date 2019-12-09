@@ -24,15 +24,15 @@ class VariationTypeObject {
     return dict;
   }
 
-  VariationTypeObject.fromJson(Map<String, dynamic> json)
-  : variationTypeName = json[keyTypeName],
-        variations = json[keyVariations];
-
-  Map<String, dynamic> toJson() =>
-      {
-        keyTypeName : variationTypeName,
-        keyVariations : variations
-      };
+  VariationTypeObject.fromJson(Map<dynamic, dynamic> json) {
+    variationTypeName = json[keyTypeName];
+    if (json[keyVariations] != null) {
+      var variationsArray = json[keyVariations];
+      for (var item in variationsArray) {
+        variations.add(VariationItemObject.fromJson(item));
+      }
+    }
+  }
 }
 
 class VariationItemObject {
@@ -51,10 +51,10 @@ class VariationItemObject {
 
   VariationItemObject(this.name, this.squareID, this.price);
 
-  VariationItemObject.fromJson(Map<String, dynamic> json)
+  VariationItemObject.fromJson(Map<dynamic, dynamic> json)
   : name = json[keyName],
   squareID = json[keySquareId],
-  price = json[keyPrice];
+  price = json[keyPrice] + 0.0;
 
   Map<String, dynamic> toJson() =>
       {

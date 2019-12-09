@@ -72,28 +72,27 @@ class SohoUserObject {
     dict[keyOngoingOrders] = ongoingOrdersDict;
     return dict;
   }
-  
-  SohoUserObject.fromJson(Map<String, dynamic> json)
-  : lastName = json[keyLastName],
-  firstName = json[keyName],
-  email = json[keyEmail],
-  userId = json[keyUserId],
-  userPhoneNumber = json[keyPhone],
-  isAdmin = json[keyIsAdmin],
-  pastOrders = json[keyPastOrders],
-  ongoingOrders = json[keyOngoingOrders];
 
-  Map<String, dynamic> toJson() =>
-      {
-        keyLastName : lastName,
-        keyName : firstName,
-        keyEmail : email,
-        keyUserId : userId,
-        keyPhone : userPhoneNumber,
-        keyIsAdmin : isAdmin,
-        keyPastOrders : pastOrders,
-        keyOngoingOrders : ongoingOrders
-      };
+  SohoUserObject.fromJson(Map<String, dynamic> json) {
+    lastName = json[keyLastName];
+    firstName = json[keyName];
+    email = json[keyEmail];
+    userId = json[keyUserId];
+    userPhoneNumber = json[keyPhone];
+    isAdmin = json[keyIsAdmin];
+    if (json[keyPastOrders] != null) {
+      var pastOrdersDict = json[keyPastOrders];
+      for (var order in pastOrdersDict) {
+        pastOrders.add(SohoOrderObject.fromJson(order));
+      }
+    }
+    if (json[keyOngoingOrders] != null) {
+      var ongoingOrdersDict = json[keyOngoingOrders];
+      for (var order in ongoingOrdersDict) {
+        ongoingOrders.add(SohoOrderObject.fromJson(order));
+      }
+    }
+  }
 
   Map<String, dynamic> getDictionary() {
     return createUserDictionary(
