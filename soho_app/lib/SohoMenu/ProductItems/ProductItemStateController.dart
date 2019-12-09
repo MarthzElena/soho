@@ -5,8 +5,9 @@ import 'package:soho_app/Utils/Application.dart';
 import 'ProductItemObject.dart';
 
 class ProductItemState extends Model {
-  final String ADD_ITEM_TEXT = "Agregar 1 a la orden";
-  final String GO_TO_CHECKOUT_TEXT = "Ver carrito";
+  static const String ADD_ITEM_TEXT = "Agregar 1 a la orden";
+  static const String GO_TO_CHECKOUT_TEXT = "Ver carrito";
+  static const String COMPLETE_ORDER = "Realizar pedido ahora";
   ProductItemObject currentProduct;
   Map<String, Map<VariationItemObject, bool>> availableVariations = {};
   Map<String, List<VariationItemObject>> selectedVariations = {};
@@ -28,35 +29,45 @@ class ProductItemState extends Model {
     initAvailableVariations(fromProduct.productVariations, fromProduct.isVariationsRequired());
     // Clear selected variations
     selectedVariations.clear();
-    // Set add to cart button
-    setBottomToAddItem();
+    // Set bottom
+    setBottomState(ProductItemState.ADD_ITEM_TEXT);
   }
 
   bool shouldGoToCheckout() {
     return addToCartText == GO_TO_CHECKOUT_TEXT;
   }
 
-  void setBottomToAddItem() {
-    addToCartText = ADD_ITEM_TEXT;
-    addToCartPrice = "\$${selectedItemPrice.toString()}0";
-    updateShowAddToCart(shouldShow: !currentProduct.isVariationsRequired());
+  bool shouldGoCompleteOrder() {
+    return addToCartText == COMPLETE_ORDER;
   }
 
-  void setBottomToCheckout() {
-    // Only show add to cart button if there's an ongoing order
-    if (Application.currentOrder != null) {
-      addToCartText = GO_TO_CHECKOUT_TEXT;
-      // Get price of order
-      var price = 0.0;
-      for (var item in Application.currentOrder.selectedProducts) {
-        price += item.price;
+  void setBottomState(String state) {
+    print("** Update bottom to: $state");
+    if (state == ADD_ITEM_TEXT) {
+      addToCartText = ADD_ITEM_TEXT;
+      addToCartPrice = "\$${selectedItemPrice.toString()}0";
+      updateShowAddToCart(shouldShow: !currentProduct.isVariationsRequired());
+
+    } else if (state == GO_TO_CHECKOUT_TEXT) {
+      // Only show add to cart button if there's an ongoing order
+      if (Application.currentOrder != null) {
+        addToCartText = GO_TO_CHECKOUT_TEXT;
+        // Get price of order
+        var price = 0.0;
+        for (var item in Application.currentOrder.selectedProducts) {
+          price += item.price;
+        }
+        addToCartPrice = "\$${price}0";
+        updateShowAddToCart(shouldShow: Application.currentOrder != null);
       }
-      addToCartPrice = "\$${price}0";
-      updateShowAddToCart(shouldShow: Application.currentOrder != null);
-    } else {
-      // Hide button
-      updateShowAddToCart(shouldShow: false);
+
+    } else if (state == COMPLETE_ORDER) {
+      addToCartText = COMPLETE_ORDER;
+      addToCartPrice = "";
+      updateShowAddToCart(shouldShow: true);
     }
+
+    notifyListeners();
   }
 
   void initAvailableVariations(List<VariationTypeObject> allVariations, bool isRequired) {
@@ -97,6 +108,8 @@ class ProductItemState extends Model {
     if (selectedVariations[fromType].remove(item)) {
       // Update price
       selectedItemPrice -= item.price;
+      // Update the price on button
+      addToCartPrice = "\$${selectedItemPrice.toString()}0";
 
       notifyListeners();
     }

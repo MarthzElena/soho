@@ -41,7 +41,7 @@ class _ItemListState extends State<ItemList> {
               backgroundColor: Color(0xffF3F1F2),
               resizeToAvoidBottomPadding: true,
               appBar: DetailAppBar(),
-              bottomNavigationBar: Application.currentOrder != null ? BottomBar(isGoToCheckout: true) : SizedBox.shrink(),
+              bottomNavigationBar: Application.currentOrder != null ? BottomBar(buttonState: "") : SizedBox.shrink(),
               body: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),

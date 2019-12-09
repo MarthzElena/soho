@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsStateController.dart';
+import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
+enum SimpleAppBarType {
+  ABOUT,
+  ORDER
+}
 class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final SimpleAppBarType type;
+
+  SimpleAppBar({this.type});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,7 +30,19 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   GestureDetector(
-                    onTap: () => Navigator.pop(context),
+                    onTap: () {
+                      switch (type) {
+                        case SimpleAppBarType.ABOUT:
+                          Navigator.pop(context);
+                          break;
+                        case SimpleAppBarType.ORDER:
+                          Navigator.pop(context);
+                          locator<ProductItemState>().setBottomState(ProductItemState.GO_TO_CHECKOUT_TEXT);
+                          break;
+                        default:
+                          Navigator.pop(context);
+                      }
+                    },
                     child: Container(
                       width: 45.0,
                       height: 45.0,

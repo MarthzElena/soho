@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
+import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_simple.dart';
+import 'package:soho_app/ui/widgets/bottoms/bottom.dart';
 
 class OrderScreen extends StatefulWidget {
   @override
@@ -68,6 +70,9 @@ class _OrderScreenState extends State<OrderScreen> {
             return Scaffold(
               resizeToAvoidBottomPadding: true,
               backgroundColor: Colors.white,
+              bottomNavigationBar: locator<ProductItemState>().showAddToCart
+                  ? BottomBar(buttonState: ProductItemState.COMPLETE_ORDER)
+                  : SizedBox.shrink(),
               appBar: SimpleAppBar(),
               body: GestureDetector(
                 behavior: HitTestBehavior.opaque,
@@ -144,12 +149,17 @@ class _OrderScreenState extends State<OrderScreen> {
                                       color: Color(0xff789090),
                                     ),
                                   ),
-                                  Text(
-                                    'Agregar algo más',
-                                    style: interStyle(
-                                      fSize: 14.0,
-                                      color: Color(0xffE51F4F),
-                                      decoration: TextDecoration.underline,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      'Agregar algo más',
+                                      style: interStyle(
+                                        fSize: 14.0,
+                                        color: Color(0xffE51F4F),
+                                        decoration: TextDecoration.underline,
+                                      ),
                                     ),
                                   ),
                                 ],

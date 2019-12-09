@@ -10,9 +10,9 @@ import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
 
 class BottomBar extends StatefulWidget {
-  final bool isGoToCheckout;
+  final String buttonState;
 
-  BottomBar({this.isGoToCheckout});
+  BottomBar({this.buttonState});
 
   @override
   _BottomBarState createState() => _BottomBarState();
@@ -24,9 +24,7 @@ class _BottomBarState extends State<BottomBar> {
   @override
   void initState() {
     super.initState();
-    if (widget.isGoToCheckout) {
-      _productItemModel.setBottomToCheckout();
-    }
+    _productItemModel.setBottomState(widget.buttonState);
   }
 
   @override
@@ -67,6 +65,10 @@ class _BottomBarState extends State<BottomBar> {
                     // Go to login
                     Navigator.pushNamed(context, Routes.login);
                   }
+                  // Set bottom to complete order
+                  _productItemModel.setBottomState(ProductItemState.COMPLETE_ORDER);
+                } else if (_productItemModel.shouldGoCompleteOrder()) {
+                  // TODO
                 } else {
                   // Create a new item with specified settings
                   SohoOrderItem selectedItem = _getSelectedProduct();
@@ -80,7 +82,7 @@ class _BottomBarState extends State<BottomBar> {
                   // Go back to CategoryItemsWidget
                   Navigator.pop(context);
                   // Set button to checkout
-                  _productItemModel.setBottomToCheckout();
+                  _productItemModel.setBottomState(ProductItemState.GO_TO_CHECKOUT_TEXT);
                 }
 
               },
@@ -98,7 +100,15 @@ class _BottomBarState extends State<BottomBar> {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Row(
+                        child: _productItemModel.addToCartPrice.isEmpty ?
+                        Center(
+                          child: Text(
+                            _productItemModel.addToCartText,
+                            style: interBoldStyle(fSize: 14.0, color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ) :
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
