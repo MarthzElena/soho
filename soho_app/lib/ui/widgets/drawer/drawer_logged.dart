@@ -4,6 +4,7 @@ import 'package:soho_app/HomePage/HomePageStateController.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/Utils/Routes.dart';
 
 class LoggedInUserMenuWidget extends StatelessWidget {
   @override
@@ -77,73 +78,85 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 115.0),
-                    Row(
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage('assets/menu/icon_barcode.png'),
-                          width: 24.0,
-                        ),
-                        SizedBox(width: 12.0),
-                        Text(
-                          'Mis órdenes',
-                          style: interStyle(
-                            fSize: 14.0,
-                            color: Color(0xffE4E4E4),
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(context, Routes.myOrders),
+                      child: Row(
+                        children: <Widget>[
+                          Image(
+                            image: AssetImage('assets/menu/icon_barcode.png'),
+                            width: 24.0,
                           ),
-                        )
-                      ],
+                          SizedBox(width: 12.0),
+                          Text(
+                            'Mis órdenes',
+                            style: interStyle(
+                              fSize: 14.0,
+                              color: Color(0xffE4E4E4),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                     SizedBox(height: 42.0),
-                    Row(
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage('assets/menu/icon_about.png'),
-                          width: 24.0,
-                        ),
-                        SizedBox(width: 12.0),
-                        Text(
-                          'Acerca de Soho',
-                          style: interStyle(
-                            fSize: 14.0,
-                            color: Color(0xffE4E4E4),
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(context, Routes.about),
+                      child: Row(
+                        children: <Widget>[
+                          Image(
+                            image: AssetImage('assets/menu/icon_about.png'),
+                            width: 24.0,
                           ),
-                        )
-                      ],
+                          SizedBox(width: 12.0),
+                          Text(
+                            'Acerca de Soho',
+                            style: interStyle(
+                              fSize: 14.0,
+                              color: Color(0xffE4E4E4),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                     SizedBox(height: 42.0),
-                    Row(
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage('assets/menu/icon_wallet.png'),
-                          width: 24.0,
-                        ),
-                        SizedBox(width: 12.0),
-                        Text(
-                          'Métodos de pago',
-                          style: interStyle(
-                            fSize: 14.0,
-                            color: Color(0xffE4E4E4),
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(context, Routes.paymentMethods),
+                      child: Row(
+                        children: <Widget>[
+                          Image(
+                            image: AssetImage('assets/menu/icon_wallet.png'),
+                            width: 24.0,
                           ),
-                        )
-                      ],
+                          SizedBox(width: 12.0),
+                          Text(
+                            'Métodos de pago',
+                            style: interStyle(
+                              fSize: 14.0,
+                              color: Color(0xffE4E4E4),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                     SizedBox(height: 42.0),
-                    Row(
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage('assets/menu/icon_locations.png'),
-                          width: 24.0,
-                        ),
-                        SizedBox(width: 12.0),
-                        Text(
-                          'Ubicación',
-                          style: interStyle(
-                            fSize: 14.0,
-                            color: Color(0xffE4E4E4),
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(context, Routes.location),
+                      child: Row(
+                        children: <Widget>[
+                          Image(
+                            image: AssetImage('assets/menu/icon_locations.png'),
+                            width: 24.0,
                           ),
-                        )
-                      ],
-                    ), // Name, photo, last order date
+                          SizedBox(width: 12.0),
+                          Text(
+                            'Ubicación',
+                            style: interStyle(
+                              fSize: 14.0,
+                              color: Color(0xffE4E4E4),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -162,15 +175,18 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               width: 24.0,
                             ),
                             SizedBox(width: 12.0),
-                            Text(
-                              'Configuración',
-                              style: interMediumStyle(
-                                fSize: 14.0,
-                                color: Color(0xffE4E4E4),
+                            GestureDetector(
+                              onTap: () => Navigator.pushNamed(context, Routes.viewProfile),
+                              child: Text(
+                                'Configuración',
+                                style: interMediumStyle(
+                                  fSize: 14.0,
+                                  color: Color(0xffE4E4E4),
+                                ),
                               ),
                             )
                           ],
-                        ), // Configuracion
+                        ),
                         SizedBox(height: 36.0),
                         Row(
                           children: <Widget>[
