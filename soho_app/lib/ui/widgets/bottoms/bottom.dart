@@ -68,7 +68,8 @@ class _BottomBarState extends State<BottomBar> {
                   // Set bottom to complete order
                   _productItemModel.setBottomState(ProductItemState.COMPLETE_ORDER);
                 } else if (_productItemModel.shouldGoCompleteOrder()) {
-                  // TODO
+                  // TODO: Process payment!!
+
                 } else {
                   // Create a new item with specified settings
                   SohoOrderItem selectedItem = _getSelectedProduct();

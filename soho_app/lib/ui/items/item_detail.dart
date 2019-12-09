@@ -43,9 +43,9 @@ class _ProductDetailState extends State<ProductDetail> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: ProductDetailAppBar(),
-              bottomNavigationBar: _productItemModel.currentProduct.isVariationsRequired()
-                  ? SizedBox.shrink()
-                  : BottomBar(buttonState: ProductItemState.GO_TO_CHECKOUT_TEXT),
+              bottomNavigationBar: _productItemModel.shouldShowBottomForProductDetail()
+                  ? BottomBar(buttonState: ProductItemState.ADD_ITEM_TEXT)
+                  : SizedBox.shrink(),
               body: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),

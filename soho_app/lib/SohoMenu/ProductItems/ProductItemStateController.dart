@@ -14,9 +14,9 @@ class ProductItemState extends Model {
   double selectedItemPrice = 0.0;
 
   bool variationRequired = false;
+  bool isRequiredVariationAdded = false;
 
   // Settings for Add To Cart button
-  bool showAddToCart = false;
   String addToCartText = "";
   String addToCartPrice = "";
 
@@ -42,11 +42,9 @@ class ProductItemState extends Model {
   }
 
   void setBottomState(String state) {
-    print("** Update bottom to: $state");
     if (state == ADD_ITEM_TEXT) {
       addToCartText = ADD_ITEM_TEXT;
       addToCartPrice = "\$${selectedItemPrice.toString()}0";
-      updateShowAddToCart(shouldShow: !currentProduct.isVariationsRequired());
 
     } else if (state == GO_TO_CHECKOUT_TEXT) {
       // Only show add to cart button if there's an ongoing order
@@ -58,16 +56,21 @@ class ProductItemState extends Model {
           price += item.price;
         }
         addToCartPrice = "\$${price}0";
-        updateShowAddToCart(shouldShow: Application.currentOrder != null);
       }
 
     } else if (state == COMPLETE_ORDER) {
       addToCartText = COMPLETE_ORDER;
       addToCartPrice = "";
-      updateShowAddToCart(shouldShow: true);
     }
 
     notifyListeners();
+  }
+
+  bool shouldShowBottomForProductDetail() {
+    if (variationRequired) {
+      return isRequiredVariationAdded;
+    }
+    return true;
   }
 
   void initAvailableVariations(List<VariationTypeObject> allVariations, bool isRequired) {
@@ -81,6 +84,9 @@ class ProductItemState extends Model {
     }
     // Set if variation is required
     variationRequired = isRequired;
+    if (isRequired) {
+      isRequiredVariationAdded = false;
+    }
 
     notifyListeners();
   }
@@ -135,9 +141,7 @@ class ProductItemState extends Model {
     // Update the price on button
     addToCartPrice = "\$${selectedItemPrice.toString()}0";
 
-    if (!showAddToCart) {
-      updateShowAddToCart(shouldShow: true);
-    }
+    isRequiredVariationAdded = true;
 
     notifyListeners();
   }
@@ -152,11 +156,6 @@ class ProductItemState extends Model {
 
   void updateVariationType({bool isRequired}) {
     variationRequired = isRequired;
-    notifyListeners();
-  }
-
-  void updateShowAddToCart({bool shouldShow}) {
-    showAddToCart = shouldShow;
     notifyListeners();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsStateController.dart';
+import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
@@ -28,7 +29,10 @@ class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         GestureDetector(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () {
+                            Navigator.pop(context);
+                            locator<ProductItemState>().setBottomState(ProductItemState.GO_TO_CHECKOUT_TEXT);
+                          },
                           child: Container(
                             width: 45.0,
                             height: 45.0,

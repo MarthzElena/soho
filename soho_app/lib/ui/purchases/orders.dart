@@ -70,10 +70,8 @@ class _OrderScreenState extends State<OrderScreen> {
             return Scaffold(
               resizeToAvoidBottomPadding: true,
               backgroundColor: Colors.white,
-              bottomNavigationBar: locator<ProductItemState>().showAddToCart
-                  ? BottomBar(buttonState: ProductItemState.COMPLETE_ORDER)
-                  : SizedBox.shrink(),
-              appBar: SimpleAppBar(),
+              bottomNavigationBar: BottomBar(buttonState: ProductItemState.COMPLETE_ORDER),
+              appBar: SimpleAppBar(type: SimpleAppBarType.ORDER),
               body: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
@@ -151,6 +149,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
+                                      locator<ProductItemState>().setBottomState(ProductItemState.GO_TO_CHECKOUT_TEXT);
                                       Navigator.pop(context);
                                     },
                                     child: Text(
