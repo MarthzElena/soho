@@ -12,7 +12,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
     // TODO: Add actions to each Row item
     var name = "";
     if (Application.currentUser != null) {
-      name = Application.currentUser.firstName + " " + Application.currentUser.lastName;
+      name = Application.currentUser.username;
     }
 
     return Drawer(

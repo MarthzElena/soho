@@ -6,6 +6,7 @@ import 'package:soho_app/Auth/RegisterStateController.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsStateController.dart';
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
+import 'package:soho_app/States/EditProfileState.dart';
 
 GetIt locator = GetIt();
 
@@ -26,4 +27,6 @@ void setUpLocator() {
   locator.registerLazySingleton<HomePageState>(() => HomePageState());
   // Order Detail State
   locator.registerLazySingleton<OrderDetailState>(() => OrderDetailState());
+  // Edit Profile State
+  locator.registerLazySingleton<EditProfileState>(() => EditProfileState());
 }

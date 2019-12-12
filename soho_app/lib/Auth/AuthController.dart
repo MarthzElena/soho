@@ -181,13 +181,9 @@ class AuthController {
                   var firstName = profile['first_name'].toString();
                   var lastName = profile['last_name'].toString();
                   var userId = profile['id'].toString();
-                  // TODO: Get this values later!
-                  var birthDate = profile['user_birthday'] == null ? "" : profile['user_birthday'];
-                  var gender = profile['user_gender'] == null ? "" : profile['user_gender'];
 
                   var user = SohoUserObject.createUserDictionary(
-                      lastName: lastName,
-                      firstName: firstName,
+                      username: firstName + " " + lastName,
                       email: email,
                       userId: userId,
                       phoneNumber: "",
@@ -236,8 +232,7 @@ class AuthController {
 
           // Create user dictionary for Database
           var user = SohoUserObject.createUserDictionary(
-              lastName: "",
-              firstName: googleUser.displayName,
+              username: googleUser.displayName,
               email: googleUser.email,
               userId: googleUser.uid,
               phoneNumber: googleUser.phoneNumber == null ? "" : googleUser.phoneNumber,
@@ -293,14 +288,13 @@ class AuthController {
         // Something failed, treat user as new
         return true;
       } else {
-        if (user[SohoUserObject.keyName].isEmpty) {
+        if (user[SohoUserObject.keyUsername].isEmpty) {
           // User is new
           return true;
         } else {
           // User is not new, update values with database and save locally
           var sohoUser = SohoUserObject(
-              lastName: user[SohoUserObject.keyLastName],
-              firstName: user[SohoUserObject.keyName],
+              username: user[SohoUserObject.keyUsername],
               email: user[SohoUserObject.keyEmail],
               userId: user[SohoUserObject.keyUserId],
               userPhoneNumber: user[SohoUserObject.keyPhone]
@@ -357,8 +351,7 @@ class AuthController {
 
     // Create Soho user
     var sohoUser = SohoUserObject(
-        lastName: user[SohoUserObject.keyLastName],
-        firstName: user[SohoUserObject.keyName],
+        username: user[SohoUserObject.keyUsername],
         email: user[SohoUserObject.keyEmail],
         userId: user[SohoUserObject.keyUserId],
         userPhoneNumber: user[SohoUserObject.keyPhone]

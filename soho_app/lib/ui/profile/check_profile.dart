@@ -9,8 +9,9 @@ import 'package:soho_app/ui/widgets/appbars/appbar_edit_method.dart';
 class CheckProfileScreen extends StatefulWidget {
   final String name;
   final String phone;
+  final String email;
 
-  CheckProfileScreen({this.name = 'Nombre', this.phone = '33 1417 1084'});
+  CheckProfileScreen({this.name = 'Agrega un nombre de usuario', this.phone = 'Agrega un número de celular', this.email = "Arega un email de usuario"});
 
   @override
   _CheckProfileScreenState createState() => _CheckProfileScreenState();
@@ -24,7 +25,7 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
       child: Scaffold(
         resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.white,
-        appBar: EditMethodAppBar(title: 'MI PERFIL', isPencil: true),
+        appBar: EditMethodAppBar(title: 'MI PERFIL', isPencil: true, state: EditMethodAppBarState.PROFILE),
         body: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
@@ -127,6 +128,22 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
                         color: Color(0xffC4C4C4),
                       ),
                     ),
+                    SizedBox(height: 32.0),
+                    Text(
+                      'Correo electrónico',
+                      style: interStyle(
+                        fSize: 14.0,
+                        color: Color(0xff565758),
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      widget.email,
+                      style: interLightStyle(
+                        fSize: 14.0,
+                        color: Color(0xffC4C4C4),
+                      ),
+                    )
                   ],
                 ),
               ),

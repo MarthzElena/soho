@@ -216,8 +216,7 @@ class _RegisterState  extends State<RegisterWidget> {
   Future<void> createAccountPressed(BuildContext context) async {
     // Create user dictionary
     var user = SohoUserObject.createUserDictionary(
-        lastName: registerState.lastNameInput,
-        firstName: registerState.nameInput,
+        username: registerState.nameInput + " " + registerState.lastNameInput,
         email: registerState.emailInput,
         userId: "", // ID is empty since will be defined later
         phoneNumber: registerState.phoneNumber,

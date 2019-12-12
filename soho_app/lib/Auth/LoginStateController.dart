@@ -58,8 +58,7 @@ class LoginState extends Model {
           // TODO: Get this data from Register
           // Create user dictionary for Database
           var userDictionary = SohoUserObject.createUserDictionary(
-              lastName: "Loera - telefono",
-              firstName: "Martha",
+              username: "Martha Loera - telefono",
               email: "",
               userId: user.uid,
               phoneNumber: phoneInput,

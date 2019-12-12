@@ -5,18 +5,15 @@ import 'package:soho_app/Utils/Locator.dart';
 
 class SohoUserObject {
   static const keyEmail = "email";
-  static const keyName = "nombre";
-  static const keyLastName = "apellidos";
+  static const keyUsername = "nombre";
   static const keyUserId = "id";
   static const keyPhone = "telefono";
   static const keyIsAdmin = "isAdmin";
   static const keyPastOrders = "past_orders";
   static const keyOngoingOrders = "ongoing_orders";
 
-  // User last name
-  String lastName = "";
-  // User first name
-  String firstName = "";
+  // User name
+  String username = "";
   //  User email
   String email = "";
   // User UUID from FireBase
@@ -34,7 +31,7 @@ class SohoUserObject {
   List<SohoOrderObject> ongoingOrders = List<SohoOrderObject>();
 
   // Constructor
-  SohoUserObject({this.lastName, this.firstName, this.email, this.userId, this.userPhoneNumber});
+  SohoUserObject({this.username, this.email, this.userId, this.userPhoneNumber});
 
   // This method is only called if the payment was successful
   Future<void> completeOrder(SohoOrderObject order) async {
@@ -48,7 +45,6 @@ class SohoUserObject {
     ongoingOrders.add(order);
     // Update values in database
     var userJson = getJson();
-    print(userJson);
     // TODO: Update inventory oof products!
     await locator<AuthController>().updateUserInDatabase(userJson);
   }
@@ -56,8 +52,7 @@ class SohoUserObject {
   Map<String, dynamic> getJson() {
     var dict = Map<String, dynamic>();
     dict[keyEmail] = email;
-    dict[keyName] = firstName;
-    dict[keyLastName] = lastName;
+    dict[keyUsername] = username;
     dict[keyUserId] = userId;
     dict[keyPhone] = userPhoneNumber;
     dict[keyIsAdmin] = isAdmin;
@@ -75,8 +70,7 @@ class SohoUserObject {
   }
 
   SohoUserObject.fromJson(Map<String, dynamic> json) {
-    lastName = json[keyLastName];
-    firstName = json[keyName];
+    username = json[keyUsername];
     email = json[keyEmail];
     userId = json[keyUserId];
     userPhoneNumber = json[keyPhone];
@@ -97,8 +91,7 @@ class SohoUserObject {
 
   Map<String, dynamic> getDictionary() {
     return createUserDictionary(
-      lastName: this.lastName,
-      firstName: this.firstName,
+      username: this.username,
       email: this.email,
       userId: this.userId,
       phoneNumber: this.userPhoneNumber,
@@ -107,19 +100,17 @@ class SohoUserObject {
   }
 
   SohoUserObject.sohoUserObjectFromDictionary(Map<String, dynamic> dictionary) {
-    this.lastName = dictionary[keyLastName];
-    this.firstName = dictionary[keyName];
+    this.username = dictionary[keyUsername];
     this.email = dictionary[keyEmail];
     this.userId = dictionary[keyUserId];
     this.userPhoneNumber = dictionary[keyPhone];
     this.isAdmin = dictionary[keyIsAdmin];
   }
 
-  static Map<String, dynamic> createUserDictionary({String lastName, String firstName, String email, String userId, String phoneNumber, bool isAdmin}) {
+  static Map<String, dynamic> createUserDictionary({String username, String email, String userId, String phoneNumber, bool isAdmin}) {
     // Create dictionary
     final Map<String,  dynamic> map = {
-      keyLastName : lastName,
-      keyName : firstName,
+      keyUsername : username,
       keyEmail : email,
       keyUserId : userId,
       keyPhone : phoneNumber,

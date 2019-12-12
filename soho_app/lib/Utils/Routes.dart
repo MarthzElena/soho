@@ -9,6 +9,7 @@ import 'package:soho_app/ui/about/location.dart';
 import 'package:soho_app/ui/auth/login.dart';
 import 'package:soho_app/ui/payments/methods.dart';
 import 'package:soho_app/ui/profile/check_profile.dart';
+import 'package:soho_app/ui/profile/edit_profile.dart';
 import 'package:soho_app/ui/purchases/history.dart';
 import 'package:soho_app/ui/purchases/orders.dart';
 import 'package:soho_app/ui/purchases/thanks.dart';
@@ -22,6 +23,7 @@ class Routes {
   static String orderDetail = "OrderDetail";
   static String orderComplete = "OrderComplete";
   static String viewProfile = "ViewProfile";
+  static String editProfile = "editProfile";
   static String myOrders = "MyOrders";
   static String about = "About";
   static String paymentMethods = "PaymentMethods";
@@ -71,9 +73,27 @@ class Routes {
         handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
           var user = Application.currentUser;
           if (user != null) {
-            return CheckProfileScreen(name: user.firstName + " " + user.lastName, phone: user.userPhoneNumber);
+            if (user.userPhoneNumber.isEmpty) {
+              CheckProfileScreen(name: user.username);
+            }
+            return CheckProfileScreen(name: user.username, phone: user.userPhoneNumber, email: user.email);
           }
           return CheckProfileScreen();
+        }));
+
+    // Edit Profile
+    router.define(editProfile,
+        handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+          var user = Application.currentUser;
+          if (user != null) {
+            print("phone number ${user.userPhoneNumber}");
+            if (user.userPhoneNumber.isEmpty) {
+              return EditProfileScreen(name: user.username, email: user.email);
+            }
+            return EditProfileScreen(name: user.username, phone: user.userPhoneNumber, email: user.email);
+          } else {
+            return EditProfileScreen();
+          }
         }));
 
     // My orders
