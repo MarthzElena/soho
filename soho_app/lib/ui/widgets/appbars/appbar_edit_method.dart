@@ -49,11 +49,10 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                         child: FlatButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            print("TAP EXIT");
                           },
                           padding: EdgeInsets.all(0.0),
                           child: Image(
-                            image: menuCross,
+                            image: isPencil ? detailBack : menuCross,
                             width: 22.0,
                             height: 22.0,
                           ),

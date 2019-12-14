@@ -7,12 +7,15 @@ import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
 
 class LoggedInUserMenuWidget extends StatelessWidget {
+  String photoUrl = "";
+
   @override
   Widget build(BuildContext context) {
     // TODO: Add actions to each Row item
     var name = "";
     if (Application.currentUser != null) {
       name = Application.currentUser.username;
+      photoUrl = Application.currentUser.photoUrl;
     }
 
     return Drawer(
@@ -35,10 +38,22 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                         Container(
                           width: 32.0,
                           height: 32.0,
-                          child: CircleAvatar(
+                          child: photoUrl.isEmpty ?
+                          CircleAvatar(
                             radius: 50.0,
                             backgroundColor: Colors.grey,
                             child: Container(
+                            ),
+                          ) :
+                          Container(
+                            width: 50.0,
+                            height: 50.0,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(photoUrl),
+                                )
                             ),
                           ),
                         ),

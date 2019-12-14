@@ -74,9 +74,9 @@ class Routes {
           var user = Application.currentUser;
           if (user != null) {
             if (user.userPhoneNumber.isEmpty) {
-              CheckProfileScreen(name: user.username, email: user.email,);
+              CheckProfileScreen(name: user.username, email: user.email, photo: user.photoUrl,);
             }
-            return CheckProfileScreen(name: user.username, phone: user.userPhoneNumber, email: user.email);
+            return CheckProfileScreen(name: user.username, phone: user.userPhoneNumber, email: user.email, photo: user.photoUrl,);
           }
           return CheckProfileScreen();
         }));

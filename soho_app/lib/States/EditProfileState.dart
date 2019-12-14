@@ -10,6 +10,12 @@ class UserProfileState extends Model{
   String name = "";
   String email = "";
   String phone = "";
+  String photoUrl = "";
+
+  void setPhotoUrl(String photo) {
+    this.photoUrl = photo;
+    notifyListeners();
+  }
 
   void updateDisplayName(String name) {
     this.name = name;
