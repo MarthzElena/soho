@@ -21,16 +21,16 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  EditProfileState _state = locator<EditProfileState>();
+  UserProfileState _state = locator<UserProfileState>();
 
   @override
   Widget build(BuildContext context) {
 
     return WillPopScope(
       onWillPop: () async => false,
-      child: ScopedModel<EditProfileState>(
+      child: ScopedModel<UserProfileState>(
         model: _state,
-        child: ScopedModelDescendant<EditProfileState>(
+        child: ScopedModelDescendant<UserProfileState>(
           builder: (builder, child, model) {
             return Scaffold(
               resizeToAvoidBottomPadding: true,
@@ -161,6 +161,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           SizedBox(height: 8.0),
                           TextField(
+                            keyboardType: TextInputType.phone,
                             onChanged: (value) {
                               model.updatedPhone = value;
                             },

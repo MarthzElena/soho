@@ -1,5 +1,6 @@
 
 import 'dart:collection';
+import 'dart:math';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/HomePage/HomePageStateController.dart';
@@ -175,17 +176,25 @@ class AuthController {
               // Save user to Firebase Auth
               await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
                 // Get user data
-                await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$facebookToken').then((graphResponse) async {
+                await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=$facebookToken').then((graphResponse) async {
                   var profile = json.decode(graphResponse.body);
                   var email = profile['email'].toString();
-                  var firstName = profile['first_name'].toString();
-                  var lastName = profile['last_name'].toString();
+                  var username = profile['name'].toString();
                   var userId = profile['id'].toString();
+                  var photoUrl = "";
+                  var picture = profile['picture'];
+                  if (picture != null) {
+                    var pictureData = picture['data'];
+                    if (pictureData != null) {
+                      photoUrl = pictureData['url'];
+                    }
+                  }
 
                   var user = SohoUserObject.createUserDictionary(
-                      username: firstName + " " + lastName,
+                      username: username,
                       email: email,
                       userId: userId,
+                      photoUrl: photoUrl,
                       phoneNumber: "",
                       isAdmin: false
                   );
@@ -235,6 +244,7 @@ class AuthController {
               username: googleUser.displayName,
               email: googleUser.email,
               userId: googleUser.uid,
+              photoUrl: googleUser.photoUrl,
               phoneNumber: googleUser.phoneNumber == null ? "" : googleUser.phoneNumber,
               isAdmin: false
           );
@@ -297,6 +307,7 @@ class AuthController {
               username: user[SohoUserObject.keyUsername],
               email: user[SohoUserObject.keyEmail],
               userId: user[SohoUserObject.keyUserId],
+              photoUrl: user[SohoUserObject.keyImageUrl],
               userPhoneNumber: user[SohoUserObject.keyPhone]
           );
 
@@ -354,6 +365,7 @@ class AuthController {
         username: user[SohoUserObject.keyUsername],
         email: user[SohoUserObject.keyEmail],
         userId: user[SohoUserObject.keyUserId],
+        photoUrl: user[SohoUserObject.keyImageUrl],
         userPhoneNumber: user[SohoUserObject.keyPhone]
     );
 

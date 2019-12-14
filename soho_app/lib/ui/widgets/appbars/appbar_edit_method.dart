@@ -79,7 +79,7 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                               Navigator.pushNamed(context, Routes.editProfile);
                             } else {
                               // Save data
-                              locator<EditProfileState>().updateUserData();
+                              locator<UserProfileState>().updateUserData();
                               await locator<AuthController>().updateUserInDatabase(Application.currentUser.getJson()).then((_) {
                                 Navigator.pop(context);
                               });

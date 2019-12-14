@@ -28,5 +28,5 @@ void setUpLocator() {
   // Order Detail State
   locator.registerLazySingleton<OrderDetailState>(() => OrderDetailState());
   // Edit Profile State
-  locator.registerLazySingleton<EditProfileState>(() => EditProfileState());
+  locator.registerLazySingleton<UserProfileState>(() => UserProfileState());
 }

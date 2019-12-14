@@ -8,6 +8,7 @@ class SohoUserObject {
   static const keyUsername = "nombre";
   static const keyUserId = "id";
   static const keyPhone = "telefono";
+  static const keyImageUrl = "picture";
   static const keyIsAdmin = "isAdmin";
   static const keyPastOrders = "past_orders";
   static const keyOngoingOrders = "ongoing_orders";
@@ -20,6 +21,8 @@ class SohoUserObject {
   String userId = "";
   // User phone number (as String)
   String userPhoneNumber = "";
+  // User image url
+  String photoUrl = "";
 
   // Admin user
   // Admin user can read QR codes
@@ -31,7 +34,7 @@ class SohoUserObject {
   List<SohoOrderObject> ongoingOrders = List<SohoOrderObject>();
 
   // Constructor
-  SohoUserObject({this.username, this.email, this.userId, this.userPhoneNumber});
+  SohoUserObject({this.username, this.email, this.userId, this.photoUrl, this.userPhoneNumber});
 
   // This method is only called if the payment was successful
   Future<void> completeOrder(SohoOrderObject order) async {
@@ -55,6 +58,7 @@ class SohoUserObject {
     dict[keyUsername] = username;
     dict[keyUserId] = userId;
     dict[keyPhone] = userPhoneNumber;
+    dict[keyImageUrl] = photoUrl;
     dict[keyIsAdmin] = isAdmin;
     var pastOrdersDict = [];
     for (var order in pastOrders) {
@@ -74,6 +78,7 @@ class SohoUserObject {
     email = json[keyEmail];
     userId = json[keyUserId];
     userPhoneNumber = json[keyPhone];
+    photoUrl = json[keyImageUrl];
     isAdmin = json[keyIsAdmin];
     if (json[keyPastOrders] != null) {
       var pastOrdersDict = json[keyPastOrders];
@@ -94,6 +99,7 @@ class SohoUserObject {
       username: this.username,
       email: this.email,
       userId: this.userId,
+      photoUrl: this.photoUrl,
       phoneNumber: this.userPhoneNumber,
       isAdmin: this.isAdmin
     );
@@ -103,16 +109,18 @@ class SohoUserObject {
     this.username = dictionary[keyUsername];
     this.email = dictionary[keyEmail];
     this.userId = dictionary[keyUserId];
+    this.photoUrl = dictionary[keyImageUrl];
     this.userPhoneNumber = dictionary[keyPhone];
     this.isAdmin = dictionary[keyIsAdmin];
   }
 
-  static Map<String, dynamic> createUserDictionary({String username, String email, String userId, String phoneNumber, bool isAdmin}) {
+  static Map<String, dynamic> createUserDictionary({String username, String email, String userId, String photoUrl, String phoneNumber, bool isAdmin}) {
     // Create dictionary
     final Map<String,  dynamic> map = {
       keyUsername : username,
       keyEmail : email,
       keyUserId : userId,
+      keyImageUrl : photoUrl,
       keyPhone : phoneNumber,
       keyIsAdmin : isAdmin
     };
