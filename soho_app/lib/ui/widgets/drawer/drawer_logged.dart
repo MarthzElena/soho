@@ -7,7 +7,9 @@ import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
 
 class LoggedInUserMenuWidget extends StatelessWidget {
-  String photoUrl = "";
+  final String photoUrl;
+
+  LoggedInUserMenuWidget({this.photoUrl = ""});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,6 @@ class LoggedInUserMenuWidget extends StatelessWidget {
     var name = "";
     if (Application.currentUser != null) {
       name = Application.currentUser.username;
-      photoUrl = Application.currentUser.photoUrl;
     }
 
     return Drawer(

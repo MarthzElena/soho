@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/States/EditProfileState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/Utils/TakePicture.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_edit_method.dart';
 
@@ -65,58 +68,150 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           Container(
                             width: 64.0,
                             height: 64.0,
-                            child: Stack(
-                              children: <Widget>[
-                                Align(
-                                  child: Container(
-                                    height: 64.0,
-                                    width: 64.0,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(color: Color(0xffE6E7EB), width: 1.0),
-                                      borderRadius: BorderRadius.circular(100.0),
-                                    ),
-                                    child: model.photoUrl.isEmpty ?
-                                    Container(
-                                      margin: EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (Platform.isIOS) {
+                                  showCupertinoModalPopup(
+                                      context: context,
+                                      builder: (BuildContext ctxt) {
+                                        return CupertinoActionSheet(
+                                          actions: <Widget>[
+                                            CupertinoActionSheetAction(
+                                                onPressed: () {
+                                                  //TODO
+                                                },
+                                                child: Text(
+                                                  'Usar la cámara',
+                                                  textAlign: TextAlign.center,
+                                                  style: interStyle(
+                                                      fSize: 16.0,
+                                                      color: Color(0xff5A6265)
+                                                  ),
+                                                )
+                                            ),
+                                            CupertinoActionSheetAction(
+                                                onPressed: () {
+                                                  // TODO:
+                                                },
+                                                child: Text(
+                                                  'Elegir de mi galería',
+                                                  textAlign: TextAlign.center,
+                                                  style: interStyle(
+                                                      fSize: 16.0,
+                                                      color: Color(0xff5A6265)
+                                                  ),
+                                                )
+                                            )
+                                          ],
+                                          cancelButton: CupertinoActionSheetAction(
+                                              onPressed: () => Navigator.pop(ctxt),
+                                              child: Text('Cancel')
+                                          ),
+                                        );
+                                      });
+                                } else {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext ctxt) {
+                                        return Container (
+                                          child: Wrap (
+                                            children: <Widget>[
+                                              GestureDetector (
+                                                onTap: () async {
+                                                  // Get available cameras
+                                                  final cameras = await availableCameras();
+                                                  // Get first camera
+                                                  final firstCamera = cameras.first;
+//                                                  Navigator.of(context).push(
+//                                                    MaterialPageRoute(builder: (context) => TakePictureScreen(camera: firstCamera)),
+//                                                  );
+                                                },
+                                                child: Container (
+                                                  height: 56,
+                                                  child: Center(
+                                                    child: Text(
+                                                      'Usar la cámara',
+                                                      textAlign: TextAlign.center,
+                                                      style: interStyle(
+                                                          fSize: 16.0,
+                                                          color: Color(0xff5A6265)
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Container (
+                                                height: 56,
+                                                child: Center(
+                                                  child: Text(
+                                                    'Elegir de mi galería',
+                                                    textAlign: TextAlign.center,
+                                                    style: interStyle(
+                                                        fSize: 16.0,
+                                                        color: Color(0xff5A6265)
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      });
+                                }
+                              },
+                              child: Stack(
+                                children: <Widget>[
+                                  Align(
+                                    child: Container(
+                                      height: 64.0,
+                                      width: 64.0,
                                       decoration: BoxDecoration(
-                                        color: Colors.black,
+                                        color: Colors.white,
+                                        border: Border.all(color: Color(0xffE6E7EB), width: 1.0),
                                         borderRadius: BorderRadius.circular(100.0),
                                       ),
-                                    ) :
-                                    Container(
-                                      margin: EdgeInsets.all(8.0),
-                                      width: 48.0,
-                                      height: 48.0,
+                                      child: model.photoUrl.isEmpty ?
+                                      Container(
+                                        margin: EdgeInsets.all(8.0),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black,
+                                          borderRadius: BorderRadius.circular(100.0),
+                                        ),
+                                      ) :
+                                      Container(
+                                        margin: EdgeInsets.all(8.0),
+                                        width: 48.0,
+                                        height: 48.0,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(model.photoUrl),
+                                            )
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                      height: 24.0,
+                                      width: 24.0,
                                       decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: NetworkImage(model.photoUrl),
-                                          )
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(100.0),
+                                      ),
+                                      child: Center(
+                                        child: Image(
+                                          image: menuCamera,
+                                          width: 20.0,
+                                          height: 14.0,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    height: 24.0,
-                                    width: 24.0,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(100.0),
-                                    ),
-                                    child: Center(
-                                      child: Image(
-                                        image: menuCamera,
-                                        width: 20.0,
-                                        height: 14.0,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                           SizedBox(height: 16.0),

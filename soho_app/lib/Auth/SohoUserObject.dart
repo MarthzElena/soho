@@ -78,7 +78,7 @@ class SohoUserObject {
     email = json[keyEmail];
     userId = json[keyUserId];
     userPhoneNumber = json[keyPhone];
-    photoUrl = json[keyImageUrl];
+    photoUrl = json[keyImageUrl] == null ? "" : json[keyImageUrl];
     isAdmin = json[keyIsAdmin];
     if (json[keyPastOrders] != null) {
       var pastOrdersDict = json[keyPastOrders];

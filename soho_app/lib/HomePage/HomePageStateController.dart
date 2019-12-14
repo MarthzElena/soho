@@ -6,10 +6,10 @@ import 'package:soho_app/ui/widgets/drawer/drawer_logged.dart';
 
 class HomePageState extends Model {
 
-  Widget drawer = Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget();
+  Widget drawer = Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget(photoUrl: Application.currentUser.photoUrl);
 
   void updateDrawer() {
-    drawer = Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget();
+    drawer = Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget(photoUrl: Application.currentUser.photoUrl);
     notifyListeners();
   }
 

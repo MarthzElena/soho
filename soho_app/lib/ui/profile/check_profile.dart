@@ -77,45 +77,40 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
                           Container(
                             width: 64.0,
                             height: 64.0,
-                            child: GestureDetector(
-                              onTap: () {
-
-                              },
-                              child: Stack(
-                                children: <Widget>[
-                                  Align(
-                                    child: Container(
-                                      height: 64.0,
-                                      width: 64.0,
+                            child: Stack(
+                              children: <Widget>[
+                                Align(
+                                  child: Container(
+                                    height: 64.0,
+                                    width: 64.0,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(color: Color(0xffE6E7EB), width: 1.0),
+                                      borderRadius: BorderRadius.circular(100.0),
+                                    ),
+                                    child: model.photoUrl.isEmpty ?
+                                    Container(
+                                      margin: EdgeInsets.all(8.0),
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(color: Color(0xffE6E7EB), width: 1.0),
+                                        color: Colors.black,
                                         borderRadius: BorderRadius.circular(100.0),
                                       ),
-                                      child: model.photoUrl.isEmpty ?
-                                      Container(
-                                        margin: EdgeInsets.all(8.0),
-                                        decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.circular(100.0),
-                                        ),
-                                      ) :
-                                      Container(
-                                        margin: EdgeInsets.all(8.0),
-                                        width: 48.0,
-                                        height: 48.0,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: NetworkImage(model.photoUrl),
-                                          )
-                                        ),
+                                    ) :
+                                    Container(
+                                      margin: EdgeInsets.all(8.0),
+                                      width: 48.0,
+                                      height: 48.0,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image: NetworkImage(model.photoUrl),
+                                        )
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                           SizedBox(height: 16.0),
