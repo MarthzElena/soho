@@ -62,7 +62,8 @@ class LoginState extends Model {
               email: "",
               userId: user.uid,
               phoneNumber: phoneInput,
-              isAdmin: false
+              isAdmin: false,
+              photoUrl: ""
           );
           // Get token
           await user.getIdToken(refresh: true).then((token) async {

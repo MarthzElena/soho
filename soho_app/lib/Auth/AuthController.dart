@@ -305,10 +305,10 @@ class AuthController {
           // User is not new, update values with database and save locally
           var sohoUser = SohoUserObject(
               username: user[SohoUserObject.keyUsername],
-              email: user[SohoUserObject.keyEmail],
+              email: user[SohoUserObject.keyEmail] == null ? "" : user[SohoUserObject.keyImageUrl],
               userId: user[SohoUserObject.keyUserId],
-              photoUrl: user[SohoUserObject.keyImageUrl],
-              userPhoneNumber: user[SohoUserObject.keyPhone]
+              photoUrl: user[SohoUserObject.keyImageUrl] == null ? "" : user[SohoUserObject.keyImageUrl],
+              userPhoneNumber: user[SohoUserObject.keyPhone] == null ? "" : user[SohoUserObject.keyImageUrl]
           );
 
           // Save locally
