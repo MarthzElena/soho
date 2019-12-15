@@ -55,7 +55,7 @@ class AuthController {
                               LinkedHashMap linkedMap = item.value;
                               Map<String, dynamic> dictionary = linkedMap.cast();
                               if (dictionary != null) {
-                                SohoUserObject sohoUser = SohoUserObject.sohoUserObjectFromDictionary(dictionary);
+                                SohoUserObject sohoUser = SohoUserObject.fromJson(dictionary);
                                 // Save locally
                                 Application.currentUser = sohoUser;
                               }

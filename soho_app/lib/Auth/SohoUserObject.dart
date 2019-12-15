@@ -107,15 +107,6 @@ class SohoUserObject {
     );
   }
 
-  SohoUserObject.sohoUserObjectFromDictionary(Map<String, dynamic> dictionary) {
-    this.username = dictionary[keyUsername];
-    this.email = dictionary[keyEmail];
-    this.userId = dictionary[keyUserId];
-    this.photoUrl = dictionary[keyImageUrl];
-    this.userPhoneNumber = dictionary[keyPhone];
-    this.isAdmin = dictionary[keyIsAdmin];
-  }
-
   static Map<String, dynamic> createUserDictionary({String username, String email, String userId, String photoUrl, String phoneNumber, bool isAdmin}) {
     // Create dictionary
     final Map<String,  dynamic> map = {
