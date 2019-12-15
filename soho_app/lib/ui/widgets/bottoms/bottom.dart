@@ -8,6 +8,7 @@ import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/purchases/thanks.dart';
 
 class BottomBar extends StatefulWidget {
   final String buttonState;
@@ -70,8 +71,10 @@ class _BottomBarState extends State<BottomBar> {
                 } else if (_productItemModel.shouldGoToCompleteOrder()) {
                   // TODO: Process payment!! (This should happen only if payment is completed)
                   if (Application.currentOrder != null && Application.currentUser != null) {
-                    await Application.currentUser.completeOrder(Application.currentOrder).then((_) {
-                      Navigator.pushNamed(context, Routes.orderComplete);
+                    await Application.currentUser.completeOrder(Application.currentOrder).then((codeData) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => ThanksScreen(codeData))
+                      );
                     });
 
                   }

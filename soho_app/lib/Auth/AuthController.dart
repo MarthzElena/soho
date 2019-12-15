@@ -340,8 +340,7 @@ class AuthController {
       }
     }).catchError((databaseError) {
       print("Database fetch error: ${databaseError.toString()}");
-      return true;
-    });;
+    });
   }
 
   Future<void> updateUserInDatabase(Map<String, dynamic> user) async {

@@ -2,14 +2,13 @@ import 'dart:core';
 
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 
-/**
- * THIS OBJECT WILL BE SAVED ON DATABASE PER USER
- */
+/// THIS OBJECT WILL BE SAVED ON DATABASE PER USER
 class SohoOrderObject {
   static const String keySelectedProducts = "selected_products";
   static const String keyCompletionDate = "completion_date";
   static const String keyIsCompleted = "is_completed";
   static const String keyIsQRCodeValid = "is_qr_code_valid";
+  static const String keyQRCodeData = "qr_code_reference";
 
   SohoOrderObject();
 
@@ -19,6 +18,9 @@ class SohoOrderObject {
   // Time of order completion
   // This value must be updated when the order is completed
   DateTime completionDate = DateTime.now();
+
+  // Reference in Firebase Storage to QR Code
+  String qrCodeData = "";
 
   static DateTime setCompletionDateFromString(String date) {
     return DateTime.parse(date);
@@ -41,6 +43,7 @@ class SohoOrderObject {
     dict[keyCompletionDate] = getCompletedDateString();
     dict[keyIsCompleted] = isOrderCompleted;
     dict[keyIsQRCodeValid] = isQRCodeValid;
+    dict[keyQRCodeData] = qrCodeData;
     var dictProducts = [];
     for (var product in selectedProducts) {
       dictProducts.add(product.getJson());
@@ -53,6 +56,7 @@ class SohoOrderObject {
     completionDate = setCompletionDateFromString(json[keyCompletionDate]);
     isOrderCompleted = json[keyIsCompleted];
     isQRCodeValid = json[keyIsQRCodeValid];
+    qrCodeData = json[keyQRCodeData];
     if (json[keySelectedProducts] != null) {
       var dictProducts = json[keySelectedProducts];
       for (var product in dictProducts) {

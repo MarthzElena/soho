@@ -5,6 +5,7 @@ import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/widgets/drawer/QRCodeTest.dart';
 
 class LoggedInUserMenuWidget extends StatelessWidget {
   final String photoUrl;

@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:core';
 import 'package:soho_app/Auth/AuthController.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderQR.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Locator.dart';
 
@@ -38,13 +40,17 @@ class SohoUserObject {
   SohoUserObject({this.username, this.email, this.userId, this.photoUrl, this.userPhoneNumber});
 
   // This method is only called if the payment was successful
-  Future<void> completeOrder(SohoOrderObject order) async {
+  Future<String> completeOrder(SohoOrderObject order) async {
     // Update completion time
     order.completionDate = DateTime.now();
     // Update completion value
     order.isOrderCompleted = true;
-    // TODO: Generate QR code
     order.isQRCodeValid = true;
+    // Create QR Code  object
+    var codeObject = SohoOrderQR(order: order, userId: userId, userName: username);
+    var codeData = jsonEncode(codeObject.getJson());
+    // Add code data to order
+    order.qrCodeData = codeData;
     // Add to ongoingOrders
     ongoingOrders.add(order);
     // Update inventory for order
@@ -52,6 +58,8 @@ class SohoUserObject {
     // Update values in database
     var userJson = getJson();
     await locator<AuthController>().updateUserInDatabase(userJson);
+
+    return jsonEncode(codeData);
   }
 
   Map<String, dynamic> getJson() {

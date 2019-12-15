@@ -4,11 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_share.dart';
 
 class ThanksScreen extends StatefulWidget {
+  final String qrCodeData;
+
+  ThanksScreen(this.qrCodeData);
+
   @override
   _ThanksScreenState createState() => _ThanksScreenState();
 }
@@ -80,7 +85,7 @@ class _ThanksScreenState extends State<ThanksScreen> {
                               ),
                               children: <TextSpan>[
                                 TextSpan(
-                                  text: 'Ver ubicaciones',
+                                  text: 'Ver ubicación',
                                   style: interStyle(
                                     fSize: 14.0,
                                     color: Color(0xffE51F4F),
@@ -102,6 +107,14 @@ class _ThanksScreenState extends State<ThanksScreen> {
                       decoration: BoxDecoration(
                         color: Color(0xffF5F5F5),
                         borderRadius: BorderRadius.circular(40.0),
+                      ),
+                      child: Container(
+                        margin: EdgeInsets.all(16.0),
+                        width: 191.0,
+                        height: 191.0,
+                        child: QrImage(
+                          data: widget.qrCodeData,
+                        ),
                       ),
                     ),
                   ),

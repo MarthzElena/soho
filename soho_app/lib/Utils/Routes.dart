@@ -21,7 +21,6 @@ class Routes {
   static String register = "Register";
   static String categoryDetail = "CategoryDetail/:category";
   static String orderDetail = "OrderDetail";
-  static String orderComplete = "OrderComplete";
   static String viewProfile = "ViewProfile";
   static String editProfile = "editProfile";
   static String myOrders = "MyOrders";
@@ -60,12 +59,6 @@ class Routes {
     router.define(orderDetail,
         handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
           return OrderScreen();
-        }));
-
-    // Order completed
-    router.define(orderComplete,
-        handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-          return ThanksScreen();
         }));
 
     // Profile view
