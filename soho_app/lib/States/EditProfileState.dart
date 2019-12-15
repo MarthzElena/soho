@@ -1,3 +1,9 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Utils/Application.dart';
 
@@ -11,6 +17,10 @@ class UserProfileState extends Model{
   String email = "";
   String phone = "";
   String photoUrl = "";
+
+  File _imageFile;
+
+  AssetImage photoPlaceholder = AssetImage('assets/auth/bamboo.png');
 
   void setPhotoUrl(String photo) {
     this.photoUrl = photo;
@@ -57,5 +67,30 @@ class UserProfileState extends Model{
       }
     }
     notifyListeners();
+  }
+
+  void getImageFile(ImageSource source, context) async {
+    var image = await ImagePicker.pickImage(source: source);
+
+    File croppedFile = await ImageCropper.cropImage(
+      sourcePath: image.path,
+      maxWidth: 512,
+      maxHeight: 512,
+    );
+
+    var compressedFile = await FlutterImageCompress.compressAndGetFile(
+      croppedFile.path,
+      croppedFile.path,
+      quality: 80,
+    );
+
+    _imageFile = compressedFile;
+
+    photoPlaceholder = AssetImage(compressedFile.path);
+    photoUrl = 'asd';
+
+    notifyListeners();
+
+    Navigator.of(context).pop();
   }
 }
