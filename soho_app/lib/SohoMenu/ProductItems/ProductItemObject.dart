@@ -12,6 +12,8 @@ class ProductItemObject {
   static String keyDescription = "description";
   static String keyPrice = "price";
   static String keyVariations = "variations";
+  static String keyLocationId = "locationId";
+  static String keyFromState = "fromState";
 
   // Constants for Category names
   final String _categoryCoffee = "coffee";
@@ -42,6 +44,11 @@ class ProductItemObject {
 
   /// Product regular price on Square
   double price = 0.0;
+
+  /// Value needed for updating inventory - from_state
+  String fromState = "";
+  /// Value needed for updating inventory - location_id
+  String locationId = "";
 
   /// Available variations by subcategory
   List<VariationTypeObject> productVariations = List<VariationTypeObject>();
@@ -111,6 +118,8 @@ class ProductItemObject {
     squareID = json[keySquareId];
     description = json[keyDescription];
     price = json[keyPrice];
+    locationId = json[keyLocationId];
+    fromState = json[keyFromState];
     productVariations = json[keyVariations];
   }
 
@@ -123,7 +132,9 @@ class ProductItemObject {
         keySquareId : squareID,
         keyDescription : description,
         keyPrice : price,
-        keyVariations : productVariations
+        keyVariations : productVariations,
+        keyLocationId : locationId,
+        keyFromState : fromState
       };
 
 }

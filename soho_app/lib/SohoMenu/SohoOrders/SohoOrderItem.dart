@@ -8,6 +8,8 @@ class SohoOrderItem {
   static const keyProductId = "product_id";
   static const keyProductPrice = "product_price";
   static const keyProductVariations = "product_variations";
+  static String keyLocationId = "locationId";
+  static String keyFromState = "fromState";
 
   /// String for product name on Square
   String name = "";
@@ -21,10 +23,15 @@ class SohoOrderItem {
   /// Product final price (includes selected variations)
   double price = 0.0;
 
+  /// Value needed for updating inventory - from_state
+  String fromState = "";
+  /// Value needed for updating inventory - location_id
+  String locationId = "";
+
   /// Available variations by subcategory
   List<VariationTypeObject> productVariations = List<VariationTypeObject>();
 
-  SohoOrderItem(this.name, this.categoryID, this.productID, this.price);
+  SohoOrderItem(this.name, this.categoryID, this.productID, this.price, this.fromState, this.locationId);
 
   void addVariations(Map<String, List<VariationItemObject>> items) {
     // First check if variation type is already included
@@ -42,6 +49,8 @@ class SohoOrderItem {
     dict[keyCategoryId] = categoryID;
     dict[keyProductId] = productID;
     dict[keyProductPrice] = price;
+    dict[keyFromState] = fromState;
+    dict[keyLocationId] = locationId;
     var productsArray = [];
     for (var variation in productVariations) {
       productsArray.add(variation.getJson());
@@ -55,6 +64,8 @@ class SohoOrderItem {
     categoryID = json[keyCategoryId];
     productID = json[keyProductId];
     price = json[keyProductPrice] + 0.0;
+    locationId = json[keyLocationId];
+    fromState = json[keyFromState];
     if (json[keyProductVariations] != null) {
       var productsArray = json[keyProductVariations];
       for (var product in productsArray) {

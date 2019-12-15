@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'package:soho_app/Auth/AuthController.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
+import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Locator.dart';
 
 class SohoUserObject {
@@ -46,9 +47,10 @@ class SohoUserObject {
     order.isQRCodeValid = true;
     // Add to ongoingOrders
     ongoingOrders.add(order);
+    // Update inventory for order
+    await SquareHTTPRequest.updateInventoryForOrder(order);
     // Update values in database
     var userJson = getJson();
-    // TODO: Update inventory oof products!
     await locator<AuthController>().updateUserInDatabase(userJson);
   }
 

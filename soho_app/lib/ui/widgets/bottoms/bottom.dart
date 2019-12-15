@@ -157,7 +157,9 @@ class _BottomBarState extends State<BottomBar> {
         _productItemModel.currentProduct.name,
         categoryId,
         _productItemModel.currentProduct.squareID,
-        _productItemModel.selectedItemPrice);
+        _productItemModel.selectedItemPrice,
+        _productItemModel.currentProduct.fromState,
+        _productItemModel.currentProduct.locationId);
     newItem.addVariations(_productItemModel.selectedVariations);
 
     return newItem;
