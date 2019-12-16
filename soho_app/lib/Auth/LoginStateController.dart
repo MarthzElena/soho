@@ -42,50 +42,54 @@ class LoginState extends Model {
     });
   }
 
+  Future<void> signInWithPhoneCredential(BuildContext context, AuthCredential credential) async {
+    final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential).catchError((signInError) {
+      print("SIGN IN ERROR: ${signInError.toString()}");
+      // TODO: HAndle error
+    });
+    if (user != null) {
+      bool isNewUser = await locator<AuthController>().isNewUser(user.uid);
+      if (isNewUser) {
+        // TODO: Get this data from Register
+        // Create user dictionary for Database
+        var userDictionary = SohoUserObject.createUserDictionary(
+            username: "Martha Loera - telefono",
+            email: "",
+            userId: user.uid,
+            phoneNumber: phoneInput,
+            isAdmin: false,
+            photoUrl: ""
+        );
+        // Get token
+        await user.getIdToken(refresh: true).then((token) async {
+          await locator<AuthController>().savePhoneCredentials().then((_) async {
+            await locator<AuthController>().saveUserToDatabase(userDictionary);
+            Navigator.pop(context);
+            Navigator.pop(context);
+          });
+        }).catchError((tokenError) {
+          print("token ERROR: ${tokenError.toString()}");
+          // TODO: HAndle error
+        });
+
+//          Navigator.pushNamed(context, Routes.register);
+      } else {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      }
+    } else {
+      print("*** ERROR with user");
+      // TODO: HAndle error
+    }
+  }
+
   signIn(BuildContext context, String smsCode) async {
     try {
       final AuthCredential credential = PhoneAuthProvider.getCredential(
         verificationId: _phoneVerificationId,
         smsCode: smsCode,
       );
-      final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential).catchError((signInError) {
-        print("SIGN IN ERROR: ${signInError.toString()}");
-        // TODO: HAndle error
-      });
-      if (user != null) {
-        bool isNewUser = await locator<AuthController>().isNewUser(user.uid);
-        if (isNewUser) {
-          // TODO: Get this data from Register
-          // Create user dictionary for Database
-          var userDictionary = SohoUserObject.createUserDictionary(
-              username: "Martha Loera - telefono",
-              email: "",
-              userId: user.uid,
-              phoneNumber: phoneInput,
-              isAdmin: false,
-              photoUrl: ""
-          );
-          // Get token
-          await user.getIdToken(refresh: true).then((token) async {
-            await locator<AuthController>().savePhoneCredentials(phoneInput, token).then((_) async {
-              await locator<AuthController>().saveUserToDatabase(userDictionary);
-              Navigator.pop(context);
-              Navigator.pop(context);
-            });
-          }).catchError((tokenError) {
-            print("token ERROR: ${tokenError.toString()}");
-            // TODO: HAndle error
-          });
-
-//          Navigator.pushNamed(context, Routes.register);
-        } else {
-          Navigator.pop(context);
-          Navigator.pop(context);
-        }
-      } else {
-        print("*** ERROR with user");
-        // TODO: HAndle error
-      }
+      await signInWithPhoneCredential(context, credential);
     } catch (e) {
       handleError(e, context);
     }
@@ -107,9 +111,9 @@ class LoginState extends Model {
           codeSent:
           smsOTPSent,
           timeout: const Duration(seconds: 20),
-          verificationCompleted: (AuthCredential phoneAuthCredential) {
-            // TODO:
+          verificationCompleted: (AuthCredential phoneAuthCredential) async {
             print("**** Verificatioon COMPLETE! $phoneAuthCredential");
+            await signInWithPhoneCredential(context, phoneAuthCredential);
           },
           verificationFailed: (AuthException exception) {
             // TODO: Handle error

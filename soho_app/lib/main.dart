@@ -22,7 +22,7 @@ Future main() async {
       debugShowCheckedModeBanner: false,
       onGenerateRoute: _router.generator,
       title: 'Soho',
-      home: EditProfileScreen(),
+      home: SplashScreen(),
     ),
   );
 }
