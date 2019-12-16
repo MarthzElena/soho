@@ -1,6 +1,8 @@
 
 import 'dart:collection';
+import 'dart:io';
 import 'dart:math';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/HomePage/HomePageStateController.dart';
@@ -16,10 +18,11 @@ import 'package:soho_app/Utils/Locator.dart';
 
 class AuthController {
 
-  static final storage = new FlutterSecureStorage();
-  static final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  static final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
-  static final GoogleSignIn googleSignIn = GoogleSignIn();
+  final storage = new FlutterSecureStorage();
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+  final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
+  final GoogleSignIn googleSignIn = GoogleSignIn();
   final FacebookLogin facebookLogin = FacebookLogin();
   String _phoneVerificationId = "";
 
@@ -319,6 +322,17 @@ class AuthController {
         }
       }
     });
+  }
+
+  Future<String> saveImageToCloud(String fileName, File file) async {
+    var storageReference = firebaseStorage.ref().child(fileName);
+    final uploadTask = storageReference.putFile(file);
+    final StorageTaskSnapshot downloadUrl = await uploadTask.onComplete;
+    final String url = await downloadUrl.ref.getDownloadURL();
+    if (Application.currentUser != null) {
+      Application.currentUser.photoUrl = url;
+    }
+    return url;
   }
 
 }

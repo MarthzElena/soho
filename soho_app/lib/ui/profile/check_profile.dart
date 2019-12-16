@@ -92,9 +92,11 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
                                     Container(
                                       margin: EdgeInsets.all(8.0),
                                       decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.circular(100.0),
-                                      ),
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: model.photoPlaceholder,
+                                          )),
                                     ) :
                                     Container(
                                       margin: EdgeInsets.all(8.0),
