@@ -5,6 +5,7 @@ import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 class SohoOrderItem {
   static const keyProductName = "product_name";
   static const keyCategoryId = "category_id";
+  static const keyCategoryName = "category_name";
   static const keyProductId = "product_id";
   static const keyProductPrice = "product_price";
   static const keyProductVariations = "product_variations";
@@ -14,8 +15,9 @@ class SohoOrderItem {
   /// String for product name on Square
   String name = "";
 
-  /// Square ID for the products category
+  /// Square ID for the products category and name
   String categoryID = "";
+  String categoryName = "";
 
   /// Product Square ID
   String productID = "";
@@ -31,7 +33,7 @@ class SohoOrderItem {
   /// Available variations by subcategory
   List<VariationTypeObject> productVariations = List<VariationTypeObject>();
 
-  SohoOrderItem(this.name, this.categoryID, this.productID, this.price, this.fromState, this.locationId);
+  SohoOrderItem(this.name, this.categoryID, this.categoryName, this.productID, this.price, this.fromState, this.locationId);
 
   void addVariations(Map<String, List<VariationItemObject>> items) {
     // First check if variation type is already included
@@ -47,6 +49,7 @@ class SohoOrderItem {
     var dict = Map<String, dynamic>();
     dict[keyProductName] = name;
     dict[keyCategoryId] = categoryID;
+    dict[keyCategoryName] = categoryName;
     dict[keyProductId] = productID;
     dict[keyProductPrice] = price;
     dict[keyFromState] = fromState;
@@ -62,6 +65,7 @@ class SohoOrderItem {
   SohoOrderItem.fromJson(Map<dynamic, dynamic> json) {
     name = json[keyProductName];
     categoryID = json[keyCategoryId];
+    categoryName = json[keyCategoryName];
     productID = json[keyProductId];
     price = json[keyProductPrice] + 0.0;
     locationId = json[keyLocationId];

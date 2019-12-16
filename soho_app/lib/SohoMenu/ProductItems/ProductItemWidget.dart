@@ -187,16 +187,24 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
   SohoOrderItem _getSelectedProduct(ProductItemObject fromProductItemObject) {
     // Get id for category
     String categoryId = "";
+    String categoryName = "";
     for (var category in Application.sohoCategories) {
       if (category.name == fromProductItemObject.category) {
         categoryId = category.squareID;
+        categoryName = category.name;
         break;
       }
     }
 
     // Create new item for order
-    SohoOrderItem newItem = SohoOrderItem(fromProductItemObject.name, categoryId,
-        fromProductItemObject.squareID, fromProductItemObject.price, fromProductItemObject.fromState, fromProductItemObject.locationId);
+    SohoOrderItem newItem = SohoOrderItem(
+        fromProductItemObject.name,
+        categoryId,
+        categoryName,
+        fromProductItemObject.squareID,
+        fromProductItemObject.price,
+        fromProductItemObject.fromState,
+        fromProductItemObject.locationId);
     newItem.addVariations(productItemModel.selectedVariations);
 
     return newItem;

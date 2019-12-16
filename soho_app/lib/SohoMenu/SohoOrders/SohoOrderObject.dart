@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:intl/intl.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 
 /// THIS OBJECT WILL BE SAVED ON DATABASE PER USER
@@ -27,6 +28,10 @@ class SohoOrderObject {
   }
   String getCompletedDateString() {
     return completionDate.toIso8601String();
+  }
+  String getCompletedDateShort() {
+    var formatter = DateFormat("MMM dd yyyy");
+    return formatter.format(completionDate);
   }
 
   // Used for specifying if the order has been completed.

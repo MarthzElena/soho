@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         SizedBox(height: 16.0),
-                        SmallCarousel(list: Application.sohoCategories),
+                        SmallCarousel(list: model.getOrderList()),
                         SizedBox(height: 16.0),
                       ],
                     ),

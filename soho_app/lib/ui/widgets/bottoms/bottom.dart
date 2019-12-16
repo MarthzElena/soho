@@ -148,9 +148,11 @@ class _BottomBarState extends State<BottomBar> {
   SohoOrderItem _getSelectedProduct() {
     // Get id for category
     String categoryId = "";
+    String categoryName = "";
     for (var category in Application.sohoCategories) {
       if (category.name == _productItemModel.currentProduct.category) {
         categoryId = category.squareID;
+        categoryName = category.name;
         break;
       }
     }
@@ -159,6 +161,7 @@ class _BottomBarState extends State<BottomBar> {
     SohoOrderItem newItem = SohoOrderItem(
         _productItemModel.currentProduct.name,
         categoryId,
+        categoryName,
         _productItemModel.currentProduct.squareID,
         _productItemModel.selectedItemPrice,
         _productItemModel.currentProduct.fromState,
