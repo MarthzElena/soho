@@ -1,6 +1,8 @@
 
 import 'dart:collection';
+import 'dart:io';
 import 'dart:math';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/HomePage/HomePageStateController.dart';
@@ -16,10 +18,11 @@ import 'package:soho_app/Utils/Locator.dart';
 
 class AuthController {
 
-  static final storage = new FlutterSecureStorage();
-  static final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  static final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
-  static final GoogleSignIn googleSignIn = GoogleSignIn();
+  final storage = new FlutterSecureStorage();
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+  final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
+  final GoogleSignIn googleSignIn = GoogleSignIn();
   final FacebookLogin facebookLogin = FacebookLogin();
   String _phoneVerificationId = "";
 
@@ -27,76 +30,13 @@ class AuthController {
   Future<void> getSavedAuthObject() async{
 
     // Get the user from the saved credentials
-    // Read the token (if any)
-    await storage.read(key: Constants.KEY_AUTH_TOKEN).then((token) async {
-      await storage.read(key: Constants.KEY_AUTH_PROVIDER).then((provider) async {
-        bool tokenValid = token != null && token.isNotEmpty;
-        bool providerValid = provider != null && provider.isNotEmpty;
-        await storage.read(key: Constants.KEY_AUTH_PHONE_NUMBER).then((phone) async {
-          String savedPhone = phone == null ? "" : phone;
-
-          if (tokenValid && providerValid) {
-
-            switch (provider) {
-              case Constants.KEY_FACEBOOK_PROVIDER:
-                {
-                  // Facebook Login
-                  await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: token)).then((facebookUser) async {
-                    if (facebookUser != null) {
-                      // Get provider data
-                      for (var data in facebookUser.providerData) {
-                        if (data.providerId == "facebook.com") {
-                          var userId = data.uid;
-                          var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
-                          var savedUser = usersRef.child(userId);
-                          // Get user from database
-                          await savedUser.once().then((item) {
-                            if (item != null) {
-                              LinkedHashMap linkedMap = item.value;
-                              Map<String, dynamic> dictionary = linkedMap.cast();
-                              if (dictionary != null) {
-                                SohoUserObject sohoUser = SohoUserObject.fromJson(dictionary);
-                                // Save locally
-                                Application.currentUser = sohoUser;
-                              }
-                            }
-                          });
-                        }
-                      }
-                    }
-                  }).catchError((facebookLoginError) {
-                    print("Facebook Login Error: ${facebookLoginError.toString()}");
-                  });
-                }
-                break;
-
-              case Constants.KEY_GOOGLE_PROVIDER:
-                {
-                  // Google Login
-                  await initiateGoogleLogin();
-
-                }
-                break;
-
-              case Constants.KEY_PHONE_PROVIDER:
-                {
-                  // Phone Login
-                await firebaseAuth.currentUser().then((user) async {
-                  if (user != null) {
-                    await startSessionFromUserId(user.uid);
-                  } else {
-                    // TODO: Attempt to validate saved phone
-                  }
-                });
-                }
-                break;
-
-            }
-
-          }
-        });
-
-      });
+    // Check if Firebase has a stored user
+    await firebaseAuth.currentUser().then((user) async {
+      if (user != null) {
+        // Update user token and  get user from database
+        await user.getIdToken(refresh: true);
+        await startSessionFromUserId(user.uid);
+      }
     });
   }
 
@@ -130,22 +70,14 @@ class AuthController {
   }
 
   Future<void> deleteAuthStoredValues() async {
-    await storage.delete(key: Constants.KEY_AUTH_TOKEN).then((_) async {
-      await storage.delete(key: Constants.KEY_AUTH_PROVIDER).then((_) async {
-        await storage.delete(key: Constants.KEY_AUTH_PHONE_NUMBER).then((_) async {
-          // Clear saved user locally
-          Application.currentUser = null;
-        });
-      });
+    await storage.delete(key: Constants.KEY_AUTH_PROVIDER).then((_) async {
+      // Clear saved user locally
+      Application.currentUser = null;
     });
   }
 
-  Future<void> savePhoneCredentials(String phone, String token) async {
-    await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_PHONE_PROVIDER).then((_) async {
-      await storage.write(key: Constants.KEY_AUTH_TOKEN, value: token).then((_) async {
-        await storage.write(key: Constants.KEY_AUTH_PHONE_NUMBER, value: phone);
-      });
-    });
+  Future<void> savePhoneCredentials() async {
+    await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_PHONE_PROVIDER);
   }
 
   Future<void> logoutPhoneUser() async {
@@ -172,39 +104,36 @@ class AuthController {
         case FacebookLoginStatus.loggedIn:
         // Save auth data and provider
           await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_FACEBOOK_PROVIDER).then((_) async {
-            await storage.write(key: Constants.KEY_AUTH_TOKEN, value: facebookToken).then((_) async {
-              // Save user to Firebase Auth
-              await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
-                // Get user data
-                await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=$facebookToken').then((graphResponse) async {
-                  var profile = json.decode(graphResponse.body);
-                  var email = profile['email'].toString();
-                  var username = profile['name'].toString();
-                  var userId = profile['id'].toString();
-                  var photoUrl = "";
-                  var picture = profile['picture'];
-                  if (picture != null) {
-                    var pictureData = picture['data'];
-                    if (pictureData != null) {
-                      photoUrl = pictureData['url'];
-                    }
+            // Save user to Firebase Auth
+            await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
+              // Get user data
+              await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=$facebookToken').then((graphResponse) async {
+                var profile = json.decode(graphResponse.body);
+                var email = profile['email'].toString();
+                var username = profile['name'].toString();
+                var userId = profile['id'].toString();
+                var photoUrl = "";
+                var picture = profile['picture'];
+                if (picture != null) {
+                  var pictureData = picture['data'];
+                  if (pictureData != null) {
+                    photoUrl = pictureData['url'];
                   }
+                }
 
-                  var user = SohoUserObject.createUserDictionary(
-                      username: username,
-                      email: email,
-                      userId: userId,
-                      photoUrl: photoUrl,
-                      phoneNumber: "",
-                      isAdmin: false
-                  );
-                  await saveUserToDatabase(user);
-                });
+                var user = SohoUserObject.createUserDictionary(
+                    username: username,
+                    email: email,
+                    userId: userId,
+                    photoUrl: photoUrl,
+                    phoneNumber: "",
+                    isAdmin: false
+                );
+                await saveUserToDatabase(user);
               });
-
-            }).catchError((error) {
-              // TODO: Handle error
             });
+          }).catchError((error) {
+            // TODO: Handle error
           });
 
           break;
@@ -252,9 +181,7 @@ class AuthController {
           await saveUserToDatabase(user).then((_) async {
 
             // Make sure to save credentials only if login is completed
-            await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER).then((_) async {
-              await storage.write(key: Constants.KEY_AUTH_TOKEN, value: googleAuth.accessToken);
-            });
+            await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER);
 
           });
 
@@ -305,10 +232,10 @@ class AuthController {
           // User is not new, update values with database and save locally
           var sohoUser = SohoUserObject(
               username: user[SohoUserObject.keyUsername],
-              email: user[SohoUserObject.keyEmail],
+              email: user[SohoUserObject.keyEmail] == null ? "" : user[SohoUserObject.keyImageUrl],
               userId: user[SohoUserObject.keyUserId],
-              photoUrl: user[SohoUserObject.keyImageUrl],
-              userPhoneNumber: user[SohoUserObject.keyPhone]
+              photoUrl: user[SohoUserObject.keyImageUrl] == null ? "" : user[SohoUserObject.keyImageUrl],
+              userPhoneNumber: user[SohoUserObject.keyPhone] == null ? "" : user[SohoUserObject.keyImageUrl]
           );
 
           // Save locally
@@ -394,6 +321,17 @@ class AuthController {
         }
       }
     });
+  }
+
+  Future<String> saveImageToCloud(String fileName, File file) async {
+    var storageReference = firebaseStorage.ref().child(fileName);
+    final uploadTask = storageReference.putFile(file);
+    final StorageTaskSnapshot downloadUrl = await uploadTask.onComplete;
+    final String url = await downloadUrl.ref.getDownloadURL();
+    if (Application.currentUser != null) {
+      Application.currentUser.photoUrl = url;
+    }
+    return url;
   }
 
 }

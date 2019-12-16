@@ -220,6 +220,7 @@ class _RegisterState  extends State<RegisterWidget> {
         email: registerState.emailInput,
         userId: "", // ID is empty since will be defined later
         phoneNumber: registerState.phoneNumber,
+        photoUrl: "",
         isAdmin: false
     );
 

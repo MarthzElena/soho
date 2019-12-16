@@ -7,9 +7,7 @@
 class Constants {
 
   /// Secure Storage - Auth credentials
-  static const KEY_AUTH_TOKEN = "KEY_AUTH_TOKEN";
   static const KEY_AUTH_PROVIDER = "KEY_AUTH_PROVIDER";
-  static const KEY_AUTH_PHONE_NUMBER = "KEY_SAVED_PHONE_NUMBER";
   /// Secure Storage - Saved Provider
   static const KEY_FACEBOOK_PROVIDER = "KEY_FACEBOOK_PROVIDER";
   static const KEY_GOOGLE_PROVIDER = "KEY_GOOGLE_PROVIDER";

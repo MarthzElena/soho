@@ -1,5 +1,14 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/HomePage/HomePageStateController.dart';
 import 'package:soho_app/Utils/Application.dart';
+import 'package:soho_app/Utils/Locator.dart';
 
 class UserProfileState extends Model{
   // Updated values
@@ -11,6 +20,11 @@ class UserProfileState extends Model{
   String email = "";
   String phone = "";
   String photoUrl = "";
+
+  File _imageFile;
+
+  // TODO: Change this with default image
+  AssetImage photoPlaceholder = AssetImage('assets/auth/bamboo.png');
 
   void setPhotoUrl(String photo) {
     this.photoUrl = photo;
@@ -55,7 +69,44 @@ class UserProfileState extends Model{
           updateDisplayEmail(updatedEmail);
         }
       }
+      notifyListeners();
     }
-    notifyListeners();
+  }
+
+  void getImageFile(ImageSource source, context) async {
+    await ImagePicker.pickImage(source: source).then((image) async {
+      await ImageCropper.cropImage(
+        sourcePath: image.path,
+        maxWidth: 512,
+        maxHeight: 512,
+      ).then((croppedFile) async {
+        await FlutterImageCompress.compressAndGetFile(
+          croppedFile.path,
+          croppedFile.path,
+          quality: 80,
+        ).then((compressedFile) async {
+          _imageFile = compressedFile;
+          photoPlaceholder = AssetImage(compressedFile.path);
+
+          // Upload image
+          // If user is not available, name the file with path
+          var fileName = _imageFile.path;
+          if (Application.currentUser != null) {
+            fileName = Application.currentUser.userId;
+          }
+          await locator<AuthController>().saveImageToCloud(fileName, _imageFile).then((imageUrl) {
+            // Upload of image is complete, update image
+            photoUrl = imageUrl;
+            // Update homepage drawer
+            locator<HomePageState>().updateDrawer();
+            notifyListeners();
+          });
+
+          notifyListeners();
+
+          Navigator.of(context).pop();
+        });
+      });
+    });
   }
 }
