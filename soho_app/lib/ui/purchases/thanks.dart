@@ -7,6 +7,7 @@ import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/purchases/history.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_share.dart';
 
@@ -131,7 +132,11 @@ class _ThanksScreenState extends State<ThanksScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, Routes.myOrders),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => HistoryScreen(isOngoingOrder: true))
+                            );
+                          },
                           child: Container(
                             width: double.infinity,
                             height: 50.0,

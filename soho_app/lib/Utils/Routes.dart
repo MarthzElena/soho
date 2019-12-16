@@ -23,7 +23,6 @@ class Routes {
   static String orderDetail = "OrderDetail";
   static String viewProfile = "ViewProfile";
   static String editProfile = "editProfile";
-  static String myOrders = "MyOrders";
   static String about = "About";
   static String paymentMethods = "PaymentMethods";
   static String location = "Location";
@@ -87,12 +86,6 @@ class Routes {
           } else {
             return EditProfileScreen();
           }
-        }));
-
-    // My orders
-    router.define(myOrders,
-        handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-          return HistoryScreen();
         }));
 
     // About SOHO

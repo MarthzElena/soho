@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
-import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/purchases/history.dart';
 import 'package:soho_app/ui/widgets/items/item_small.dart';
 
 class SmallCarousel extends StatefulWidget {
@@ -27,7 +27,9 @@ class _SmallCarouselState extends State<SmallCarousel> {
           builder: (BuildContext context) {
             return GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, Routes.myOrders);
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => HistoryScreen(isOngoingOrder: order.isQRCodeValid))
+                );
               },
               child: SmallItem(
                 category: order.selectedProducts.first.categoryName,

@@ -10,6 +10,10 @@ import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_history.dart';
 
 class HistoryScreen extends StatefulWidget {
+  final bool isOngoingOrder;
+
+  HistoryScreen({this.isOngoingOrder});
+
   @override
   _HistoryScreenState createState() => _HistoryScreenState();
 }
@@ -55,6 +59,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
       }
     }
     return list;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selectedTab = widget.isOngoingOrder ? 1 : 0;
   }
 
   @override

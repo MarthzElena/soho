@@ -5,6 +5,7 @@ import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/purchases/history.dart';
 
 class LoggedInUserMenuWidget extends StatelessWidget {
   final String photoUrl;
@@ -101,7 +102,11 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                     ),
                     SizedBox(height: 115.0),
                     GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, Routes.myOrders),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => HistoryScreen(isOngoingOrder: true))
+                        );
+                      },
                       child: Row(
                         children: <Widget>[
                           Image(
