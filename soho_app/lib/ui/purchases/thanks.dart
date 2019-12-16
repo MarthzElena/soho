@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_share.dart';
 
@@ -112,6 +113,9 @@ class _ThanksScreenState extends State<ThanksScreen> {
                         margin: EdgeInsets.all(16.0),
                         width: 191.0,
                         height: 191.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(40.0),
+                        ),
                         child: QrImage(
                           data: widget.qrCodeData,
                         ),
@@ -127,7 +131,7 @@ class _ThanksScreenState extends State<ThanksScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         GestureDetector(
-                          onTap: null,
+                          onTap: () => Navigator.pushNamed(context, Routes.myOrders),
                           child: Container(
                             width: double.infinity,
                             height: 50.0,

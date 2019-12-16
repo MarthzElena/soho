@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
+import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/ui/widgets/items/item_small.dart';
 
 class SmallCarousel extends StatefulWidget {
@@ -26,7 +27,7 @@ class _SmallCarouselState extends State<SmallCarousel> {
           builder: (BuildContext context) {
             return GestureDetector(
               onTap: () {
-                // TODO: Go to order
+                Navigator.pushNamed(context, Routes.myOrders);
               },
               child: SmallItem(
                 category: order.selectedProducts.first.categoryName,

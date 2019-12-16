@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         SizedBox(height: 16.0),
-                        SmallCarousel(list: model.getOrderList()),
+                        model.getOrderList().isEmpty ? SizedBox.shrink() : SmallCarousel(list: model.getOrderList()),
                         SizedBox(height: 16.0),
                       ],
                     ),

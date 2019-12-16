@@ -5,7 +5,6 @@ import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
-import 'package:soho_app/ui/widgets/drawer/QRCodeTest.dart';
 
 class LoggedInUserMenuWidget extends StatelessWidget {
   final String photoUrl;
@@ -16,8 +15,13 @@ class LoggedInUserMenuWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: Add actions to each Row item
     var name = "";
-    if (Application.currentUser != null) {
-      name = Application.currentUser.username;
+    var lastOrder = "";
+    var currentUser = Application.currentUser;
+    if (currentUser != null) {
+      name = currentUser.username;
+      if (currentUser.ongoingOrders.isNotEmpty) {
+        lastOrder = currentUser.ongoingOrders.last.getCompletedDateShort();
+      }
     }
 
     return Drawer(
@@ -72,6 +76,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 2.0),
+                            lastOrder.isNotEmpty ?
                             Row(
                               children: <Widget>[
                                 Text(
@@ -82,14 +87,14 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  'Hace X días',
+                                  lastOrder,
                                   style: interBoldStyle(
                                     fSize: 12.0,
                                     color: Colors.white,
                                   ),
                                 )
                               ],
-                            )
+                            ) : SizedBox.shrink()
                           ],
                         ),
                       ],

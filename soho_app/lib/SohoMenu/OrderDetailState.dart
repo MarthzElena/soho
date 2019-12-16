@@ -1,4 +1,5 @@
 import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/Utils/Application.dart';
 
 class OrderDetailState extends Model {
 
@@ -26,6 +27,9 @@ class OrderDetailState extends Model {
 
   void updateTip(double toValue) {
     currentTip = toValue;
+    if (Application.currentOrder != null) {
+      Application.currentOrder.tip = toValue;
+    }
     notifyListeners();
   }
 

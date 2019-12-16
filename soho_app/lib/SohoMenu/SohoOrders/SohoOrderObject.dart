@@ -7,6 +7,7 @@ import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 class SohoOrderObject {
   static const String keySelectedProducts = "selected_products";
   static const String keyCompletionDate = "completion_date";
+  static const String keyTip = "tip";
   static const String keyIsCompleted = "is_completed";
   static const String keyIsQRCodeValid = "is_qr_code_valid";
   static const String keyQRCodeData = "qr_code_reference";
@@ -20,19 +21,10 @@ class SohoOrderObject {
   // This value must be updated when the order is completed
   DateTime completionDate = DateTime.now();
 
+  double tip = 0.0;
+
   // Reference in Firebase Storage to QR Code
   String qrCodeData = "";
-
-  static DateTime setCompletionDateFromString(String date) {
-    return DateTime.parse(date);
-  }
-  String getCompletedDateString() {
-    return completionDate.toIso8601String();
-  }
-  String getCompletedDateShort() {
-    var formatter = DateFormat("MMM dd yyyy");
-    return formatter.format(completionDate);
-  }
 
   // Used for specifying if the order has been completed.
   // An order has been completed when the payment has been processed and accepted.
@@ -43,9 +35,26 @@ class SohoOrderObject {
   // The validity of a QR code only begins when the order is completed.
   bool isQRCodeValid = false;
 
+  // Date getters
+  static DateTime setCompletionDateFromString(String date) {
+    return DateTime.parse(date);
+  }
+  String getCompletedDateString() {
+    return completionDate.toIso8601String();
+  }
+  String getCompletedDateShort() {
+    var formatter = DateFormat("MMM dd yyyy");
+    return formatter.format(completionDate);
+  }
+  String getCompletedDateWithTime() {
+    var formatter = DateFormat("MMM dd yyyy hh:mm aa");
+    return formatter.format(completionDate);
+  }
+
   Map<String, dynamic> getJson() {
     var dict = Map<String, dynamic>();
     dict[keyCompletionDate] = getCompletedDateString();
+    dict[keyTip] = tip;
     dict[keyIsCompleted] = isOrderCompleted;
     dict[keyIsQRCodeValid] = isQRCodeValid;
     dict[keyQRCodeData] = qrCodeData;
@@ -59,6 +68,7 @@ class SohoOrderObject {
 
   SohoOrderObject.fromJson(Map<dynamic, dynamic> json) {
     completionDate = setCompletionDateFromString(json[keyCompletionDate]);
+    tip = json[keyTip] + 0.0;
     isOrderCompleted = json[keyIsCompleted];
     isQRCodeValid = json[keyIsQRCodeValid];
     qrCodeData = json[keyQRCodeData];
