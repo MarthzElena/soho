@@ -1,9 +1,10 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:soho_app/Payments/stripe_token.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
-import 'package:soho_app/ui/profile/edit_profile.dart';
+import 'package:soho_app/ui/payments/add_method.dart';
 import 'package:soho_app/ui/splash/splash.dart';
 
 Future main() async {

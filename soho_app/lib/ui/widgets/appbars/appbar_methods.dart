@@ -34,7 +34,7 @@ class PaymentMethodsAppBar extends StatelessWidget implements PreferredSizeWidge
                     child: FlatButton(
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => AddMethodsScreen(),
+                          builder: (context) => AddMethodScreen(),
                         ),
                       ),
                       padding: EdgeInsets.all(0.0),

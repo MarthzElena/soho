@@ -31,10 +31,12 @@ class _StripeTokenState extends State<StripeToken> {
   initState() {
     super.initState();
 
-    StripePayment.setOptions(StripeOptions(
-        publishableKey: 'pk_test_DnGfNpmvTCOsPiTIzl2OULKk',
-        merchantId: 'Test',
-        androidPayMode: 'test'));
+    StripePayment.setOptions(
+      StripeOptions(
+          publishableKey: 'pk_test_DnGfNpmvTCOsPiTIzl2OULKk',
+          merchantId: 'Test',
+          androidPayMode: 'test'),
+    );
   }
 
   void setError(dynamic error) {
