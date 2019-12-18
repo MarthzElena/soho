@@ -7,6 +7,7 @@ import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsStateController.dar
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
 import 'package:soho_app/States/EditProfileState.dart';
+import 'package:soho_app/States/add_method.dart';
 
 GetIt locator = GetIt();
 
@@ -17,6 +18,7 @@ void setUpLocator() {
   locator.registerFactory<RegisterState>(() => RegisterState());
 
   // Singletons
+  locator.registerLazySingleton<AddMethodState>(() => AddMethodState());
   // Category Detail State
   locator.registerLazySingleton<CategoryItemsState>(() => CategoryItemsState());
   // Auth Controller
