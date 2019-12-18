@@ -72,6 +72,8 @@ class _BottomBarState extends State<BottomBar> {
                   // TODO: Process payment!! (This should happen only if payment is completed)
                   if (Application.currentOrder != null && Application.currentUser != null) {
                     await Application.currentUser.completeOrder(Application.currentOrder).then((codeData) {
+                      // Reset current order
+                      Application.currentOrder = null;
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => ThanksScreen(codeData))
                       );

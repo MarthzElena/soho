@@ -43,6 +43,10 @@ class SohoUserObject {
   Future<String> completeOrder(SohoOrderObject order) async {
     // Update completion time
     order.completionDate = DateTime.now();
+    // Update order total price
+    for (var product in order.selectedProducts) {
+      order.orderTotal += product.price;
+    }
     // Update completion value
     order.isOrderCompleted = true;
     order.isQRCodeValid = true;

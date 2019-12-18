@@ -3,6 +3,7 @@ import 'package:soho_app/Auth/AuthController.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/ui/home/home.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/layouts/preconfigured_layout.dart';
@@ -23,9 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
         locator<AuthController>().getSavedAuthObject().then((_) {
           if (categories.isNotEmpty) {
             Application.sohoCategories = categories;
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-            );
+            Navigator.of(context).pushNamed(Routes.homePage);
           }
         });
 

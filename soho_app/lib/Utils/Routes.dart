@@ -1,18 +1,16 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:soho_app/Auth/RegisterWidget.dart';
-import 'package:soho_app/HomePage/HomePageWidget.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsWidget.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/ui/about/about.dart';
 import 'package:soho_app/ui/about/location.dart';
 import 'package:soho_app/ui/auth/login.dart';
+import 'package:soho_app/ui/home/home.dart';
 import 'package:soho_app/ui/payments/methods.dart';
 import 'package:soho_app/ui/profile/check_profile.dart';
 import 'package:soho_app/ui/profile/edit_profile.dart';
-import 'package:soho_app/ui/purchases/history.dart';
 import 'package:soho_app/ui/purchases/orders.dart';
-import 'package:soho_app/ui/purchases/thanks.dart';
 
 class Routes {
   static String root = "/";
@@ -47,7 +45,7 @@ class Routes {
     // Soho Home
     router.define(homePage,
         handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-      return HomePageWidget();
+      return HomeScreen();
     }), transitionType: TransitionType.fadeIn);
 
     // Category Detail

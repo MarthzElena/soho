@@ -133,8 +133,10 @@ class _ThanksScreenState extends State<ThanksScreen> {
                       children: <Widget>[
                         GestureDetector(
                           onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => HistoryScreen(isOngoingOrder: true))
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => HistoryScreen(isOngoingOrder: true)),
+                              ModalRoute.withName(Routes.homePage)
                             );
                           },
                           child: Container(

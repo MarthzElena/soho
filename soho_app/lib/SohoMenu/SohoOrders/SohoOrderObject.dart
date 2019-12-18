@@ -8,6 +8,7 @@ class SohoOrderObject {
   static const String keySelectedProducts = "selected_products";
   static const String keyCompletionDate = "completion_date";
   static const String keyTip = "tip";
+  static const String keyOrderTotal = "order_total";
   static const String keyIsCompleted = "is_completed";
   static const String keyIsQRCodeValid = "is_qr_code_valid";
   static const String keyQRCodeData = "qr_code_reference";
@@ -21,6 +22,7 @@ class SohoOrderObject {
   // This value must be updated when the order is completed
   DateTime completionDate = DateTime.now();
 
+  double orderTotal = 0.0;
   double tip = 0.0;
 
   // Reference in Firebase Storage to QR Code
@@ -55,6 +57,7 @@ class SohoOrderObject {
     var dict = Map<String, dynamic>();
     dict[keyCompletionDate] = getCompletedDateString();
     dict[keyTip] = tip;
+    dict[keyOrderTotal] = orderTotal;
     dict[keyIsCompleted] = isOrderCompleted;
     dict[keyIsQRCodeValid] = isQRCodeValid;
     dict[keyQRCodeData] = qrCodeData;
@@ -69,6 +72,7 @@ class SohoOrderObject {
   SohoOrderObject.fromJson(Map<dynamic, dynamic> json) {
     completionDate = setCompletionDateFromString(json[keyCompletionDate]);
     tip = json[keyTip] + 0.0;
+    orderTotal = json[keyOrderTotal] + 0.0;
     isOrderCompleted = json[keyIsCompleted];
     isQRCodeValid = json[keyIsQRCodeValid];
     qrCodeData = json[keyQRCodeData];
