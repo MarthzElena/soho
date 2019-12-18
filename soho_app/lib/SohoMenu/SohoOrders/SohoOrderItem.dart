@@ -3,17 +3,19 @@ import 'dart:core';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 
 class SohoOrderItem {
-  static const keyProductName = "product_name";
-  static const keyCategoryId = "category_id";
-  static const keyCategoryName = "category_name";
-  static const keyProductId = "product_id";
-  static const keyProductPrice = "product_price";
-  static const keyProductVariations = "product_variations";
-  static String keyLocationId = "locationId";
-  static String keyFromState = "fromState";
+  static const String keyProductName = "product_name";
+  static const String keyCategoryId = "category_id";
+  static const String keyCategoryName = "category_name";
+  static const String keyProductId = "product_id";
+  static const String keyProductPrice = "product_price";
+  static const String keyProductVariations = "product_variations";
+  static const String keyLocationId = "location_id";
+  static const String keyFromState = "from_state";
+  static const String keyPhotoUrl = "photo_url";
 
   /// String for product name on Square
   String name = "";
+  String photoUrl = "";
 
   /// Square ID for the products category and name
   String categoryID = "";
@@ -33,7 +35,7 @@ class SohoOrderItem {
   /// Available variations by subcategory
   List<VariationTypeObject> productVariations = List<VariationTypeObject>();
 
-  SohoOrderItem(this.name, this.categoryID, this.categoryName, this.productID, this.price, this.fromState, this.locationId);
+  SohoOrderItem(this.name, this.photoUrl, this.categoryID, this.categoryName, this.productID, this.price, this.fromState, this.locationId);
 
   void addVariations(Map<String, List<VariationItemObject>> items) {
     // First check if variation type is already included
@@ -48,6 +50,7 @@ class SohoOrderItem {
   Map<String, dynamic> getJson() {
     var dict = Map<String, dynamic>();
     dict[keyProductName] = name;
+    dict[keyPhotoUrl] = photoUrl;
     dict[keyCategoryId] = categoryID;
     dict[keyCategoryName] = categoryName;
     dict[keyProductId] = productID;
@@ -64,6 +67,7 @@ class SohoOrderItem {
 
   SohoOrderItem.fromJson(Map<dynamic, dynamic> json) {
     name = json[keyProductName];
+    photoUrl = json[keyPhotoUrl];
     categoryID = json[keyCategoryId];
     categoryName = json[keyCategoryName];
     productID = json[keyProductId];

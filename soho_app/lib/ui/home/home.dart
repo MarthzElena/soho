@@ -71,7 +71,23 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         SizedBox(height: 16.0),
-                        model.getOrderList().isEmpty ? SizedBox.shrink() : SmallCarousel(list: model.getOrderList()),
+                        model.getOrderList().isEmpty ?
+                        Container(
+                          margin: EdgeInsets.only(left: 16.0, right: 16.0),
+                          height: 90.0,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0),
+                            border: Border.all(color: Color(0xffE4E4E4))
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Todavía no has realizado ninguna orden.',
+                              style: interLightStyle(fSize: 12.0),
+                            ),
+                          ),
+                        ) :
+                        SmallCarousel(list: model.getOrderList()),
                         SizedBox(height: 16.0),
                       ],
                     ),

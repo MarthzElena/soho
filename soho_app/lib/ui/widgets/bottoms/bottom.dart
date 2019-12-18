@@ -160,6 +160,7 @@ class _BottomBarState extends State<BottomBar> {
     // Create new item for order
     SohoOrderItem newItem = SohoOrderItem(
         _productItemModel.currentProduct.name,
+        _productItemModel.currentProduct.imageUrl,
         categoryId,
         categoryName,
         _productItemModel.currentProduct.squareID,

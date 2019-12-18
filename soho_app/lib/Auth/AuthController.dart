@@ -106,12 +106,13 @@ class AuthController {
           await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_FACEBOOK_PROVIDER).then((_) async {
             // Save user to Firebase Auth
             await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
+              var firebaseId = user.uid;
               // Get user data
               await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=$facebookToken').then((graphResponse) async {
                 var profile = json.decode(graphResponse.body);
                 var email = profile['email'].toString();
                 var username = profile['name'].toString();
-                var userId = profile['id'].toString();
+                var userId = firebaseId;
                 var photoUrl = "";
                 var picture = profile['picture'];
                 if (picture != null) {

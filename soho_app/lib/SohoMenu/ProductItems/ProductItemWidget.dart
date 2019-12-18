@@ -199,6 +199,7 @@ class _ProductItemWidgetState extends State<ProductItemWidget> {
     // Create new item for order
     SohoOrderItem newItem = SohoOrderItem(
         fromProductItemObject.name,
+        fromProductItemObject.imageUrl,
         categoryId,
         categoryName,
         fromProductItemObject.squareID,
