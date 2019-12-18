@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
+import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';

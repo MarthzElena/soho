@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
-import 'package:soho_app/HomePage/HomePageStateController.dart';
+import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';

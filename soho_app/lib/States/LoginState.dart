@@ -8,7 +8,7 @@ import 'package:soho_app/Utils/Routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
-import 'SohoUserObject.dart';
+import '../Auth/SohoUserObject.dart';
 
 class LoginState extends Model {
   // TODO: Validate phone and password

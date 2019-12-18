@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:soho_app/HomePage/HomePageStateController.dart';
+import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/ui/purchases/history.dart';
 import 'package:soho_app/ui/widgets/items/item_small.dart';
 

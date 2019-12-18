@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
-import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
+import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';

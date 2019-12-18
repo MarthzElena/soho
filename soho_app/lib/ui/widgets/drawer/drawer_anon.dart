@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:soho_app/Auth/AuthController.dart';
-import 'package:soho_app/HomePage/HomePageStateController.dart';
+import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';

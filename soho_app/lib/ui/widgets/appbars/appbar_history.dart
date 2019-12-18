@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsStateController.dart';
+import 'package:soho_app/States/CategoryItemsState.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';

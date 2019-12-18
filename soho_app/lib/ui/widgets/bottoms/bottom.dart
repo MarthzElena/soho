@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemObject.dart';
-import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
+import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/Utils/Application.dart';

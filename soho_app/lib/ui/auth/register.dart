@@ -1,0 +1,22 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class RegisterScreen extends StatefulWidget {
+
+  @override
+  State<StatefulWidget> createState() => _RegisterScreenState();
+
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+
+  @override
+  Widget build(BuildContext context) {
+
+    return WillPopScope(
+        onWillPop: () async => false,
+        child: null
+    );
+  }
+
+}

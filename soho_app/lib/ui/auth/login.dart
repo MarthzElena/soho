@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:soho_app/Auth/LoginStateController.dart';
+import 'package:soho_app/States/LoginState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
@@ -17,7 +17,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   LoginState _loginState = locator<LoginState>();
-
   String smsCode = "";
 
   @override

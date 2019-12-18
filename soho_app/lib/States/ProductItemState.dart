@@ -2,7 +2,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 import 'package:soho_app/Utils/Application.dart';
 
-import 'ProductItemObject.dart';
+import '../SohoMenu/ProductItems/ProductItemObject.dart';
 
 class ProductItemState extends Model {
   static const String ADD_ITEM_TEXT = "Agregar 1 a la orden";

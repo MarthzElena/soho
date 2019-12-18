@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Utils/Locator.dart';
-import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsStateController.dart';
+import 'package:soho_app/States/CategoryItemsState.dart';
 
 class CategoryItemsAppBar extends StatefulWidget implements PreferredSizeWidget {
 

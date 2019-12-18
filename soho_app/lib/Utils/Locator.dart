@@ -1,11 +1,11 @@
 import 'package:get_it/get_it.dart';
 import 'package:soho_app/Auth/AuthController.dart';
-import 'package:soho_app/Auth/LoginStateController.dart';
-import 'package:soho_app/HomePage/HomePageStateController.dart';
-import 'package:soho_app/Auth/RegisterStateController.dart';
-import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsStateController.dart';
+import 'package:soho_app/States/LoginState.dart';
+import 'package:soho_app/States/HomePageState.dart';
+import 'package:soho_app/States/RegisterState.dart';
+import 'package:soho_app/States/CategoryItemsState.dart';
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
-import 'package:soho_app/SohoMenu/ProductItems/ProductItemStateController.dart';
+import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/States/EditProfileState.dart';
 
 GetIt locator = GetIt();

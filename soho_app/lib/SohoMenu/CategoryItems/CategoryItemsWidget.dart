@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsAppBar.dart';
-import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsStateController.dart';
+import 'package:soho_app/States/CategoryItemsState.dart';
 import 'package:soho_app/SohoMenu/CategoryObject.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Constants.dart';

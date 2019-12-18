@@ -6,7 +6,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Auth/AuthController.dart';
-import 'package:soho_app/HomePage/HomePageStateController.dart';
+import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Locator.dart';
 
