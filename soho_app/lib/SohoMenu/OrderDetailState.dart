@@ -8,10 +8,13 @@ class OrderDetailState extends Model {
   static const double TIP_FIFTEEN = 15.0;
   static const double TIP_TWENTY = 20.0;
 
+  bool showCode = false;
+  bool showCustomTip = false;
+
   double currentTip = 0.0;
 
   bool isTipOther() {
-    return currentTip != NO_TIP && currentTip != TIP_TEN && currentTip != TIP_FIFTEEN && currentTip != TIP_TWENTY;
+    return showCustomTip;
   }
 
   bool isTipTen() {
@@ -24,6 +27,18 @@ class OrderDetailState extends Model {
     return currentTip == TIP_TWENTY;
   }
 
+  void updateShowCode() {
+    showCode = !showCode;
+    notifyListeners();
+  }
+
+  void updateShowCustomTip() {
+    showCustomTip = !showCustomTip;
+    if (showCustomTip) {
+      currentTip = 0.0;
+    }
+    notifyListeners();
+  }
 
   void updateTip(double toValue) {
     currentTip = toValue;
