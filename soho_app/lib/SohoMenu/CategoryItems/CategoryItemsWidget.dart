@@ -1,53 +1,44 @@
-import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
 import 'dart:convert';
 
-import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsStateController.dart';
+import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsAppBar.dart';
+import 'package:soho_app/States/CategoryItemsState.dart';
+import 'package:soho_app/SohoMenu/CategoryObject.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Locator.dart';
-import 'package:soho_app/SohoMenu/CategoryObject.dart';
 
 import 'CategoryItemObject.dart';
 
 class CategoryItemsWidget extends StatefulWidget {
   final String categoryObjectString;
 
-  const CategoryItemsWidget({
-    this.categoryObjectString
-  });
-
+  const CategoryItemsWidget({this.categoryObjectString});
 
   @override
   State<StatefulWidget> createState() {
-
-    return _CategoryItemsState(categoryObject: this.categoryObjectString);
+    return _CategoryItemsState();
   }
-
 }
 
 class _CategoryItemsState extends State<CategoryItemsWidget> {
   CategoryItemsState categoryItemsState = locator<CategoryItemsState>();
-  final String categoryObject;
   GlobalKey _headerKey = GlobalKey(debugLabel: "headerKey");
-
-  _CategoryItemsState({
-    @required this.categoryObject
-  });
+  final appBar = CategoryItemsAppBar();
 
   @override
   Widget build(BuildContext context) {
-
-    CategoryObject category = CategoryObject.fromJson(json.decode(categoryObject));
+    CategoryObject category = CategoryObject.fromJson(json.decode(widget.categoryObjectString));
     var header = _getHeader(category);
+    categoryItemsState.context = context;
 
     return ScopedModel<CategoryItemsState>(
       model: categoryItemsState,
       child: ScopedModelDescendant<CategoryItemsState>(builder: (builder, child, model) {
         return SafeArea(
           child: Scaffold(
-            appBar: CategoryItemsAppBar(),
+            appBar: appBar,
             body: Container(
               color: Color.fromARGB(100, 243, 241, 242),
               child: Column(
@@ -60,18 +51,20 @@ class _CategoryItemsState extends State<CategoryItemsWidget> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
-                          topLeft: const Radius.circular(8.0),
-                          topRight: const Radius.circular(8.0)
-                        ),
+                            topLeft: const Radius.circular(8.0),
+                            topRight: const Radius.circular(8.0)),
                       ),
                       child: new FutureBuilder(
-                          future: SquareHTTPRequest.getCategoryDetail(category.squareID, category.name),
+                          future:
+                              SquareHTTPRequest.getCategoryDetail(category.squareID, category.name),
                           builder: (BuildContext context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData && snapshot.data != null) {
+                              // Init the values in the model
+                              model.updateItems(_getData(snapshot), context);
                               return Container(
                                 height: _elementsListViewHeight(context),
                                 child: ListView(
-                                  children: _getProductWidgetList(_getData(snapshot)),
+                                  children: model.widgetsList,
                                 ),
                               );
                             } else {
@@ -82,17 +75,12 @@ class _CategoryItemsState extends State<CategoryItemsWidget> {
                                   child: Text(
                                     'LOADING...!!',
                                     textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.w500
-
-                                    ),
+                                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
                                   ),
                                 ),
                               );
                             }
-                          }
-                      ),
+                          }),
                     ),
                   )
                 ],
@@ -119,9 +107,7 @@ class _CategoryItemsState extends State<CategoryItemsWidget> {
                   child: Text(
                     category.name.toUpperCase(),
                     textAlign: TextAlign.right,
-                    style: TextStyle(
-                        fontSize: 32
-                    ),
+                    style: TextStyle(fontSize: 32),
                   ),
                 ),
                 Container(
@@ -129,10 +115,7 @@ class _CategoryItemsState extends State<CategoryItemsWidget> {
                   child: Text(
                     category.subtitle,
                     textAlign: TextAlign.right,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Color.fromARGB(255, 41, 41, 41)
-                    ),
+                    style: TextStyle(fontSize: 14, color: Color.fromARGB(255, 41, 41, 41)),
                   ),
                 )
               ],
@@ -145,8 +128,11 @@ class _CategoryItemsState extends State<CategoryItemsWidget> {
 
   double _elementsListViewHeight(BuildContext context) {
     RenderBox headerBox = _headerKey.currentContext.findRenderObject();
-    // TODO: fix hardcoded number 24
-    return MediaQuery.of(context).size.height - headerBox.size.height - Constants.APP_BAR_HEIGHT - 24;
+    // TODO: Make it fill all the view
+    return MediaQuery.of(context).size.height -
+        headerBox.size.height -
+        Constants.APP_BAR_HEIGHT -
+        30;
   }
 
   List<SubcategoryItems> _getData(AsyncSnapshot snapshot) {
@@ -155,34 +141,5 @@ class _CategoryItemsState extends State<CategoryItemsWidget> {
       return categoryItem.allItems;
     }
     return List<SubcategoryItems>();
-  }
-
-  List<Widget> _getProductWidgetList(List<SubcategoryItems> items) {
-    List<Widget> result = List<Widget>();
-    for (var item in items) {
-      var subcategoryTitle = Text(
-        item.subcategoryName,
-        style: TextStyle(
-          fontSize: 14.0,
-          color: Color.fromARGB(255, 120, 144, 144)
-        ),
-      );
-      result.add(subcategoryTitle);
-
-      for (var product in item.items) {
-        var productWidget = Text(
-          product.name,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16.0,
-            color: Colors.black
-          ),
-        );
-        result.add(productWidget);
-      }
-
-    }
-
-    return result;
   }
 }

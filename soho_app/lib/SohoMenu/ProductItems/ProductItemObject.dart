@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
@@ -11,6 +12,17 @@ class ProductItemObject {
   static String keyDescription = "description";
   static String keyPrice = "price";
   static String keyVariations = "variations";
+  static String keyLocationId = "locationId";
+  static String keyFromState = "fromState";
+
+  // Constants for Category names
+  final String _categoryCoffee = "coffee";
+  final String _categoryTea = "tea";
+  final String _categoryDesayunos = "desayunos";
+  final String _categoryComidasCenas = "comidas y cenas";
+  final String _categoryAltaReposteria = "alta repostería";
+  final String _categoryBebidasCocteles = "bebidas y cócteles";
+  final String _categoryOtros = "otros";
 
   /// String for product name on Square
   String name = "";
@@ -33,6 +45,11 @@ class ProductItemObject {
   /// Product regular price on Square
   double price = 0.0;
 
+  /// Value needed for updating inventory - from_state
+  String fromState = "";
+  /// Value needed for updating inventory - location_id
+  String locationId = "";
+
   /// Available variations by subcategory
   List<VariationTypeObject> productVariations = List<VariationTypeObject>();
 
@@ -52,6 +69,28 @@ class ProductItemObject {
     }
   }
 
+  /// Defines whether the variation list for this object will be REQUIRED or OPTIONAL
+  /// TODO! Update this with FINAL values
+  bool isVariationsRequired() {
+    if (category.toLowerCase().startsWith(_categoryCoffee)) {
+      return true;
+    } else if (category.toLowerCase().startsWith(_categoryTea)) {
+      return true;
+    } else if (category.toLowerCase().startsWith(_categoryDesayunos)) {
+      return false;
+    } else if (category.toLowerCase().startsWith(_categoryComidasCenas)) {
+      return false;
+    } else if (category.toLowerCase().startsWith(_categoryAltaReposteria)) {
+      return false;
+    } else if (category.toLowerCase().startsWith(_categoryBebidasCocteles)) {
+      return false;
+    } else if (category.toLowerCase().startsWith(_categoryOtros)) {
+      return false;
+    } else {
+      return false;
+    }
+  }
+
   Future<void> addProductVariation(VariationItemObject variation, String variationType) async {
     var elementAdded = false;
     for (var element in productVariations) {
@@ -65,29 +104,37 @@ class ProductItemObject {
     // Check if element was added
     if (!elementAdded) {
       // Variation type is new
-      VariationTypeObject newVariation = VariationTypeObject();
-      newVariation.variationTypeName = variationType;
+      VariationTypeObject newVariation = VariationTypeObject(variationType);
       newVariation.variations.add(variation);
       productVariations.add(newVariation);
     }
   }
 
-  ProductItemObject.fromJson(Map<String, dynamic> json)
-  : name = json[keyName],
-  category = json[keyCategory],
-  subcategory = json[keySubcategory],
-  squareID = json[keySquareId],
-  description = json[keyDescription],
-  price = json[keyPrice];
+  ProductItemObject.fromJson(Map<String, dynamic> json) {
+    name = json[keyName];
+    category = json[keyCategory];
+    subcategory = json[keySubcategory];
+    imageUrl = json[keyImageUrl];
+    squareID = json[keySquareId];
+    description = json[keyDescription];
+    price = json[keyPrice];
+    locationId = json[keyLocationId];
+    fromState = json[keyFromState];
+    productVariations = json[keyVariations];
+  }
 
   Map<String, dynamic> toJson() =>
       {
         keyName : name,
         keyCategory : category,
         keySubcategory : subcategory,
+        keyImageUrl : imageUrl,
         keySquareId : squareID,
         keyDescription : description,
-        keyPrice : price
+        keyPrice : price,
+        keyVariations : productVariations,
+        keyLocationId : locationId,
+        keyFromState : fromState
       };
 
 }

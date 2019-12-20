@@ -1,26 +1,27 @@
-import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
-
-import 'package:soho_app/SohoApp.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/splash/splash.dart';
 
-
-void main() {
-
-  // Initial config
+Future main() async {
   final Router _router = Router();
+
   Routes.setUpRouter(_router);
   setUpLocator();
-  
-  runApp(MaterialApp(
-    home: SohoApp(),
-    theme: ThemeData(fontFamily: 'InterUI'),
-    debugShowCheckedModeBanner: false,
-    onGenerateRoute: _router.generator,
-  ));
 
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      onGenerateRoute: _router.generator,
+      title: 'Soho',
+      home: SplashScreen(),
+    ),
+  );
 }
-
-
-

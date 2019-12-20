@@ -1,11 +1,11 @@
 
-/// AuthController.dart
-///
-/// This  class manages the  Authentication process of the user.
-///
-/// Created by: Martha Elena Loera
-///
+import 'dart:collection';
+import 'dart:io';
+import 'dart:math';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:soho_app/Auth/SohoUserObject.dart';
+import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,73 +14,30 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'AuthControllerUtilities.dart';
+import 'package:soho_app/Utils/Locator.dart';
 
 class AuthController {
 
   final storage = new FlutterSecureStorage();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final FacebookLogin facebookLogin = FacebookLogin();
+  String _phoneVerificationId = "";
 
   // Returns a SohoAuthObject if there's a token saved
-  Future<FirebaseUser> getSavedAuthObject({String password = ""}) async{
+  Future<void> getSavedAuthObject() async{
 
     // Get the user from the saved credentials
-    // Read the token (if any)
-    String token = await storage.read(key: Constants.KEY_AUTH_TOKEN);
-    String provider = await storage.read(key: Constants.KEY_AUTH_PROVIDER);
-    bool tokenValid = token != null && token.isNotEmpty;
-    bool providerValid = provider != null && provider.isNotEmpty;
-    String savedEmail = await storage.read(key: Constants.KEY_SAVED_EMAIL);
-    savedEmail = savedEmail == null ? "" : savedEmail;
-
-    if (tokenValid && providerValid) {
-
-      switch (provider) {
-        case Constants.KEY_FACEBOOK_PROVIDER:
-          {
-            // Facebook Login
-            var facebookUser = firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: token));
-            if (facebookUser != null) {
-              return facebookUser;
-            }
-          }
-          break;
-
-        case Constants.KEY_GOOGLE_PROVIDER:
-          {
-            // Google Login
-            var googleUser = await initiateGoogleLogin();
-            if (googleUser != null) {
-              return googleUser;
-            }
-          }
-          break;
-
-        case Constants.KEY_EMAIL_PROVIDER:
-          {
-            // Email Login
-            if (password.isNotEmpty && savedEmail.isNotEmpty) {
-              var emailUser = await initiateEmailLogin(userEmail: savedEmail, userPassword: password);
-              if (emailUser != null) {
-                return emailUser;
-              }
-            } else {
-              //TODO: handle error!!
-              return null;
-            }
-          }
-          break;
-
+    // Check if Firebase has a stored user
+    await firebaseAuth.currentUser().then((user) async {
+      if (user != null) {
+        // Update user token and  get user from database
+        await user.getIdToken(refresh: true);
+        await startSessionFromUserId(user.uid);
       }
-
-    }
-
-    return null;
-
+    });
   }
 
   Future<void> logoutUser() async {
@@ -102,10 +59,10 @@ class AuthController {
         }
         break;
 
-      case Constants.KEY_EMAIL_PROVIDER:
+      case Constants.KEY_PHONE_PROVIDER:
         {
-          // Logout Email
-          await logoutEmailUSer();
+          // Logout Phone
+          await logoutPhoneUser();
         }
         break;
     }
@@ -113,190 +70,134 @@ class AuthController {
   }
 
   Future<void> deleteAuthStoredValues() async {
-    await storage.delete(key: Constants.KEY_AUTH_TOKEN);
-    await storage.delete(key: Constants.KEY_AUTH_PROVIDER);
-  }
-
-  Future<FirebaseUser> initiateEmailLogin({String userEmail, String userPassword}) async {
-    FirebaseUser emailUser = await firebaseAuth.signInWithEmailAndPassword(email: userEmail, password: userPassword).catchError((error) {
-      // TODO: Handle error
-      return null;
+    await storage.delete(key: Constants.KEY_AUTH_PROVIDER).then((_) async {
+      // Clear saved user locally
+      Application.currentUser = null;
     });
-
-    if (emailUser != null) {
-      // Save credentials
-      await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_EMAIL_PROVIDER);
-      String userToken = await emailUser.getIdToken(refresh: true).catchError((error) {
-        // TODO: Handle error
-        return null;
-      });
-      await storage.write(key: Constants.KEY_AUTH_TOKEN, value: userToken);
-
-      // Save user to Database
-      var userID = emailUser.uid;
-      // Only userID is valid since already a user
-      var user = AuthControllerUtilities.createUserDictionary("", "", userEmail, userID, "", "", "");
-      await saveUserToDatabase(user);
-
-      // Return user
-      return emailUser;
-    } else {
-      return null;
-    }
-
   }
-  
-  Future<FirebaseUser> createUserWithEmail(Map<String, String> user, String password) async {
-    // Create Firebase user
-    var userID = "";
-    var userAuthToken = "";
-    FirebaseUser newUser;
-    await firebaseAuth.createUserWithEmailAndPassword(email: user[Constants.DICT_KEY_EMAIL], password: password).then((registeredUser) {
-      if (registeredUser != null) {
-        // Add provider ID to user
-        userID = registeredUser.uid;
+
+  Future<void> savePhoneCredentials() async {
+    await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_PHONE_PROVIDER);
+  }
+
+  Future<void> logoutPhoneUser() async {
+    await firebaseAuth.signOut().then((_) async {
+      await deleteAuthStoredValues();
+    });
+  }
+
+  Future<void> initiateFacebookLogin() async {
+    // TODO: This permissions should be used: 'email,user_gender,user_birthday'
+    await facebookLogin.logInWithReadPermissions(['email']).then((facebookLoginResult) async {
+
+      var facebookToken = facebookLoginResult.accessToken.token;
+      switch (facebookLoginResult.status) {
+        case FacebookLoginStatus.error:
+          print("Error");
+          // TODO: Handle error
+          break;
+
+        case FacebookLoginStatus.cancelledByUser:
+          print("CancelledByUser");
+          break;
+
+        case FacebookLoginStatus.loggedIn:
+        // Save auth data and provider
+          await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_FACEBOOK_PROVIDER).then((_) async {
+            // Save user to Firebase Auth
+            await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
+              var firebaseId = user.uid;
+              // Get user data
+              await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=$facebookToken').then((graphResponse) async {
+                var profile = json.decode(graphResponse.body);
+                var email = profile['email'].toString();
+                var username = profile['name'].toString();
+                var userId = firebaseId;
+                var photoUrl = "";
+                var picture = profile['picture'];
+                if (picture != null) {
+                  var pictureData = picture['data'];
+                  if (pictureData != null) {
+                    photoUrl = pictureData['url'];
+                  }
+                }
+
+                var user = SohoUserObject.createUserDictionary(
+                    username: username,
+                    email: email,
+                    userId: userId,
+                    photoUrl: photoUrl,
+                    phoneNumber: "",
+                    isAdmin: false
+                );
+                await saveUserToDatabase(user);
+              });
+            });
+          }).catchError((error) {
+            // TODO: Handle error
+          });
+
+          break;
+
+        default:
+          break;
       }
-      newUser = registeredUser;
+
     }).catchError((error) {
       // TODO: Handle error
       return null;
     });
-
-    // Check if user  and credentials are valid
-    if (newUser != null && userID.isNotEmpty) {
-      // Save credentials
-      await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_EMAIL_PROVIDER);
-      await newUser.getIdToken(refresh: true).then((userToken) {
-        userAuthToken = userToken;
-      }).catchError((error) {
-        // TODO: Handle error\
-        return null;
-      });
-
-      // Save token to local storage
-      if (userAuthToken.isNotEmpty) {
-        await storage.write(key: Constants.KEY_AUTH_TOKEN, value: userAuthToken);
-      }
-      // Add id to dictionary
-      user[Constants.DICT_KEY_ID] = userID;
-      // Save user to DataBase
-      var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
-      var newUserRef = usersRef.child(userID);
-      await newUserRef.set(user).then((_) {
-        newUserRef.push();
-      });
-
-      return newUser;
-
-    } else {
-      // TODO: HAndle error!
-      return null;
-    }
-
-
-  }
-
-  Future<void> logoutEmailUSer() async {
-    // Logout from Firebase
-    await firebaseAuth.signOut();
-    // Delete saved values for Auth
-    await deleteAuthStoredValues();
-  }
-
-  Future<FirebaseUser> initiateFacebookLogin() async {
-    // TODO: This permissions should be used: 'email,user_gender,user_birthday'
-    var facebookLoginResult =
-    await facebookLogin.logInWithReadPermissions(['email']).catchError((error) {
-      // TODO: Handle error
-      return null;
-    });
-
-    switch (facebookLoginResult.status) {
-      case FacebookLoginStatus.error:
-        print("Error");
-        // TODO: Handle error
-        return null;
-      case FacebookLoginStatus.cancelledByUser:
-        print("CancelledByUser");
-        return null;
-      case FacebookLoginStatus.loggedIn:
-        // Save auth data and provider
-        await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_FACEBOOK_PROVIDER);
-        await storage.write(key: Constants.KEY_AUTH_TOKEN, value: facebookLoginResult.accessToken.token);
-
-        // Save user to  Firebase Auth
-        var facebookToken = facebookLoginResult.accessToken.token;
-        var facebookUser = await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).catchError((error) {
-          // TODO: Handle error
-          return null;
-        });
-
-        // Get user data
-        var graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,user_gender,user_birthday&access_token=$facebookToken');
-        var profile = json.decode(graphResponse.body);
-        var email = profile['email'].toString();
-        var firstName = profile['first_name'].toString();
-        var lastName = profile['last_name'].toString();
-        var userId = profile['id'].toString();
-        // TODO: Get this values later!
-        var birthDate = profile['user_birthday'] == null ? "" : profile['user_birthday'];
-        var gender = profile['user_gender'] == null ? "" : profile['user_gender'];
-
-        var user = AuthControllerUtilities.createUserDictionary(
-            lastName,
-            firstName,
-            email,
-            userId,
-            birthDate,
-            gender,
-            ""
-        );
-        await saveUserToDatabase(user);
-
-        return facebookUser;
-
-      default:
-        return null;
-    }
   }
 
   Future<void> logoutFacebook() async {
     // Logout from the provider
-    await facebookLogin.logOut();
-    // Remove values from storage
-    await deleteAuthStoredValues();
+    await facebookLogin.logOut().then((_) async {
+      // Remove values from storage
+      await deleteAuthStoredValues();
+    });
   }
 
-  Future<FirebaseUser> initiateGoogleLogin() async {
-    final googleSignInAccount = await googleSignIn.signIn();
-    final googleAuth = await googleSignInAccount.authentication;
+  Future<void> initiateGoogleLogin() async {
+    await googleSignIn.signIn().then((googleSignInAccount) async {
 
-    final googleCredential = GoogleAuthProvider.getCredential(
-        idToken: googleAuth.idToken,
-        accessToken: googleAuth.accessToken);
-    final googleUser = await firebaseAuth.signInWithCredential(googleCredential).catchError((error) {
-      // TODO: Handle error
-      return null;
+      await googleSignInAccount.authentication.then((googleAuth) async {
+
+        // Get credentials
+        final googleCredential = GoogleAuthProvider.getCredential(
+            idToken: googleAuth.idToken,
+            accessToken: googleAuth.accessToken);
+
+        await firebaseAuth.signInWithCredential(googleCredential).then((googleUser) async {
+
+          // Create user dictionary for Database
+          var user = SohoUserObject.createUserDictionary(
+              username: googleUser.displayName,
+              email: googleUser.email,
+              userId: googleUser.uid,
+              photoUrl: googleUser.photoUrl,
+              phoneNumber: googleUser.phoneNumber == null ? "" : googleUser.phoneNumber,
+              isAdmin: false
+          );
+
+          await saveUserToDatabase(user).then((_) async {
+
+            // Make sure to save credentials only if login is completed
+            await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER);
+
+          });
+
+        }).catchError((fireBaseSignInError) {
+          // TODO: Handle error
+          print("Sign in Firebase error: ${fireBaseSignInError.toString()}");
+        });
+
+      }).catchError((authenticationError) {
+        print("Authentication error: ${authenticationError.toString()}");
+      });
+
+    }).catchError((signInError) {
+      print("Sign in error: ${signInError.toString()}");
     });
-
-    // Create user dictionary for Database
-    var user = AuthControllerUtilities.createUserDictionary(
-        "",
-        googleUser.displayName,
-        googleUser.email,
-        googleUser.uid,
-        "",
-        "",
-        googleUser.phoneNumber == null ? "" : googleUser.phoneNumber
-    );
-    await saveUserToDatabase(user);
-
-    // Make sure to save credentials only if login is completed
-    await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER);
-    await storage.write(key: Constants.KEY_AUTH_TOKEN, value: googleAuth.accessToken);
-
-    return googleUser;
 
   }
 
@@ -307,48 +208,131 @@ class AuthController {
     await deleteAuthStoredValues();
   }
 
-  Future<bool> resetUserPassword(String email) async {
-    // Use Firebase Auth to send email
-    // TODO: Edit email template on amazon console
-    var success = await firebaseAuth.sendPasswordResetEmail(email: email).then((_) {
-      return true;
-    }).catchError((error) {
-      // TODO: Handle error (`ERROR_INVALID_EMAIL`, `ERROR_USER_NOT_FOUND`)
-      return false;
-    });
-
-    return success;
-  }
-
-  Future<void> saveUserToDatabase(Map<String, String> user) async {
-    // Check if user already exists in DataBase, and save if not
+  Future<bool> isNewUser(String userId) async {
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
-    var userId = user[Constants.DICT_KEY_ID];
     var savedUser = usersRef.child(userId);
 
-    await savedUser.once().then((item){
+    DataSnapshot item = await savedUser.once().catchError((databaseError) {
+      print("Database fetch error: ${databaseError.toString()}");
+      return true;
+    });
+    if (item.value == null) {
+      // Something failed, treat user as new
+      return true;
+    } else {
+      LinkedHashMap linkedMap = item.value;
+      Map<String, dynamic> user = linkedMap.cast();
+      if (user == null) {
+        // Something failed, treat user as new
+        return true;
+      } else {
+        if (user[SohoUserObject.keyUsername].isEmpty) {
+          // User is new
+          return true;
+        } else {
+          // User is not new, update values with database and save locally
+          var sohoUser = SohoUserObject(
+              username: user[SohoUserObject.keyUsername],
+              email: user[SohoUserObject.keyEmail] == null ? "" : user[SohoUserObject.keyImageUrl],
+              userId: user[SohoUserObject.keyUserId],
+              photoUrl: user[SohoUserObject.keyImageUrl] == null ? "" : user[SohoUserObject.keyImageUrl],
+              userPhoneNumber: user[SohoUserObject.keyPhone] == null ? "" : user[SohoUserObject.keyImageUrl]
+          );
+
+          // Save locally
+          Application.currentUser = sohoUser;
+          // Update home page state
+          locator<HomePageState>().updateDrawer();
+          return false;
+        }
+      }
+    }
+  }
+
+  Future<void> startSessionFromUserId(String userId) async {
+    var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+    var savedUser = usersRef.child(userId);
+
+    await savedUser.once().then((item) async {
+      if (item != null && item.value != null) {
+        LinkedHashMap linkedMap = item.value;
+        Map<String, dynamic> user = linkedMap.cast();
+        if (user != null) {
+          // Create local user
+          var sohoUser = SohoUserObject.fromJson(user);
+          // Save locally
+          Application.currentUser = sohoUser;
+          // Update home page state
+          locator<HomePageState>().updateDrawer();
+        }
+      }
+    }).catchError((databaseError) {
+      print("Database fetch error: ${databaseError.toString()}");
+    });
+  }
+
+  Future<void> updateUserInDatabase(Map<String, dynamic> user) async {
+    // Get user from database
+    var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+    var userId = user[SohoUserObject.keyUserId];
+    var userDB = usersRef.child(userId);
+
+    await userDB.set(user);
+
+  }
+
+  Future<void> saveUserToDatabase(Map<String, dynamic> user) async {
+    // Check if user already exists in DataBase, and save if not
+    var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+    var userId = user[SohoUserObject.keyUserId];
+    var savedUser = usersRef.child(userId);
+
+    // Create Soho user
+    var sohoUser = SohoUserObject(
+        username: user[SohoUserObject.keyUsername],
+        email: user[SohoUserObject.keyEmail],
+        userId: user[SohoUserObject.keyUserId],
+        photoUrl: user[SohoUserObject.keyImageUrl],
+        userPhoneNumber: user[SohoUserObject.keyPhone]
+    );
+
+    // Save locally
+    Application.currentUser = sohoUser;
+    // Update home page state
+    locator<HomePageState>().updateDrawer();
+    
+    await savedUser.once().then((item) async {
       if (item.value == null) {
         var newUserRef = usersRef.child(userId);
         // Push the new user reference to the database
-        newUserRef.set(user).then((_) {
+        await newUserRef.set(user).then((_) {
           newUserRef.push();
         });
-
       } else {
-        // Get user data from database
-        var user = AuthControllerUtilities.createUserDictionary(
-            item.value[Constants.DICT_KEY_LAST_NAME],
-            item.value[Constants.DICT_KEY_NAME],
-            item.value[Constants.DICT_KEY_EMAIL],
-            item.value[Constants.DICT_KEY_ID],
-            item.value[Constants.DICT_KEY_BIRTH_DATE],
-            item.value[Constants.DICT_KEY_GENDER],
-            item.value[Constants.DICT_KEY_PHONE]
-        );
-        // Save locally
-        Application.currentUser = user;
+        // Update user values with database
+        if (item.value != null) {
+          LinkedHashMap linkedMap = item.value;
+          Map<String, dynamic> userDict = linkedMap.cast();
+          if (userDict != null) {
+            // Save locally
+            Application.currentUser = SohoUserObject.fromJson(user);
+            // Update home page state
+            locator<HomePageState>().updateDrawer();
+          }
+        }
       }
     });
+  }
+
+  Future<String> saveImageToCloud(String fileName, File file) async {
+    var storageReference = firebaseStorage.ref().child(fileName);
+    final uploadTask = storageReference.putFile(file);
+    final StorageTaskSnapshot downloadUrl = await uploadTask.onComplete;
+    final String url = await downloadUrl.ref.getDownloadURL();
+    if (Application.currentUser != null) {
+      Application.currentUser.photoUrl = url;
+    }
+    return url;
   }
 
 }

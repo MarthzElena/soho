@@ -1,6 +1,5 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemObject.dart';
 import 'dart:convert';
@@ -8,6 +7,8 @@ import 'dart:convert';
 import 'package:soho_app/SohoMenu/CategoryObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
+import 'package:uuid/uuid.dart';
 
 class SquareHTTPRequest {
 
@@ -19,6 +20,7 @@ class SquareHTTPRequest {
   static const _catalog = "catalog/";
   static const _search = "search";
   static const _inventory = "inventory/";
+  static const _batchChange = "batch-change";
   static const _list = "list?";
   static const _types = "types=";
   static const _categoryParam = "CATEGORY";
@@ -39,9 +41,14 @@ class SquareHTTPRequest {
     var categoriesResponse = await http.get(categoriesHost, headers: _requestHeader).catchError((error) {
       var socketError = error as SocketException;
       if (socketError != null) {
-        // TODO: Show no internet connection error
+        print("Categories request ERROR");
+        print(socketError);
       }
     });
+    // Return empty array if response fails
+    if (categoriesResponse == null) {
+      return List();
+    }
     var jsonCategories = json.decode(utf8.decode(categoriesResponse.bodyBytes));
     var categoryObjects = List.from(jsonCategories["objects"]);
     // Loop categories to get each category info
@@ -94,12 +101,12 @@ class SquareHTTPRequest {
       //  Get item_data
       var itemData = categoryItem["item_data"];
       var productName = itemData["name"].toString();
+      // Create ProductItemObject
+      var productItemObject = ProductItemObject(nameAndSubCategory: productName, categoryName: categoryName);
       // Ignore "foto" items
       if (productName.compareTo("foto") != 0) {
-        // Create ProductItemObject
-        var productItemObject = ProductItemObject(nameAndSubCategory: productName, categoryName: categoryName);
         // Add missing details to ProductItemObject
-        productItemObject.description = itemData["description"];
+        productItemObject.description = itemData["description"] == null ? "" : itemData["description"];
         productItemObject.imageUrl = itemData["image_url"] == null ? "" : itemData["image_url"].toString();
         // Get variations
         var variationsArray = itemData["variations"];
@@ -130,16 +137,16 @@ class SquareHTTPRequest {
             // Create VariationItemObject
             var variationItem = VariationItemObject(variationName, variationId, priceValue);
             // Only add variation to product if Inventory is available
-            var isVariationAvailable = await _isItemAvailable(itemId: variationId);
-            if (isVariationAvailable) {
-              await productItemObject.addProductVariation(variationItem, variationType);
+            var updatedVariation = await _isVariationAvailable(variation: variationItem);
+            if (updatedVariation != null) {
+              await productItemObject.addProductVariation(updatedVariation, variationType);
             }
           }
         }
         // Add product to categoryDetails
-        bool isAvailable = await _isItemAvailable(itemId: productItemObject.squareID);
-        if (isAvailable) {
-          await categoryDetails.addProductItem(productItemObject);
+        var updatedProduct = await _isProductAvailable(product: productItemObject);
+        if (updatedProduct != null) {
+          await categoryDetails.addProductItem(updatedProduct);
         }
       }
 
@@ -162,10 +169,10 @@ class SquareHTTPRequest {
     return objects == null ? List() : List.from(objects);
   }
 
-  /// Request item inventory count
-  /// Returns TRUE if count is greater than 0.
-  static Future<bool> _isItemAvailable({String itemId}) async {
-    var itemInventoryHost = _squareHost + _inventory + itemId;
+  /// Request Variation inventory count
+  /// Returns the updated variation if count is greater than 0.
+  static Future<VariationItemObject> _isVariationAvailable({VariationItemObject variation}) async {
+    var itemInventoryHost = _squareHost + _inventory + variation.squareID;
     var request = await http.get(itemInventoryHost, headers: _requestHeader);
     var jsonInventoryResult = json.decode(utf8.decode(request.bodyBytes));
     var countObject = jsonInventoryResult["counts"];
@@ -176,11 +183,38 @@ class SquareHTTPRequest {
         var availability = countItem["state"]; // TODO: Check that state check is not needed
         var quantity = int.tryParse(countItem["quantity"]) ?? 0;
         if (quantity > 0) {
-          return true;
+          // Add inventory values to variation
+          variation.fromState = countItem["state"];
+          variation.locationId = countItem["location_id"];
+          return variation;
         }
       }
     }
-    return false;
+    return null;
+  }
+
+  /// Request Product inventory count
+  /// Returns the updatedProduct if count is greater than 0.
+  static Future<ProductItemObject> _isProductAvailable({ProductItemObject product}) async {
+    var itemInventoryHost = _squareHost + _inventory + product.squareID;
+    var request = await http.get(itemInventoryHost, headers: _requestHeader);
+    var jsonInventoryResult = json.decode(utf8.decode(request.bodyBytes));
+    var countObject = jsonInventoryResult["counts"];
+    if (countObject != null) {
+      var countList = List.from(countObject);
+      if (countList.length > 0) {
+        var countItem = countList[0];
+        var availability = countItem["state"]; // TODO: Check that state check is not needed
+        var quantity = int.tryParse(countItem["quantity"]) ?? 0;
+        if (quantity > 0) {
+          // Add inventory values to variation
+          product.fromState = countItem["state"];
+          product.locationId = countItem["location_id"];
+          return product;
+        }
+      }
+    }
+    return null;
   }
 
   /// Makes sure the elements without subCategory are first
@@ -202,13 +236,80 @@ class SquareHTTPRequest {
     }
   }
 
+  /// POST an update in the inventory of the purchased items
+  static Future<void> updateInventoryForOrder(SohoOrderObject order) async {
+    final String adjustmentType = "ADJUSTMENT";
+    final String stateSold = "SOLD";
+
+    // Init request body with initial values
+    var requestBody = {
+      "idempotency_key" : Uuid().v1(),
+      "ignore_unchanged_counts" : true
+
+    };
+    var changes = [];
+    var occurredAt = "";
+    try {
+      occurredAt = DateFormat('yyyy-MM-ddTHH:mm:ss.SSSS').format(DateTime.now());
+    } catch (e) {
+      // TODO: HAndle error!
+      print(e.toString());
+    }
+
+    for (var element in order.selectedProducts) {
+      // Add REGULAR element to array
+      Map<String, dynamic> elementDict = {
+        "type" : adjustmentType
+      };
+      var adjustmentDict = {
+        "catalog_object_id" : element.productID,
+        "from_state" : element.fromState,
+        "to_state" : stateSold,
+        "location_id" : element.locationId,
+        "quantity" : "1",
+        "occurred_at" : occurredAt + "Z"
+      };
+      elementDict["adjustment"] = adjustmentDict;
+      changes.add(elementDict);
+      // Add VARIATIONS if any
+      for (var variationType in element.productVariations) {
+        for (var variation in variationType.variations) {
+          // Add REGULAR element to array
+          Map<String, dynamic> variationDict = {
+            "type" : adjustmentType
+          };
+          var adjustmentDict = {
+            "catalog_object_id" : variation.squareID,
+            "from_state" : variation.fromState,
+            "to_state" : stateSold,
+            "location_id" : variation.locationId,
+            "quantity" : "1",
+            "occurred_at" : occurredAt + "Z"
+          };
+          variationDict["adjustment"] = adjustmentDict;
+          changes.add(variationDict);
+        }
+      }
+    }
+    // Add array to request body
+    requestBody["changes"] = changes;
+
+    // Build request
+    var updateInventoryHost = _squareHost + _inventory + _batchChange;
+    var request = await http.post(updateInventoryHost, body: jsonEncode(requestBody), headers: _requestHeader);
+    var jsonInventoryResult = json.decode(utf8.decode(request.bodyBytes));
+    // Check if an error occured
+    if (jsonInventoryResult["counts"] == null) {
+      // TODO: Notify about error (Maybe sent email to admin with the order)
+    }
+  }
+
+
   /// Builds a String with the body for the getItemsForCategory(categoryID) request
   /// PARAMS:
   /// - categoryId - String  ID for category given by  SQUARE
   static String _buildSearchRequestBody(String categoryId) {
     return jsonEncode({"object_types": ["ITEM"],"query": {"prefix_query": {"attribute_name": "category_id","attribute_prefix": "$categoryId"}},"limit": 100});
   }
-
-
 
 }
