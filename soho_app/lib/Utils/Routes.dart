@@ -16,7 +16,6 @@ class Routes {
   static String root = "/";
   static String login = "Login";
   static String homePage = "HomePage";
-  static String register = "Register";
   static String categoryDetail = "CategoryDetail/:category";
   static String orderDetail = "OrderDetail";
   static String viewProfile = "ViewProfile";
@@ -34,12 +33,6 @@ class Routes {
     router.define(login,
         handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
       return LoginScreen();
-    }), transitionType: TransitionType.native);
-
-    // Auth Create Account
-    router.define(register,
-        handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-      return RegisterScreen();
     }), transitionType: TransitionType.native);
 
     // Soho Home

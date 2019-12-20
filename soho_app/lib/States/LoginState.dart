@@ -7,6 +7,7 @@ import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:soho_app/ui/auth/register.dart';
 
 import '../Auth/SohoUserObject.dart';
 
@@ -50,10 +51,9 @@ class LoginState extends Model {
     if (user != null) {
       bool isNewUser = await locator<AuthController>().isNewUser(user.uid);
       if (isNewUser) {
-        // TODO: Get this data from Register
         // Create user dictionary for Database
         var userDictionary = SohoUserObject.createUserDictionary(
-            username: "Martha Loera - telefono",
+            username: "",
             email: "",
             userId: user.uid,
             phoneNumber: phoneInput,
@@ -71,8 +71,10 @@ class LoginState extends Model {
           print("token ERROR: ${tokenError.toString()}");
           // TODO: HAndle error
         });
-
-//          Navigator.pushNamed(context, Routes.register);
+        // Go to register to get missing information
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => RegisterScreen(phoneInput, user.uid))
+        );
       } else {
         Navigator.pop(context);
         Navigator.pop(context);

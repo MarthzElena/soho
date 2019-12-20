@@ -255,7 +255,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                             SizedBox(height: 8.0),
                             TextField(
-                              keyboardType: TextInputType.phone,
+                              keyboardType: TextInputType.numberWithOptions(signed: true),
                               onChanged: (value) {
                                 model.updatedPhone = value;
                               },

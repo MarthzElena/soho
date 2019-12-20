@@ -109,6 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     // TODO: Validate phone
                                     model.phoneInput = value;
                                   },
+                                  keyboardType: TextInputType.numberWithOptions(signed: true),
                                   textAlignVertical: TextAlignVertical.center,
                                   style: interLightStyle(
                                     fSize: 14.0,

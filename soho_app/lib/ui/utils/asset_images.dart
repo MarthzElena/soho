@@ -28,6 +28,7 @@ AssetImage menuDivider = AssetImage('assets/payments/div.png');
 
 /* Auth Assets */
 AssetImage authImage = AssetImage('assets/auth/bamboo.png');
+AssetImage registerImage = AssetImage('assets/auth/bamboo_green_tea.png');
 
 /* Purchases Assets */
 AssetImage purchasesImage = AssetImage('assets/purchases/healthy.png');
