@@ -13,5 +13,7 @@ class Application {
   // Once the order is completed, this value should be set to NULL
   static SohoOrderObject currentOrder;
 
+  // Stripe Secret Key
+  static String stripeSecretKey = 'sk_test_mqnEbY0xP8nctWWQ8PHMnJ7k009KT8V3LN';
 
 }
