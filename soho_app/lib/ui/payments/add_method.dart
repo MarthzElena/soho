@@ -206,7 +206,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                               keyboardType: TextInputType.number,
                                               decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(10.0),
-                                                hintText: 'DD / AA',
+                                                hintText: 'MM / AA',
                                                 hintStyle: interLightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xffC4C4C4),

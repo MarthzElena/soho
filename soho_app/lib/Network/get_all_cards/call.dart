@@ -1,11 +1,11 @@
 import 'package:http/http.dart' as http;
-import 'package:soho_app/Models/responses/get_customer.dart';
+import 'package:soho_app/Models/responses/get_all_cards.dart';
 import 'package:soho_app/Utils/Application.dart';
 
-Future<GetCustomerResponse> getCustomerCall({customerId}) async {
+Future<GetAllCardsResponse> getAllCardsCall({customerId}) async {
   try {
     final response = await http.get(
-      'https://api.stripe.com/v1/customers/$customerId',
+      'https://api.stripe.com/v1/customers/$customerId/sources',
       headers: {
         'Authorization': 'Bearer ' + Application.stripeSecretKey,
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -13,11 +13,11 @@ Future<GetCustomerResponse> getCustomerCall({customerId}) async {
     );
 
     if (response.statusCode == 200 || response.statusCode == 202) {
-       return getCustomerResponseFromJson(response.body);
+      return getAllCardsResponseFromJson(response.body);
     } else {
-      return getCustomerResponseFromJson(response.statusCode.toString());
+      return getAllCardsResponseFromJson(response.statusCode.toString());
     }
   } catch (e) {
-    return getCustomerResponseFromJson('error');
+    return getAllCardsResponseFromJson('error');
   }
 }

@@ -119,51 +119,6 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                             ),
                           ),
                           SizedBox(height: 40.0),
-                          Text(
-                            'Número de tarjeta',
-                            style: interStyle(fSize: 14.0),
-                          ),
-                          SizedBox(height: 8.0),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 40.0,
-                            child: TextField(
-                              controller: controllerCard,
-                              onChanged: (value) {},
-                              textAlignVertical: TextAlignVertical.center,
-                              style: interLightStyle(
-                                fSize: 14.0,
-                              ),
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(10.0),
-                                hintText: '****  ****  ****  ****',
-                                hintStyle: interLightStyle(
-                                  fSize: 14.0,
-                                  color: Color(0xffC4C4C4),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(3.0),
-                                  borderSide: const BorderSide(
-                                    color: Color(0xffE5E4E5),
-                                    width: 1.0,
-                                  ),
-                                ),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0xffE5E4E5),
-                                    width: 1.0,
-                                  ),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0xffE5E4E5),
-                                    width: 1.0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 40.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
