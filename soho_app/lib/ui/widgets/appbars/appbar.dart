@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
+import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -21,7 +22,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () {
-                      print("User? ${Application.currentUser}");
                       Scaffold.of(context).openDrawer();
                     },
                     child: Container(
@@ -36,8 +36,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   Image(image: homeLogo),
                   GestureDetector(
                     onTap: () {
-                      print("User? ${Application.currentUser}");
-                      Scaffold.of(context).openDrawer();
+                      Navigator.pushNamed(context, Routes.search);
                     },
                     child: Container(
                       width: 45.0,

@@ -73,18 +73,8 @@ class ProductItemObject {
   /// TODO! Update this with FINAL values
   bool isVariationsRequired() {
     if (category.toLowerCase().startsWith(_categoryCoffee)) {
-      return true;
+      return false;
     } else if (category.toLowerCase().startsWith(_categoryTea)) {
-      return true;
-    } else if (category.toLowerCase().startsWith(_categoryDesayunos)) {
-      return false;
-    } else if (category.toLowerCase().startsWith(_categoryComidasCenas)) {
-      return false;
-    } else if (category.toLowerCase().startsWith(_categoryAltaReposteria)) {
-      return false;
-    } else if (category.toLowerCase().startsWith(_categoryBebidasCocteles)) {
-      return false;
-    } else if (category.toLowerCase().startsWith(_categoryOtros)) {
       return false;
     } else {
       return false;

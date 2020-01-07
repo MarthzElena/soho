@@ -7,6 +7,7 @@ import 'package:soho_app/ui/about/location.dart';
 import 'package:soho_app/ui/auth/login.dart';
 import 'package:soho_app/ui/auth/register.dart';
 import 'package:soho_app/ui/home/home.dart';
+import 'package:soho_app/ui/home/search.dart';
 import 'package:soho_app/ui/payments/methods.dart';
 import 'package:soho_app/ui/profile/check_profile.dart';
 import 'package:soho_app/ui/profile/edit_profile.dart';
@@ -23,6 +24,7 @@ class Routes {
   static String about = "About";
   static String paymentMethods = "PaymentMethods";
   static String location = "Location";
+  static String search = "Search";
 
   static Handler _categoryDetailHandler = Handler(
       handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
@@ -95,6 +97,12 @@ class Routes {
     router.define(location,
         handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
           return LocationScreen();
+        }));
+
+    // Search
+    router.define(search,
+        handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
+          return SearchScreen();
         }));
   }
 }
