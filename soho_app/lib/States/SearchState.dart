@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemObject.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/ui/items/item_detail.dart';
 
 class SearchState extends Model{
   List<Widget> results = List<Widget>();
@@ -67,6 +68,14 @@ class SearchState extends Model{
           return GestureDetector(
             onTap: () {
               // Go to product detail
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => ProductDetail(
+                    currentProduct: product,
+                  ),
+                ),
+              );
             },
             child: Container(
               width: MediaQuery.of(context).size.width,

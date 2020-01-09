@@ -58,7 +58,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             FeaturedDetailWidget(
                               text1: "COFFEE",
                               text2: "Una experiencia en tu mesa",
-                              image: "assets/home/search_coffee.png",
+//                              image: "assets/home/search_coffee.png", TODO: This image has white background :(
                             ),
                             Container(
                               width: double.infinity,
