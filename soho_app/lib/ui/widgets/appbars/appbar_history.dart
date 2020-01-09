@@ -24,8 +24,8 @@ class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Container(
-                      width: 45.0,
-                      height: 45.0,
+                      width: 50.0,
+                      height: preferredSize.height - 40.0,
                       alignment: Alignment.centerLeft,
                       child: Image(
                         image: detailBack,

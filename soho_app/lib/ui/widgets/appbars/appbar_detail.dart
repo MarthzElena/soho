@@ -35,7 +35,7 @@ class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
                           },
                           child: Container(
                             width: 45.0,
-                            height: 45.0,
+                            height: preferredSize.height - 40.0,
                             alignment: Alignment.centerLeft,
                             child: Image(
                               image: detailBack,

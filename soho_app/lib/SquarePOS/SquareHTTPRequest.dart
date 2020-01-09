@@ -8,6 +8,7 @@ import 'package:soho_app/SohoMenu/CategoryObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:uuid/uuid.dart';
 
 class SquareHTTPRequest {
@@ -70,7 +71,7 @@ class SquareHTTPRequest {
       categoryObject.subtitle = categorySubtitle;
 
       // Request each category items to get the image
-      var categorySearchArrayResult = await getItemsForCategory(categoryId);
+      var categorySearchArrayResult = await _getItemsForCategory(categoryId);
       for (var categoryItem in categorySearchArrayResult) {
         var itemData = categoryItem["item_data"];
         var itemName = itemData["name"].toString();
@@ -92,12 +93,94 @@ class SquareHTTPRequest {
 
   /// Return a list of CategoryItemObjects to populate the category detail view
   ///
-  ///
   static Future<CategoryItemObject> getCategoryDetail(String categoryId, String categoryName) async {
     // Init empty list for result
+
+    var categorySearchArrayResult = await _getItemsForCategory(categoryId);
+    var categoryDetails = await _parseCategoryElementsResult(categorySearchArrayResult, categoryName);
+
+    // Make sure items have correct order before returning
+    var orderedCategoryDetails = await _orderCategoryItems(categoryDetails);
+
+    return orderedCategoryDetails;
+  }
+
+  /// Parses the result of a Search query from different categories
+  static Future<List<SubcategoryItems>> _parseSearchResult(List<dynamic> searchResult) async {
+    List<SubcategoryItems> result = List<SubcategoryItems>();
+    for (var searchItem in searchResult) {
+      //  Get item_data
+      var itemData = searchItem["item_data"];
+      var productName = itemData["name"].toString();
+      // Get category name
+      // Get category name by ID
+      var categoryId = itemData["category_id"].toString();
+      var categoryName = "";
+      for (var item in Application.sohoCategories) {
+        if (item.squareID == categoryId) {
+          categoryName = item.name;
+          break;
+        }
+      }
+      // Create ProductItemObject
+      var productItemObject = ProductItemObject(nameAndSubCategory: productName, categoryName: categoryName);
+      // Ignore "foto" items
+      if (productName.compareTo("foto") != 0) {
+        // Add missing details to ProductItemObject
+        productItemObject.description = itemData["description"] == null ? "" : itemData["description"];
+        productItemObject.imageUrl = itemData["image_url"] == null ? "" : itemData["image_url"].toString();
+        // Get variations
+        var variationsArray = itemData["variations"];
+        for (var variationItem in variationsArray) {
+          var variationId = variationItem["id"];
+          // Check if variation is REGULAR
+          var variationData = variationItem["item_variation_data"];
+          var variationNameArray = variationData["name"].toString().split("-");
+          if (variationNameArray.length == 1) {
+            // Add PRODUCT ID
+            productItemObject.squareID = variationId;
+            // Add regular price to ProductItemObject
+            var priceMoney = variationData["price_money"];
+            var priceValue = priceMoney["amount"];
+            // Remove decimal 0's (bad square parsing)
+            priceValue = priceValue/100;
+            // Save price
+            productItemObject.price = priceValue;
+          } else if (variationNameArray.length == 2){
+            // Item is variation
+            var variationName = variationNameArray[0];
+            var variationType = variationNameArray[1];
+            // Get variation price
+            var priceMoney = variationData["price_money"];
+            var priceValue = priceMoney["amount"];
+            // Remove decimal 0's (bad square parsing)
+            priceValue = priceValue/100;
+            // Create VariationItemObject
+            var variationItem = VariationItemObject(variationName, variationId, priceValue);
+            // Only add variation to product if Inventory is available
+            var updatedVariation = await _isVariationAvailable(variation: variationItem);
+            if (updatedVariation != null) {
+              await productItemObject.addProductVariation(updatedVariation, variationType);
+            }
+          }
+        }
+        // Add product to categoryDetails
+        var updatedProduct = await _isProductAvailable(product: productItemObject);
+        if (updatedProduct != null) {
+          SubcategoryItems newSubcategory = SubcategoryItems();
+          newSubcategory.subcategoryName = updatedProduct.subcategory;
+          newSubcategory.items.add(updatedProduct);
+          result.add(newSubcategory);
+        }
+      }
+    }
+    return result;
+  }
+
+  /// Parses the result of a search query, from the same category
+  static Future<CategoryItemObject> _parseCategoryElementsResult(List<dynamic> searchResult, String categoryName) async {
     CategoryItemObject categoryDetails = CategoryItemObject();
-    var categorySearchArrayResult = await getItemsForCategory(categoryId);
-    for (var categoryItem in categorySearchArrayResult) {
+    for (var categoryItem in searchResult) {
       //  Get item_data
       var itemData = categoryItem["item_data"];
       var productName = itemData["name"].toString();
@@ -149,24 +232,32 @@ class SquareHTTPRequest {
           await categoryDetails.addProductItem(updatedProduct);
         }
       }
-
     }
 
-    // Make sure items have correct order before returning
-    var orderedCategoryDetails = await _orderCategoryItems(categoryDetails);
-
-    return orderedCategoryDetails;
+    return categoryDetails;
   }
 
   /// Request to get all the items in a specific category
   /// PARAMS:
   /// - String categoryID - String  ID for category given by  SQUARE
-  static Future<List<dynamic>> getItemsForCategory(String categoryId) async {
+  static Future<List<dynamic>> _getItemsForCategory(String categoryId) async {
     var itemsInCategoryHost = _squareHost + _catalog + _search;
-    var request = await http.post(itemsInCategoryHost, body: _buildSearchRequestBody(categoryId), headers: _requestHeader);
+    var request = await http.post(itemsInCategoryHost, body: _buildSearchItemsByCategoryRequestBody(categoryId), headers: _requestHeader);
     var jsonCategorySearch = json.decode(utf8.decode(request.bodyBytes));
     var objects = jsonCategorySearch["objects"];
     return objects == null ? List() : List.from(objects);
+  }
+
+  /// Request to search for items by NAME
+  /// Returns an array of
+  static Future<List<SubcategoryItems>> searchForItems(String query) async {
+    var searchHost = _squareHost + _catalog + _search;
+    var request = await http.post(searchHost, body: _builsSearchItemsByNameRequestBody(query), headers: _requestHeader);
+    var jsonProductSearch = json.decode(utf8.decode(request.bodyBytes));
+    var objects = jsonProductSearch["objects"];
+    var searchResult = objects == null ? List() : List.from(objects);
+    var parsedResult = await _parseSearchResult(searchResult);
+    return parsedResult;
   }
 
   /// Request Variation inventory count
@@ -308,8 +399,12 @@ class SquareHTTPRequest {
   /// Builds a String with the body for the getItemsForCategory(categoryID) request
   /// PARAMS:
   /// - categoryId - String  ID for category given by  SQUARE
-  static String _buildSearchRequestBody(String categoryId) {
+  static String _buildSearchItemsByCategoryRequestBody(String categoryId) {
     return jsonEncode({"object_types": ["ITEM"],"query": {"prefix_query": {"attribute_name": "category_id","attribute_prefix": "$categoryId"}},"limit": 100});
+  }
+
+  static String _builsSearchItemsByNameRequestBody(String name) {
+    return jsonEncode({"object_types": ["ITEM"],"query": {"prefix_query": {"attribute_name": "name","attribute_prefix": "$name"}},"limit": 100});
   }
 
 }

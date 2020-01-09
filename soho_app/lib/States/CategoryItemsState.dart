@@ -90,12 +90,12 @@ class CategoryItemsState extends Model {
                         width: 220,
                         height: 268,
                         decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: product.imageUrl.isEmpty ? Colors.grey : Colors.white,
                           borderRadius: BorderRadius.all(
                             Radius.circular(8.0),
                           ),
                         ),
-                        // TODO: Add child with item image
+                        child: product.imageUrl.isEmpty ? SizedBox.shrink() : Image(image: NetworkImage(product.imageUrl)),
                       ),
                       SizedBox(height: 10.0),
                       Text(
@@ -189,12 +189,12 @@ class CategoryItemsState extends Model {
                   height: 95,
                   width: 95,
                   decoration: BoxDecoration(
-                    color: Colors.grey,
+                    color: product.imageUrl.isEmpty ? Colors.grey : Colors.white,
                     borderRadius: BorderRadius.all(
                       Radius.circular(8.0),
                     ),
                   ),
-                  // TODO: Add child with item image
+                  child: product.imageUrl.isEmpty ? SizedBox.shrink() : Image(image: NetworkImage(product.imageUrl)),
                 )
               ],
             ),

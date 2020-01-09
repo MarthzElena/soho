@@ -7,6 +7,7 @@ import 'package:soho_app/States/CategoryItemsState.dart';
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
 import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/States/EditProfileState.dart';
+import 'package:soho_app/States/SearchState.dart';
 import 'package:soho_app/States/add_method.dart';
 
 GetIt locator = GetIt();
@@ -31,4 +32,6 @@ void setUpLocator() {
   locator.registerLazySingleton<OrderDetailState>(() => OrderDetailState());
   // Edit Profile State
   locator.registerLazySingleton<UserProfileState>(() => UserProfileState());
+  // Search Screen State
+  locator.registerLazySingleton<SearchState>(() => SearchState());
 }

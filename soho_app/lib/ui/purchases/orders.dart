@@ -170,6 +170,7 @@ class _OrderScreenState extends State<OrderScreen> {
                               ),
                               SizedBox(height: 18.0),
                               ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: orderItems.length,
                                 itemBuilder: (BuildContext ctxt, int index) {
@@ -259,23 +260,84 @@ class _OrderScreenState extends State<OrderScreen> {
                                 color: Color(0xffE5E4E5),
                               ),
                               SizedBox(height: 16.0),
-                              Row(
+                              GestureDetector(
+                                onTap: () => model.updateShowCode(),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      '¿Tienes un ',
+                                      style: interStyle(fSize: 14.0),
+                                    ),
+                                    Text(
+                                      'Código',
+                                      style: interStyle(
+                                        fSize: 14.0,
+                                        color: Color(0xffE51F4F),
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                    Text(
+                                      '?',
+                                      style: interStyle(fSize: 14.0),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              model.showCode ?
+                              Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
+                                  SizedBox(height: 24.0),
                                   Text(
-                                    '¿Tienes un ',
+                                    'Ingrese código',
                                     style: interStyle(fSize: 14.0),
                                   ),
-                                  Text(
-                                    'Código',
-                                    style: interStyle(
-                                      fSize: 14.0,
-                                      color: Color(0xffE51F4F),
-                                      decoration: TextDecoration.underline,
+                                  SizedBox(height: 8.0),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 40.0,
+                                    child: TextField(
+                                      onChanged: (value) {
+                                        // TODO: Add change to price
+                                      },
+                                      textAlignVertical: TextAlignVertical.center,
+                                      style: interLightStyle(
+                                        fSize: 14.0,
+                                      ),
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.all(10.0),
+                                        hintText: '--------------------',
+                                        hintStyle: interLightStyle(
+                                          fSize: 14.0,
+                                          color: Color(0xffC4C4C4),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(3.0),
+                                          borderSide: const BorderSide(
+                                            color: Color(0xffE5E4E5),
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Color(0xffE5E4E5),
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Color(0xffE5E4E5),
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
+                                  SizedBox(height: 16.0),
                                 ],
-                              ),
+                              ) : SizedBox.shrink(),
                               SizedBox(height: 16.0),
                               Divider(
                                 height: 1.0,
@@ -295,8 +357,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                 children: <Widget>[
                                   GestureDetector(
                                     onTap: () {
-                                      // TODO: Add custom tip!
-                                      model.updateTip(30.0);
+                                      model.updateShowCustomTip();
                                     },
                                     child: Chip(
                                       label: Text(' Otro '),
@@ -368,6 +429,60 @@ class _OrderScreenState extends State<OrderScreen> {
                                   ),
                                 ],
                               ),
+                              model.showCustomTip ?
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(height: 24.0),
+                                  Text(
+                                    'Ingrese cantidad personalizada',
+                                    style: interStyle(fSize: 14.0),
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 40.0,
+                                    child: TextField(
+                                      onChanged: (value) {
+                                        model.updateTip(double.parse(value));
+                                      },
+                                      keyboardType: TextInputType.number,
+                                      textAlignVertical: TextAlignVertical.center,
+                                      style: interLightStyle(
+                                        fSize: 14.0,
+                                      ),
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.all(10.0),
+                                        hintText: '\$0.00',
+                                        hintStyle: interLightStyle(
+                                          fSize: 14.0,
+                                          color: Color(0xffC4C4C4),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(3.0),
+                                          borderSide: const BorderSide(
+                                            color: Color(0xffE5E4E5),
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Color(0xffE5E4E5),
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Color(0xffE5E4E5),
+                                            width: 1.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ) : SizedBox.shrink(),
                               SizedBox(height: 24.0),
                               Divider(
                                 height: 1.0,

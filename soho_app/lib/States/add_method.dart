@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/Models/requests/add_new_card.dart';
 import 'package:soho_app/Models/requests/charge_customer.dart';
 import 'package:soho_app/Models/requests/create_customer.dart';
+import 'package:soho_app/Models/requests/update_card.dart';
+import 'package:soho_app/Network/add_new_card/call.dart';
 import 'package:soho_app/Network/charge_customer/call.dart';
 import 'package:soho_app/Network/create_customer/call.dart';
+import 'package:soho_app/Network/delete_card/call.dart';
+import 'package:soho_app/Network/get_all_cards/call.dart';
 import 'package:soho_app/Network/get_customer/call.dart';
+import 'package:soho_app/Network/update_card/call.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:stripe_payment/stripe_payment.dart';
@@ -22,8 +28,8 @@ class AddMethodState extends Model {
   );
   TextEditingController cvvController = TextEditingController();
 
-  CreditCard testCard;
-  Token stripeToken = Token();
+  CreditCard card;
+  Token cardToken = Token();
   var charge = {'0.01', 'MXN'};
 
   void getCardInformation() {
@@ -31,7 +37,7 @@ class AddMethodState extends Model {
         numberController.text.trim().isNotEmpty &&
         expDateController.text.trim().isNotEmpty &&
         cvvController.text.trim().isNotEmpty) {
-      testCard = CreditCard(
+      card = CreditCard(
         number: numberController.text.trim(),
         expMonth: int.parse(expDateController.text.substring(0, 2).trim()),
         expYear: int.parse(expDateController.text.substring(3, 5).trim()),
@@ -39,14 +45,14 @@ class AddMethodState extends Model {
         cvc: cvvController.text.trim(),
       );
 
-      StripePayment.createTokenWithCard(testCard).then((token) {
-        stripeToken = token;
-        print('token: ' + stripeToken.toJson().toString());
+      StripePayment.createTokenWithCard(card).then((token) {
+        cardToken = token;
+        print('token: ' + cardToken.toJson().toString());
       }).catchError(setError);
     }
   }
 
-  void chargeCustomer({amounts, customerId, cardId, stripeTnk}) async {
+  void chargeCustomer({amounts, customerId, cardId}) async {
     Future.delayed(Duration(seconds: 1)).then((_) {
       chargeCustomerCall(
         request: ChargeCustomerRequest(
@@ -56,25 +62,61 @@ class AddMethodState extends Model {
           source: cardId,
           customer: customerId,
         ),
-        stripeToken: stripeTnk,
       );
+    });
+  }
+
+  void addNewCard({customerId, source}) async {
+    Future.delayed(Duration(seconds: 1)).then((_) {
+      addNewCardCall(
+        request: AddNewCardRequest(source: source),
+        customerId: customerId,
+      );
+    });
+  }
+
+  void deleteCard({customerId, cardId}) async {
+    Future.delayed(Duration(seconds: 1)).then((_) {
+      deleteCardCall(
+        customerId: customerId,
+        cardId: cardId,
+      );
+    });
+  }
+
+  void updateCard({customerId, cardId}) async {
+    Future.delayed(Duration(seconds: 1)).then((_) {
+      updateCardCall(
+        request: UpdateCardRequest(
+          name: '',
+          expMonth: '',
+          expYear: '',
+        ),
+        customerId: customerId,
+        cardId: cardId,
+      );
+    });
+  }
+
+  void getAllCards({customerId}) async {
+    Future.delayed(Duration(seconds: 1)).then((_) {
+      getAllCardsCall(customerId: customerId);
     });
   }
 
   void checkIfCustomerExists({customerId, stripeTkn}) async {
     Future.delayed(Duration(seconds: 1)).then((_) {
-      getCustomerCall(customerId: customerId, stripeToken: stripeTkn);
+      getCustomerCall(customerId: customerId);
     });
   }
 
-  void createCustomer({stripeTkn}) async {
+  void createCustomer({cardTkn}) async {
     Future.delayed(Duration(seconds: 1)).then((_) {
       createCustomerCall(
         request: CreateCustomerRequest(
           description: 'Customer for Soho',
-          source: stripeTkn.tokenId,
+          source: cardTkn.tokenId,
         ),
-        stripeToken: stripeTkn,
       );
     });
   }

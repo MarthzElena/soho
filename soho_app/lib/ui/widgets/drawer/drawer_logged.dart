@@ -108,6 +108,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                         );
                       },
                       child: Row(
+                        mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
                           Image(
                             image: AssetImage('assets/menu/icon_barcode.png'),
@@ -128,6 +129,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                     GestureDetector(
                       onTap: () => Navigator.pushNamed(context, Routes.about),
                       child: Row(
+                        mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
                           Image(
                             image: AssetImage('assets/menu/icon_about.png'),
@@ -148,6 +150,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                     GestureDetector(
                       onTap: () => Navigator.pushNamed(context, Routes.paymentMethods),
                       child: Row(
+                        mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
                           Image(
                             image: AssetImage('assets/menu/icon_wallet.png'),
@@ -168,6 +171,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                     GestureDetector(
                       onTap: () => Navigator.pushNamed(context, Routes.location),
                       child: Row(
+                        mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
                           Image(
                             image: AssetImage('assets/menu/icon_locations.png'),
