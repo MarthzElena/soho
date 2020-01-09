@@ -10,7 +10,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
 
     return Container(
-      color: Colors.white,
+      color: Color(0xffF3F1F2),
       height: preferredSize.height,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -41,8 +41,18 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                     height: 40.0,
                     child: TextField(
                       onChanged: (value) {
-                        // Execute the search
-                        locator<SearchState>().performSearch(value);
+                        var model = locator<SearchState>();
+                        model.currentQuery = value;
+                        if (value.isEmpty) {
+                          model.showSpinner(false);
+                          model.clearResults();
+                        } else {
+                          // Show spinner while search is completed
+                          model.showSpinner(true);
+                          // Execute the search
+                          model.performSearch(value);
+                        }
+
                       },
                       textAlignVertical: TextAlignVertical.center,
                       style: interLightStyle(
