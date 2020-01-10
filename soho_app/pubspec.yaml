@@ -38,6 +38,7 @@ dependencies:
   flutter_image_compress: ^0.6.3
   flutter_masked_text: ^0.8.0
   firebase_messaging: ^5.1.6
+  barcode_scan: ^1.0.0
 
 dev_dependencies:
   flutter_test:

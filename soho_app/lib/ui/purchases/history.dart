@@ -73,7 +73,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       child: Scaffold(
         resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.white,
-        appBar: HistoryAppBar(),
+        appBar: HistoryAppBar(titleText: 'MIS ÓRDENES'),
         body: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),

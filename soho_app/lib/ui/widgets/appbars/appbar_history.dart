@@ -6,6 +6,10 @@ import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
 class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String titleText;
+
+  HistoryAppBar({this.titleText});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,7 +28,7 @@ class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Container(
-                      width: 50.0,
+                      width: 40.0,
                       height: preferredSize.height - 40.0,
                       alignment: Alignment.centerLeft,
                       child: Image(
@@ -33,7 +37,7 @@ class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                   Text(
-                    'MIS ÓRDENES',
+                    titleText,
                     style: interLightStyle(fSize: 18.0),
                   ),
                 ],
