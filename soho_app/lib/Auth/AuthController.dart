@@ -339,6 +339,27 @@ class AuthController {
     return url;
   }
 
+  Future<void> completeKitchenOrder(DateTime completionDate, String username) async {
+    var kitchenOrdersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_KITCHEN_ORDERS);
+    // Get existing orders
+    await kitchenOrdersRef.once().then((value) async {
+      if (value != null && value.value != null) {
+        List<dynamic> linkedMap = value.value;
+        List<Map<String, dynamic>> updatedOrders = List<Map<String, dynamic>>();
+        for (var element in linkedMap) {
+          var sohoOrder = SohoOrderQR();
+          sohoOrder.parseLinkedList(element);
+          // Only add if it is not the completed order
+          if (sohoOrder.userName != username || sohoOrder.order.completionDate.toIso8601String() != completionDate.toIso8601String()) {
+            // Add to updated orders for database
+            updatedOrders.add(sohoOrder.getJson());
+          }
+        }
+        await kitchenOrdersRef.set(updatedOrders);
+      }
+    });
+  }
+
   Future<void> sendOrderToKitchen(Map<String, dynamic> order, DateTime completionDate) async {
     var kitchenOrdersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_KITCHEN_ORDERS);
 

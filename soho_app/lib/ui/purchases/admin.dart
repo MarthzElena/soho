@@ -305,8 +305,10 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
             SizedBox(height: 24.0),
             GestureDetector(
-              onTap: () {
-                // TODO: Remove from database kitchen orders
+              onTap: () async {
+                await locator<AuthController>().completeKitchenOrder(order.order.completionDate, order.userName).then((value) {
+                  setState(() {});
+                });
               },
               child: Container(
                 width: MediaQuery.of(context).size.width,
