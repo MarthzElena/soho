@@ -1,6 +1,9 @@
+import 'dart:collection';
 import 'dart:core';
 
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
+
+import 'SohoOrderItem.dart';
 
 class SohoOrderQR {
   static const String keyOrder = "order";
@@ -12,6 +15,8 @@ class SohoOrderQR {
   String userId;
 
   SohoOrderQR({this.order, this.userId, this.userName});
+
+
 
   Map<String, dynamic> getJson() {
     var dict = Map<String, dynamic>();
@@ -25,6 +30,15 @@ class SohoOrderQR {
     userName = json[keyUserName];
     userId = json[keyUserId];
     order = SohoOrderObject.fromJson(json[keyOrder]);
+  }
+
+  void parseLinkedList(LinkedHashMap map) {
+    userName = map["userName"];
+    userId = map["userId"];
+    LinkedHashMap orderValue = map["order"];
+    // Create new order
+    SohoOrderObject convertedOrder = SohoOrderObject.fromJson(orderValue.cast());
+    order = convertedOrder;
   }
 
 }

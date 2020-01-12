@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderQR.dart';
 import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
@@ -333,6 +334,58 @@ class AuthController {
       Application.currentUser.photoUrl = url;
     }
     return url;
+  }
+
+  Future<void> sendOrderToKitchen(Map<String, dynamic> order) async {
+    var kitchenOrdersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_KITCHEN_ORDERS);
+    // Get existing values
+    await kitchenOrdersRef.once().then((value) async {
+      if (value.value == null) {
+        // List is empty, add first value
+        var newKitchenOrder = kitchenOrdersRef.child("0");
+        await newKitchenOrder.set(order).then((_) {
+          newKitchenOrder.push();
+        });
+      } else {
+        // List already exists, update
+        List<dynamic> linkedMap = value.value;
+        List<Map<String, dynamic>> updatedOrders = List<Map<String, dynamic>>();
+        for (var element in linkedMap) {
+          var sohoOrder = SohoOrderQR();
+          sohoOrder.parseLinkedList(element);
+          updatedOrders.add(sohoOrder.getJson());
+        }
+        // Add new element
+        updatedOrders.add(order);
+        await kitchenOrdersRef.set(updatedOrders);
+
+      }
+    }).catchError((error) {
+      //TODO: handle error
+      print("Error from updating kitchen orders database ${error.toString()}");
+    });
+
+  }
+
+  Future<List<SohoOrderQR>> getKitchenOrders() async {
+    var result = List<SohoOrderQR>();
+    var kitchenOrdersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_KITCHEN_ORDERS);
+    await kitchenOrdersRef.once().then((item){
+      if (item != null && item.value != null) {
+        List<dynamic> linkedMap = item.value;
+        for (var element in linkedMap) {
+          var sohoOrder = SohoOrderQR();
+          sohoOrder.parseLinkedList(element);
+          result.add(sohoOrder);
+        }
+      }
+    }).catchError((error) {
+      //TODO: handle error
+      print("Error from database ${error.toString()}");
+    });
+
+    return result;
+
   }
 
 }
