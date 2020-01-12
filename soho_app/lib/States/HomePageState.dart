@@ -52,14 +52,14 @@ class HomePageState extends Model {
       // Attempt to add from past orders
       if (currentUser.pastOrders.isNotEmpty) {
         if (currentUser.pastOrders.length >= 2) {
-          var last = currentUser.ongoingOrders.elementAt(1);
+          var last = currentUser.pastOrders.elementAt(1);
           for (var product in last.selectedProducts) {
             var lastElement = RecentOrdersElement(product.categoryName, product.name, product.photoUrl, last.getCompletedDateShort(), false);
             result.add(lastElement);
           }
         }
         if (currentUser.pastOrders.length >= 1) {
-          var last = currentUser.ongoingOrders.elementAt(0);
+          var last = currentUser.pastOrders.elementAt(0);
           for (var product in last.selectedProducts) {
             var lastElement = RecentOrdersElement(product.categoryName, product.name, product.photoUrl, last.getCompletedDateShort(), false);
             result.add(lastElement);

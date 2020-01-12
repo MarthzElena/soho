@@ -5,7 +5,9 @@ import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/purchases/admin.dart';
 import 'package:soho_app/ui/purchases/history.dart';
+import 'package:soho_app/ui/widgets/drawer/QRCodeReaderTest.dart';
 
 class LoggedInUserMenuWidget extends StatelessWidget {
   final String photoUrl;
@@ -14,15 +16,16 @@ class LoggedInUserMenuWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Add actions to each Row item
     var name = "";
     var lastOrder = "";
+    var isAdmin = false;
     var currentUser = Application.currentUser;
     if (currentUser != null) {
       name = currentUser.username;
       if (currentUser.ongoingOrders.isNotEmpty) {
         lastOrder = currentUser.ongoingOrders.last.getCompletedDateShort();
       }
+      isAdmin = currentUser.isAdmin;
     }
 
     return Drawer(
@@ -196,9 +199,37 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 52),
                   child: Container(
-                    height: 80,
+                    height: isAdmin ? 160 : 80,
                     child: Column(
                       children: <Widget>[
+                        isAdmin ? GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) => AdminScreen()
+                                )
+                            );
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Image(
+                                image: AssetImage('assets/menu/icon_admin.png'),
+                                width: 24.0,
+                              ),
+                              SizedBox(width: 12.0),
+                              Text(
+                                'Administrador Soho',
+                                style: interMediumStyle(
+                                  fSize: 14.0,
+                                  color: Color(0xffE4E4E4),
+                                ),
+                              )
+                            ],
+                          ),
+                        ) : SizedBox.shrink(),
+                        isAdmin ? SizedBox(height: 36.0) : SizedBox.shrink(),
                         Row(
                           children: <Widget>[
                             Image(
