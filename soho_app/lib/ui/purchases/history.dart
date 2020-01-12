@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:soho_app/Auth/AuthController.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_history.dart';
 
@@ -89,40 +91,64 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   ),
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(height: 32.0),
-                    Container(
-                      height: 42.0,
-                      width: MediaQuery.of(context).size.width,
-                      child: MaterialSegmentedControl(
-                        horizontalPadding: EdgeInsets.all(0),
-                        borderColor: Color(0xffF0AB31),
-                        unselectedColor: Colors.white,
-                        selectedColor: Color(0xffF0AB31),
-                        children: controlWidgets,
-                        onSegmentChosen: (int value) {
-                          setState(() {
-                            selectedTab = value;
-                          });
-                        },
-                        selectionIndex: selectedTab,
+              child: Application.currentUser != null ?
+              FutureBuilder(
+                future: locator<AuthController>().saveUserToDatabase(Application.currentUser.getJson()),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData && snapshot.data != null) {
+                    return _getDefaultWidget();
+                  } else {
+                    return Center(
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(height: 150.0),
+                          Container(
+                            child: CircularProgressIndicator(),
+                          ),
+                          SizedBox(height: 150.0),
+                        ],
                       ),
-                    ),
-                    ListView(
-                      children: selectedTab == 0 ? _getPastOrdersList() : _getOngoingOrdersList(),
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                    ),
-                  ],
-                ),
-              ),
+                    );
+                  }
+                }
+              ) : _getDefaultWidget(),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _getDefaultWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(height: 32.0),
+          Container(
+            height: 42.0,
+            width: MediaQuery.of(context).size.width,
+            child: MaterialSegmentedControl(
+              horizontalPadding: EdgeInsets.all(0),
+              borderColor: Color(0xffF0AB31),
+              unselectedColor: Colors.white,
+              selectedColor: Color(0xffF0AB31),
+              children: controlWidgets,
+              onSegmentChosen: (int value) {
+                setState(() {
+                  selectedTab = value;
+                });
+              },
+              selectionIndex: selectedTab,
+            ),
+          ),
+          ListView(
+            children: selectedTab == 0 ? _getPastOrdersList() : _getOngoingOrdersList(),
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+          ),
+        ],
       ),
     );
   }
@@ -159,6 +185,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         var column = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              SizedBox(height: 42.0),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,

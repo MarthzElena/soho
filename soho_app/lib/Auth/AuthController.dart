@@ -282,7 +282,7 @@ class AuthController {
 
   }
 
-  Future<void> saveUserToDatabase(Map<String, dynamic> user) async {
+  Future<bool> saveUserToDatabase(Map<String, dynamic> user) async {
     // Check if user already exists in DataBase, and save if not
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
     var userId = user[SohoUserObject.keyUserId];
@@ -322,7 +322,10 @@ class AuthController {
           }
         }
       }
+      return true;
     });
+
+    return true;
   }
 
   Future<String> saveImageToCloud(String fileName, File file) async {
