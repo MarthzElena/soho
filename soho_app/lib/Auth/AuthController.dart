@@ -316,7 +316,7 @@ class AuthController {
           Map<String, dynamic> userDict = linkedMap.cast();
           if (userDict != null) {
             // Save locally
-            Application.currentUser = SohoUserObject.fromJson(user);
+            Application.currentUser = SohoUserObject.fromJson(userDict);
             // Update home page state
             locator<HomePageState>().updateDrawer();
           }
@@ -336,8 +336,34 @@ class AuthController {
     return url;
   }
 
-  Future<void> sendOrderToKitchen(Map<String, dynamic> order) async {
+  Future<void> sendOrderToKitchen(Map<String, dynamic> order, DateTime completionDate) async {
     var kitchenOrdersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_KITCHEN_ORDERS);
+
+    // Get user from DB
+    var savedUser = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS).child(order[SohoOrderQR.keyUserId]);
+    // Remove order from user ongoing orders
+    await savedUser.once().then((item) async {
+      if (item.value != null) {
+        LinkedHashMap linkedMap = item.value;
+        Map<String, dynamic> userDict = linkedMap.cast();
+        if (userDict != null) {
+          var orderUser = SohoUserObject.fromJson(userDict);
+          var ongoingOrders = orderUser.ongoingOrders;
+          var index = 0;
+          for (var ongoing in ongoingOrders) {
+            if (ongoing.completionDate == completionDate) {
+              var completedOrder = orderUser.ongoingOrders.removeAt(index);
+              completedOrder.isQRCodeValid = false;
+              orderUser.pastOrders.add(completedOrder);
+              await updateUserInDatabase(orderUser.getJson());
+              break;
+            }
+            index += 1;
+          }
+        }
+      }
+    });
+
     // Get existing values
     await kitchenOrdersRef.once().then((value) async {
       if (value.value == null) {

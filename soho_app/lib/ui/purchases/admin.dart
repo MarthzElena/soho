@@ -203,7 +203,7 @@ class _AdminScreenState extends State<AdminScreen> {
             // Convert to dictionary
             var orderDict = sohoOrder.getJson();
             // Send to kitchen
-            await locator<AuthController>().sendOrderToKitchen(orderDict);
+            await locator<AuthController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate);
           },
           child: Container(
             width: double.infinity,
