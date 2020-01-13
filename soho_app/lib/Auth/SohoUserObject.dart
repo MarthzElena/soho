@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:core';
 import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderQR.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
@@ -13,6 +15,7 @@ class SohoUserObject {
   static const keyPhone = "telefono";
   static const keyImageUrl = "picture";
   static const keyIsAdmin = "isAdmin";
+  static const keyFirstTime = "firstTime";
   static const keyPastOrders = "past_orders";
   static const keyOngoingOrders = "ongoing_orders";
 
@@ -30,6 +33,8 @@ class SohoUserObject {
   // Admin user
   // Admin user can read QR codes
   bool isAdmin = false;
+  // Used to know if user has done onboarding
+  bool isFirstTime = true;
 
   // Past orders
   List<SohoOrderObject> pastOrders = List<SohoOrderObject>();
@@ -38,6 +43,34 @@ class SohoUserObject {
 
   // Constructor
   SohoUserObject({this.username, this.email, this.userId, this.photoUrl, this.userPhoneNumber});
+
+  void completedOnboarding() {
+    isFirstTime = false;
+  }
+
+  // This method completes the onboarding gift order
+  Future<String> completeOnboardingOrder(String milk, String sugar, String username) async {
+    var order = SohoOrderObject();
+    // Add product
+    var item = SohoOrderItem("Café de bienvenida", "", "", "Coffee", "", 0.0, "IN_STOCK", "");
+    item.addOnboardingVariations(sugar, milk);
+    order.selectedProducts.add(item);
+    order.completionDate = DateTime.now();
+    order.orderTotal = 0.0;
+    order.isOrderCompleted = true;
+    order.isQRCodeValid = true;
+    var codeObject = SohoOrderQR(order: order, userId: userId, userName: username);
+    var codeData = jsonEncode(codeObject.getJson());
+    order.qrCodeData = codeData;
+    ongoingOrders.add(order);
+
+    // Update values in database
+    completedOnboarding();
+    var userJson = getJson();
+    await locator<AuthController>().updateUserInDatabase(userJson);
+
+    return jsonEncode(codeData);
+  }
 
   // This method is only called if the payment was successful
   Future<String> completeOrder(SohoOrderObject order) async {
@@ -74,6 +107,7 @@ class SohoUserObject {
     dict[keyPhone] = userPhoneNumber;
     dict[keyImageUrl] = photoUrl;
     dict[keyIsAdmin] = isAdmin;
+    dict[keyFirstTime] = isFirstTime;
     var pastOrdersDict = [];
     for (var order in pastOrders) {
       pastOrdersDict.add(order.getJson());
@@ -94,6 +128,7 @@ class SohoUserObject {
     userPhoneNumber = json[keyPhone];
     photoUrl = json[keyImageUrl] == null ? "" : json[keyImageUrl];
     isAdmin = json[keyIsAdmin];
+    isFirstTime = json[keyFirstTime];
     if (json[keyPastOrders] != null) {
       var pastOrdersDict = json[keyPastOrders];
       for (var order in pastOrdersDict) {
@@ -115,11 +150,12 @@ class SohoUserObject {
       userId: this.userId,
       photoUrl: this.photoUrl,
       phoneNumber: this.userPhoneNumber,
-      isAdmin: this.isAdmin
+      isAdmin: this.isAdmin,
+      firstTime: this.isFirstTime
     );
   }
 
-  static Map<String, dynamic> createUserDictionary({String username, String email, String userId, String photoUrl, String phoneNumber, bool isAdmin}) {
+  static Map<String, dynamic> createUserDictionary({String username, String email, String userId, String photoUrl, String phoneNumber, bool isAdmin, bool firstTime}) {
     // Create dictionary
     final Map<String,  dynamic> map = {
       keyUsername : username,
@@ -127,7 +163,8 @@ class SohoUserObject {
       keyUserId : userId,
       keyImageUrl : photoUrl,
       keyPhone : phoneNumber,
-      keyIsAdmin : isAdmin
+      keyIsAdmin : isAdmin,
+      keyFirstTime : firstTime
     };
 
     // Return value

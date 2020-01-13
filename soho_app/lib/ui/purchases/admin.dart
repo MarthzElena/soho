@@ -389,7 +389,7 @@ class _AdminScreenState extends State<AdminScreen> {
           Text(
             product.name,
             style: interMediumStyle(fSize: 14.0),
-          ),
+          ), // TODO: Add variations!!
         ],
       ));
       list.add(SizedBox(height: 5.0));

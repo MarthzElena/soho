@@ -78,6 +78,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                   color: Colors.grey,
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
+                                // TODO: Add child with image
                               ),
                               SizedBox(height: 24.0),
                               Text(

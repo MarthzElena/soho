@@ -19,13 +19,12 @@ import 'package:soho_app/Utils/Locator.dart';
 
 class AuthController {
 
-  final storage = new FlutterSecureStorage();
+  final storage = locator<FlutterSecureStorage>();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final FacebookLogin facebookLogin = FacebookLogin();
-  String _phoneVerificationId = "";
 
   // Returns a SohoAuthObject if there's a token saved
   Future<void> getSavedAuthObject() async{
@@ -129,7 +128,8 @@ class AuthController {
                     userId: userId,
                     photoUrl: photoUrl,
                     phoneNumber: "",
-                    isAdmin: false
+                    isAdmin: false,
+                    firstTime: true
                 );
                 await saveUserToDatabase(user);
               });

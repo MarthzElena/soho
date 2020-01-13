@@ -32,7 +32,8 @@ class RegisterState extends Model {
         userId: userID,
         photoUrl: "",
         phoneNumber: phone,
-        isAdmin: false
+        isAdmin: false,
+        firstTime: true
       );
       await locator<AuthController>().updateUserInDatabase(updatedDict).then((_) {
         // Update drawer

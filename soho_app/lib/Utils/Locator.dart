@@ -1,7 +1,9 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:soho_app/Auth/AuthController.dart';
 import 'package:soho_app/States/LoginState.dart';
 import 'package:soho_app/States/HomePageState.dart';
+import 'package:soho_app/States/OnboardingState.dart';
 import 'package:soho_app/States/RegisterState.dart';
 import 'package:soho_app/States/CategoryItemsState.dart';
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
@@ -19,6 +21,8 @@ void setUpLocator() {
   locator.registerFactory<RegisterState>(() => RegisterState());
 
   // Singletons
+  locator.registerLazySingleton<FlutterSecureStorage>(() => FlutterSecureStorage());
+  locator.registerLazySingleton<OnboardingState>(() => OnboardingState());
   locator.registerLazySingleton<AddMethodState>(() => AddMethodState());
   // Category Detail State
   locator.registerLazySingleton<CategoryItemsState>(() => CategoryItemsState());

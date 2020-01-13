@@ -58,7 +58,8 @@ class LoginState extends Model {
             userId: user.uid,
             phoneNumber: phoneInput,
             isAdmin: false,
-            photoUrl: ""
+            photoUrl: "",
+            firstTime: true
         );
         // Get token
         await user.getIdToken(refresh: true).then((token) async {
