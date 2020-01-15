@@ -1,15 +1,20 @@
 import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/ui/purchases/history.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_share.dart';
+import 'package:flutter_share_file/flutter_share_file.dart';
 
 class ThanksScreen extends StatefulWidget {
   final String qrCodeData;
@@ -21,11 +26,7 @@ class ThanksScreen extends StatefulWidget {
 }
 
 class _ThanksScreenState extends State<ThanksScreen> {
-  final Map<int, Widget> controlWidgets = const <int, Widget>{
-    0: Text('WhatsApp'),
-    1: Text('Correo electrónico'),
-  };
-
+  GlobalKey _globalKey = GlobalKey();
   int selectedTab = 0;
 
   @override
@@ -56,70 +57,83 @@ class _ThanksScreenState extends State<ThanksScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    width: double.infinity,
-                    height: 265.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: purchasesBag,
-                        fit: BoxFit.contain,
-                        alignment: Alignment.bottomRight,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
+                  RepaintBoundary(
+                    key: _globalKey,
+                    child: Container(
+                      color: Colors.white,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(
-                            'GRACIAS\nPOR TU\nCOMPRA',
-                            style: interThinStyle(fSize: 32.0),
-                          ),
-                          SizedBox(height: 4.0),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Escanea este código en\ntu sucursal de Soho\nfavorita. ',
-                              style: interLightStyle(
-                                fSize: 14.0,
-                                color: Color(0xff292929),
+                          Container(
+                            width: double.infinity,
+                            height: 265.0,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: purchasesBag,
+                                fit: BoxFit.contain,
+                                alignment: Alignment.bottomRight,
                               ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: 'Ver ubicación',
-                                  style: interStyle(
-                                    fSize: 14.0,
-                                    color: Color(0xffE51F4F),
-                                    decoration: TextDecoration.underline,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Text(
+                                    'GRACIAS\nPOR TU\nCOMPRA',
+                                    style: interThinStyle(fSize: 32.0),
                                   ),
+                                  SizedBox(height: 4.0),
+                                  RichText(
+                                    text: TextSpan(
+                                      text: 'Escanea este código en\ntu sucursal de Soho\nfavorita. ',
+                                      style: interLightStyle(
+                                        fSize: 14.0,
+                                        color: Color(0xff292929),
+                                      ),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: 'Ver ubicación',
+                                          style: interStyle(
+                                            fSize: 14.0,
+                                            color: Color(0xffE51F4F),
+                                            decoration: TextDecoration.underline,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 32.0),
+                          Center(
+                            child: Container(
+                              width: 223.0,
+                              height: 223.0,
+                              decoration: BoxDecoration(
+                                color: Color(0xffF5F5F5),
+                                borderRadius: BorderRadius.circular(40.0),
+                              ),
+                              child: Container(
+                                margin: EdgeInsets.all(16.0),
+                                width: 191.0,
+                                height: 191.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(40.0),
                                 ),
-                              ],
+                                child: QrImage(
+                                  data: widget.qrCodeData,
+                                ),
+                              ),
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 32.0),
-                  Center(
-                    child: Container(
-                      width: 223.0,
-                      height: 223.0,
-                      decoration: BoxDecoration(
-                        color: Color(0xffF5F5F5),
-                        borderRadius: BorderRadius.circular(40.0),
-                      ),
-                      child: Container(
-                        margin: EdgeInsets.all(16.0),
-                        width: 191.0,
-                        height: 191.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(40.0),
-                        ),
-                        child: QrImage(
-                          data: widget.qrCodeData,
-                        ),
                       ),
                     ),
                   ),
@@ -180,75 +194,10 @@ class _ThanksScreenState extends State<ThanksScreen> {
                                   style: interLightStyle(fSize: 14.0),
                                 ),
                                 SizedBox(height: 24.0),
-                                Container(
-                                  height: 42.0,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: MaterialSegmentedControl(
-                                    horizontalPadding: EdgeInsets.all(0),
-                                    borderColor: Color(0xffF0AB31),
-                                    unselectedColor: Colors.white,
-                                    selectedColor: Color(0xffF0AB31),
-                                    children: controlWidgets,
-                                    onSegmentChosen: (int value) {
-                                      setState(() {
-                                        selectedTab = value;
-                                      });
-                                    },
-                                    selectionIndex: selectedTab,
-                                  ),
-                                ),
-                                SizedBox(height: 32.0),
-                                Text(
-                                  'Número de teléfono',
-                                  style: interStyle(
-                                    fSize: 14.0,
-                                    color: Color(0xff565758),
-                                  ),
-                                ),
-                                SizedBox(height: 8.0),
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 40.0,
-                                  child: TextField(
-                                    onChanged: (value) {
-                                    },
-                                    textAlignVertical: TextAlignVertical.center,
-                                    style: interLightStyle(
-                                      fSize: 14.0,
-                                    ),
-                                    decoration: InputDecoration(
-                                      fillColor: Colors.white,
-                                      contentPadding: EdgeInsets.all(10.0),
-                                      hintText: '( 333 )  -  ( 3333333 )',
-                                      hintStyle: interLightStyle(
-                                        fSize: 14.0,
-                                        color: Color(0xffC4C4C4),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(3.0),
-                                        borderSide: const BorderSide(
-                                          color: Color(0xffE5E4E5),
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      enabledBorder: const OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                          color: Color(0xffE5E4E5),
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      focusedBorder: const OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                          color: Color(0xffE5E4E5),
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 24.0),
                                 GestureDetector(
-                                  onTap: null,
+                                  onTap: () {
+                                    _shareCode();
+                                  },
                                   child: Container(
                                     width: double.infinity,
                                     height: 50.0,
@@ -282,5 +231,23 @@ class _ThanksScreenState extends State<ThanksScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _shareCode() async {
+    try {
+      RenderRepaintBoundary boundary = _globalKey.currentContext.findRenderObject();
+      var image = await boundary.toImage();
+      ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+
+      final tempDir = await getTemporaryDirectory();
+      final file = await new File('${tempDir.path}/image.png').create();
+      await file.writeAsBytes(pngBytes);
+      FlutterShareFile.shareImage(file.path, 'image.png', 'Share image test');
+
+
+    } catch(e) {
+      print("Error while sharing code: ${e.toString()}");
+    }
   }
 }
