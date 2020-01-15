@@ -392,6 +392,28 @@ class _AdminScreenState extends State<AdminScreen> {
           ), // TODO: Add variations!!
         ],
       ));
+      for (var variation in product.productVariations) {
+        for (var item in variation.variations) {
+          list.add(Padding(
+              padding: const EdgeInsets.only(left: 40.0),
+              child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      item.name,
+                      style: interLightStyle(
+                        fSize: 14.0,
+                        color: Color(0xff789090),
+                      ),
+                    ),
+                  ]
+              ),
+            )
+          );
+        }
+      }
       list.add(SizedBox(height: 5.0));
 
     }
