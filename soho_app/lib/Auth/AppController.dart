@@ -464,6 +464,12 @@ class AppController {
 
   }
 
+  bool isQrCodeValid(DateTime codeGenerated) {
+    var currentDate = DateTime.now();
+    final daysDifference = currentDate.difference(codeGenerated).inDays;
+    final daysAbsolute = daysDifference.abs();
 
+    return daysAbsolute <= 8;
+  }
 
 }
