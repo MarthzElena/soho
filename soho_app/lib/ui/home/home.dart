@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/States/HomePageState.dart';
-import 'package:soho_app/SohoMenu/OrderDetailState.dart';
 import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
@@ -14,6 +13,8 @@ import 'package:soho_app/ui/widgets/bottoms/bottom.dart';
 import 'package:soho_app/ui/widgets/featured/featured.dart';
 import 'package:soho_app/ui/widgets/layouts/carousel_large.dart';
 import 'package:soho_app/ui/widgets/layouts/carousel_small.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:soho_app/Utils/FBPush.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -22,6 +23,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   HomePageState _homePageState = locator<HomePageState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // INIT MESSAGING
+    final FirebaseMessaging _fireBaseMsg = FirebaseMessaging();
+    _fireBaseMsg.requestNotificationPermissions();
+    setupFireBase(_fireBaseMsg);
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
@@ -26,7 +27,8 @@ class OrderListElement {
   String date = "";
   String codeData = "";
   List<String> itemNames;
-  OrderListElement(this.price, this.date, this.codeData, this.itemNames);
+  SohoOrderObject originalOrder;
+  OrderListElement(this.price, this.date, this.codeData, this.itemNames, this.originalOrder);
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
@@ -51,7 +53,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             var orderItem = product.name;
             itemsList.add(orderItem);
           }
-          var listElement = OrderListElement("\$${order.orderTotal}0", order.getCompletedDateWithTime(), order.qrCodeData, itemsList);
+          var listElement = OrderListElement("\$${order.orderTotal}0", order.getCompletedDateWithTime(), order.qrCodeData, itemsList, order);
           list.add(listElement);
         }
       }
@@ -236,7 +238,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               SizedBox(height: 24.0),
               Center(
                 child: Text(
-                  'Total: MX\$${element.price}0',
+                  'Total: MX${element.price}',
                   style: interMediumStyle(fSize: 16.0),
                 ),
               ),
@@ -249,7 +251,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () {
-                        // TODO: Generate order with data
+                        // TODO: Add Re-order action
+
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width / 2.5,
@@ -360,7 +363,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               SizedBox(height: 24.0),
               Center(
                 child: Text(
-                  'Total: MX\$${element.price}0',
+                  'Total: MX${element.price}',
                   style: interMediumStyle(fSize: 16.0),
                 ),
               ),
@@ -486,4 +489,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
     return list;
   }
+
+
 }

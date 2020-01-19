@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -244,7 +245,6 @@ class _ThanksScreenState extends State<ThanksScreen> {
       final file = await new File('${tempDir.path}/image.png').create();
       await file.writeAsBytes(pngBytes);
       FlutterShareFile.shareImage(file.path, 'image.png', 'Share image test');
-
 
     } catch(e) {
       print("Error while sharing code: ${e.toString()}");
