@@ -328,6 +328,32 @@ class AuthController {
     return true;
   }
 
+  Future<void> getFeaturedImageFromStorage() async {
+    // First get the reference URL
+    var featuredPhotoRef = dataBaseRootRef.child(Constants.DATABASE_KEY_FEATURED_PRODUCT);
+    // Get URL from database
+    await featuredPhotoRef.once().then((item) async {
+      if (item.value != null) {
+        var photoUrl = item.value.toString();
+        if (photoUrl != null && photoUrl.isNotEmpty) {
+          // Get storage reference
+          await firebaseStorage.getReferenceFromUrl(photoUrl).then((storageReference) async {
+            if (storageReference != null) {
+              final String photoUrl = await storageReference.getDownloadURL();
+              // Save image to Application
+              if (photoUrl != null && photoUrl.isNotEmpty) {
+                Application.featuredProduct = photoUrl;
+              }
+            }
+          });
+        }
+      }
+    }).catchError((error) {
+      // TODO: Handle error
+      print("Erro while getting featured product image: ${error.toString()}");
+    });
+  }
+
   Future<String> saveImageToCloud(String fileName, File file) async {
     var storageReference = firebaseStorage.ref().child(fileName);
     final uploadTask = storageReference.putFile(file);

@@ -20,10 +20,13 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 500)).then((_) {
-      SquareHTTPRequest.getSquareCategories().then((categories) {
+      SquareHTTPRequest.getSquareCategories().then((categories) async {
+        AuthController authController = locator<AuthController>();
+        // Get featured photo if any
+        await authController.getFeaturedImageFromStorage();
 
         // Get logged in user if any
-        locator<AuthController>().getSavedAuthObject().then((_) async {
+        await authController.getSavedAuthObject().then((_) async {
           if (categories.isNotEmpty) {
             Application.sohoCategories = categories;
 

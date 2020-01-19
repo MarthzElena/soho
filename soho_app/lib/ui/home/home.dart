@@ -69,7 +69,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         SizedBox(height: 35.0),
-                        FeaturedWidget(),
+                        Application.featuredProduct.isEmpty ? FeaturedWidget() :
+                        Container(
+                          width: double.infinity,
+                          child: Center(
+                            child: Image(image: NetworkImage(Application.featuredProduct)),
+                          ),
+                        ),
                         SizedBox(height: 35.0),
                         LargeCarousel(list: Application.sohoCategories),
                         SizedBox(height: 35.0),
