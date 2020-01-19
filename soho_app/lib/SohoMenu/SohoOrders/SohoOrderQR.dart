@@ -3,8 +3,6 @@ import 'dart:core';
 
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 
-import 'SohoOrderItem.dart';
-
 class SohoOrderQR {
   static const String keyOrder = "order";
   static const String keyUserName = "userName";
