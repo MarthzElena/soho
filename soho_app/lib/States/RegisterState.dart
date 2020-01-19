@@ -1,6 +1,6 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
-import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Locator.dart';
@@ -35,7 +35,7 @@ class RegisterState extends Model {
         isAdmin: false,
         firstTime: true
       );
-      await locator<AuthController>().updateUserInDatabase(updatedDict).then((_) {
+      await locator<AppController>().updateUserInDatabase(updatedDict).then((_) {
         // Update drawer
         locator<HomePageState>().updateDrawer();
         Navigator.pop(context);

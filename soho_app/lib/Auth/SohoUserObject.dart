@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:core';
-import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
@@ -67,7 +67,7 @@ class SohoUserObject {
     // Update values in database
     completedOnboarding();
     var userJson = getJson();
-    await locator<AuthController>().updateUserInDatabase(userJson);
+    await locator<AppController>().updateUserInDatabase(userJson);
 
     return jsonEncode(codeData);
   }
@@ -94,7 +94,7 @@ class SohoUserObject {
     await SquareHTTPRequest.updateInventoryForOrder(order);
     // Update values in database
     var userJson = getJson();
-    await locator<AuthController>().updateUserInDatabase(userJson);
+    await locator<AppController>().updateUserInDatabase(userJson);
 
     return jsonEncode(codeData);
   }

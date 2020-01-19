@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(Duration(milliseconds: 500)).then((_) {
       SquareHTTPRequest.getSquareCategories().then((categories) async {
-        AuthController authController = locator<AuthController>();
+        AppController authController = locator<AppController>();
         // Get featured photo if any
         await authController.getFeaturedImageFromStorage();
 

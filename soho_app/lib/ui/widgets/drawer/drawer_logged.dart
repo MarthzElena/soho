@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
@@ -255,7 +255,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                             SizedBox(width: 36.0),
                             GestureDetector(
                               onTap: () {
-                                locator<AuthController>().logoutUser().then((_) {
+                                locator<AppController>().logoutUser().then((_) {
                                   locator<HomePageState>().updateDrawer();
                                   Navigator.pop(context);
                                 });

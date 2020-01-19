@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
@@ -18,7 +18,7 @@ class LoginState extends Model {
   String smsCode = "";
   String _phoneVerificationId = "";
 
-  AuthController authController = locator<AuthController>();
+  AppController authController = locator<AppController>();
 
   Future<void> facebookLoginPressed(BuildContext context) async {
     await authController.initiateFacebookLogin().then((_) {
@@ -49,7 +49,7 @@ class LoginState extends Model {
       // TODO: HAndle error
     });
     if (user != null) {
-      bool isNewUser = await locator<AuthController>().isNewUser(user.uid);
+      bool isNewUser = await locator<AppController>().isNewUser(user.uid);
       if (isNewUser) {
         // Create user dictionary for Database
         var userDictionary = SohoUserObject.createUserDictionary(
@@ -63,8 +63,8 @@ class LoginState extends Model {
         );
         // Get token
         await user.getIdToken(refresh: true).then((token) async {
-          await locator<AuthController>().savePhoneCredentials().then((_) async {
-            await locator<AuthController>().saveUserToDatabase(userDictionary);
+          await locator<AppController>().savePhoneCredentials().then((_) async {
+            await locator<AppController>().saveUserToDatabase(userDictionary);
             Navigator.pop(context);
             Navigator.pop(context);
           });

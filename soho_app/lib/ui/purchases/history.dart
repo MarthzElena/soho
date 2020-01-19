@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/Utils/Application.dart';
@@ -95,7 +95,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               physics: BouncingScrollPhysics(),
               child: Application.currentUser != null ?
               FutureBuilder(
-                future: locator<AuthController>().saveUserToDatabase(Application.currentUser.getJson()),
+                future: locator<AppController>().saveUserToDatabase(Application.currentUser.getJson()),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData && snapshot.data != null) {
                     return _getDefaultWidget();

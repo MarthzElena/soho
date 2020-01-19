@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/States/EditProfileState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
@@ -79,7 +79,7 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                             } else {
                               // Save data
                               locator<UserProfileState>().updateUserData();
-                              await locator<AuthController>().updateUserInDatabase(Application.currentUser.getJson()).then((_) {
+                              await locator<AppController>().updateUserInDatabase(Application.currentUser.getJson()).then((_) {
                                 Navigator.pop(context);
                               });
                             }

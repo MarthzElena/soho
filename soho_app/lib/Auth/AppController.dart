@@ -17,7 +17,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:soho_app/Utils/Locator.dart';
 
-class AuthController {
+class AppController {
 
   final storage = locator<FlutterSecureStorage>();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
