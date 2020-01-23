@@ -59,12 +59,8 @@ class AppController {
         }
         break;
 
-      case Constants.KEY_PHONE_PROVIDER:
-        {
-          // Logout Phone
-          await logoutPhoneUser();
-        }
-        break;
+      default:
+        await logoutPhoneUser();
     }
 
   }
