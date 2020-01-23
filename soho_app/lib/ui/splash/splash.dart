@@ -30,6 +30,11 @@ class _SplashScreenState extends State<SplashScreen> {
           if (categories.isNotEmpty) {
             Application.sohoCategories = categories;
 
+            // Get card info from square
+            if (Application.currentUser != null) {
+              await Application.currentUser.getCardsShortInfo();
+            }
+
             // Check if is first time
             String firstTimeSaved = await locator<FlutterSecureStorage>().read(key: Constants.KEY_FIRST_TIME);
             var firstTime = firstTimeSaved == null ? true : firstTimeSaved;

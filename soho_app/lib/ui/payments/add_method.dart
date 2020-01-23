@@ -45,7 +45,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
               bottomNavigationBar: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
                 child: GestureDetector(
-                  onTap: () => model.getCardInformation(),
+                  onTap: () => model.getCardInformation(context),
                   child: Container(
                     width: double.infinity,
                     height: 50.0,

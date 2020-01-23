@@ -1,14 +1,29 @@
 import 'dart:convert';
 import 'dart:core';
 import 'package:soho_app/Auth/AppController.dart';
-import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
+import 'package:soho_app/Network/get_all_cards/call.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderQR.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Locator.dart';
 
+enum CardType {
+  visa,
+  masterCard
+}
+
+class CardInfoReduced {
+  String last4;
+  String cardName;
+  String expiration;
+  CardType cardType;
+
+  CardInfoReduced({this.last4, this.cardName, this.expiration, this.cardType});
+}
+
 class SohoUserObject {
+  static const keyStripeId = "stripe_id";
   static const keyEmail = "email";
   static const keyUsername = "nombre";
   static const keyUserId = "id";
@@ -29,6 +44,8 @@ class SohoUserObject {
   String userPhoneNumber = "";
   // User image url
   String photoUrl = "";
+  // Stripe id
+  String stripeId = "";
 
   // Admin user
   // Admin user can read QR codes
@@ -41,11 +58,41 @@ class SohoUserObject {
   // Ongoing orders
   List<SohoOrderObject> ongoingOrders = List<SohoOrderObject>();
 
+  List<CardInfoReduced> cardsReduced = List<CardInfoReduced>();
+
   // Constructor
   SohoUserObject({this.username, this.email, this.userId, this.photoUrl, this.userPhoneNumber});
 
   void completedOnboarding() {
     isFirstTime = false;
+  }
+
+  Future<bool> addStripeId(String value) async {
+    stripeId = value;
+    await locator<AppController>().updateUserInDatabase(getJson()).then((_) {
+      return true;
+    }).catchError((error) {
+      return false;
+    });
+    return false;
+  }
+
+  Future<void> getCardsShortInfo() async {
+    if (stripeId.isNotEmpty) {
+      await getAllCardsCall(customerId: stripeId).then((response) {
+        for (var item in response.data) {
+          CardInfoReduced info = CardInfoReduced(
+            last4: item.last4,
+            cardName: item.name,
+            expiration: "${item.expMonth} / ${item.expYear}",
+            cardType: item.brand == "MasterCard" ? CardType.masterCard : CardType.visa, //TODO: Handle card type error (!= VISA || MasterCard)
+          );
+          cardsReduced.add(info);
+        }
+      }).catchError((error) {
+        print("ERROR getting cards: ${error.toString()}");
+      });
+    }
   }
 
   // This method completes the onboarding gift order
@@ -108,6 +155,7 @@ class SohoUserObject {
     dict[keyImageUrl] = photoUrl;
     dict[keyIsAdmin] = isAdmin;
     dict[keyFirstTime] = isFirstTime;
+    dict[keyStripeId] = stripeId;
     var pastOrdersDict = [];
     for (var order in pastOrders) {
       pastOrdersDict.add(order.getJson());
@@ -129,6 +177,7 @@ class SohoUserObject {
     photoUrl = json[keyImageUrl] == null ? "" : json[keyImageUrl];
     isAdmin = json[keyIsAdmin];
     isFirstTime = json[keyFirstTime];
+    stripeId = json[keyStripeId] == null ? "" : json[keyStripeId];
     if (json[keyPastOrders] != null) {
       var pastOrdersDict = json[keyPastOrders];
       for (var order in pastOrdersDict) {

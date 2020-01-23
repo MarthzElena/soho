@@ -551,41 +551,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                 color: Color(0xffE5E4E5),
                               ),
                               SizedBox(height: 24.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Image(image: purchasesVisa),
-                                      SizedBox(width: 12.0),
-                                      Text(
-                                        '****  ****  ****',
-                                        style: interMediumStyle(
-                                          fSize: 14.0,
-                                          color: Color(0xff5A6265),
-                                        ),
-                                      ),
-                                      SizedBox(width: 12.0),
-                                      Text(
-                                        '8763',
-                                        style: interMediumStyle(
-                                          fSize: 14.0,
-                                          color: Color(0xff5A6265),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    'Cambiar',
-                                    style: interStyle(
-                                      fSize: 14.0,
-                                      color: Color(0xffE51F4F),
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              getNoPaymentMethod(), // TODO: Choose selected payment method if any
                               SizedBox(height: 36.0),
                             ],
                           ),
@@ -599,6 +565,78 @@ class _OrderScreenState extends State<OrderScreen> {
           },
         ),
       ),
+    );
+  }
+
+  Widget getNoPaymentMethod() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Text(
+          'No tienes métodos de pago',
+          style: interStyle(
+            fSize: 14.0,
+            color: Color(0xff5A6265),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            // TODO: Go to add payment method
+          },
+          child: Text(
+            'Agregar',
+            style: interStyle(
+              fSize: 14.0,
+              color: Color(0xffE51F4F),
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget getPaymentMethod() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            Image(image: purchasesVisa),
+            SizedBox(width: 12.0),
+            Text(
+              '****  ****  ****',
+              style: interMediumStyle(
+                fSize: 14.0,
+                color: Color(0xff5A6265),
+              ),
+            ),
+            SizedBox(width: 12.0),
+            Text(
+              '8763',
+              style: interMediumStyle(
+                fSize: 14.0,
+                color: Color(0xff5A6265),
+              ),
+            ),
+          ],
+        ),
+        GestureDetector(
+          onTap: () {
+            // TODO: Go to payment methods
+          },
+          child: Text(
+            'Cambiar',
+            style: interStyle(
+              fSize: 14.0,
+              color: Color(0xffE51F4F),
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

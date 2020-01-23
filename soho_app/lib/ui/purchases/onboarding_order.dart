@@ -243,7 +243,7 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        // TODO: Go to add payment method
+                                        // TODO: Go to add payment method & Update UI
                                       },
                                       child: Text(
                                         'Agregar',

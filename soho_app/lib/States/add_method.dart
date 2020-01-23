@@ -5,6 +5,7 @@ import 'package:soho_app/Models/requests/add_new_card.dart';
 import 'package:soho_app/Models/requests/charge_customer.dart';
 import 'package:soho_app/Models/requests/create_customer.dart';
 import 'package:soho_app/Models/requests/update_card.dart';
+import 'package:soho_app/Models/responses/create_customer.dart';
 import 'package:soho_app/Network/add_new_card/call.dart';
 import 'package:soho_app/Network/charge_customer/call.dart';
 import 'package:soho_app/Network/create_customer/call.dart';
@@ -12,7 +13,10 @@ import 'package:soho_app/Network/delete_card/call.dart';
 import 'package:soho_app/Network/get_all_cards/call.dart';
 import 'package:soho_app/Network/get_customer/call.dart';
 import 'package:soho_app/Network/update_card/call.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/ui/payments/methods.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
@@ -32,11 +36,12 @@ class AddMethodState extends Model {
   Token cardToken = Token();
   var charge = {'0.01', 'MXN'};
 
-  void getCardInformation() {
+  void getCardInformation(BuildContext context) async {
     if (nameController.text.trim().isNotEmpty &&
         numberController.text.trim().isNotEmpty &&
         expDateController.text.trim().isNotEmpty &&
-        cvvController.text.trim().isNotEmpty) {
+        cvvController.text.trim().isNotEmpty &&
+        Application.currentUser != null) {
       card = CreditCard(
         number: numberController.text.trim(),
         expMonth: int.parse(expDateController.text.substring(0, 2).trim()),
@@ -44,11 +49,39 @@ class AddMethodState extends Model {
         name: nameController.text.trim(),
         cvc: cvvController.text.trim(),
       );
+      var email = Application.currentUser.email;
 
-      StripePayment.createTokenWithCard(card).then((token) {
+      await StripePayment.createTokenWithCard(card).then((token) async {
         cardToken = token;
         print('token: ' + cardToken.toJson().toString());
-      }).catchError(setError);
+        // Create customer
+        var request = CreateCustomerRequest(
+          description: nameController.text.trim(),
+          source: cardToken.tokenId.trim(),
+          email: email,
+        );
+        await createCustomerCall(request: request).then((response) async {
+          // Add Stripe id to the current user
+          await Application.currentUser.addStripeId(response.id).then((result) {
+            print("Added stripe ID cards: ${Application.currentUser.cardsReduced.length}");
+            if (!result) {
+              // TODO: Handle error fail to save card
+            }
+            // Update methods screen state and pop view
+            locator<MethodsScreenState>().updateState();
+            Navigator.pop(context);
+
+          }).catchError((error) {
+            setError(error, "Error in addStripeId: ");
+          });
+        }).catchError((error) {
+          setError(error, "Error in createCustomerCall: ");
+        });
+      }).catchError((error) {
+        setError(error, "Error in createTokenWithCard: ");
+      });
+    } else {
+      // TODO: Show missing info error
     }
   }
 
@@ -121,8 +154,8 @@ class AddMethodState extends Model {
     });
   }
 
-  void setError(dynamic error) {
-    print('ERROR: ' + error.toString());
+  void setError(dynamic error, String info) {
+    print('$info: ' + error.toString());
   }
 
   Future<void> cvvDialog(context) async {

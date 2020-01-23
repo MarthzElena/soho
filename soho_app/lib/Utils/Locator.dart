@@ -11,6 +11,7 @@ import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/States/EditProfileState.dart';
 import 'package:soho_app/States/SearchState.dart';
 import 'package:soho_app/States/add_method.dart';
+import 'package:soho_app/ui/payments/methods.dart';
 
 GetIt locator = GetIt();
 
@@ -24,6 +25,7 @@ void setUpLocator() {
   locator.registerLazySingleton<FlutterSecureStorage>(() => FlutterSecureStorage());
   locator.registerLazySingleton<OnboardingState>(() => OnboardingState());
   locator.registerLazySingleton<AddMethodState>(() => AddMethodState());
+  locator.registerLazySingleton<MethodsScreenState>(() => MethodsScreenState());
   // Category Detail State
   locator.registerLazySingleton<CategoryItemsState>(() => CategoryItemsState());
   // Auth Controller
