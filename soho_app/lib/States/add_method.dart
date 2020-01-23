@@ -62,8 +62,10 @@ class AddMethodState extends Model {
         );
         await createCustomerCall(request: request).then((response) async {
           // Add Stripe id to the current user
-          await Application.currentUser.addStripeId(response.id).then((result) {
-            print("Added stripe ID cards: ${Application.currentUser.cardsReduced.length}");
+          await Application.currentUser.addStripeId(response.id).then((result) async {
+            // Update local user cards info
+            await Application.currentUser.getCardsShortInfo();
+            // Verify if add method was successful
             if (!result) {
               // TODO: Handle error fail to save card
             }

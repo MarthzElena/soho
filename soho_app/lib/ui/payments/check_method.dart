@@ -6,19 +6,16 @@ import 'package:flutter/services.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_check_method.dart';
-import 'package:soho_app/ui/widgets/appbars/appbar_edit_method.dart';
 
 class CheckMethodsScreen extends StatefulWidget {
   final String nameOnCard;
   final String cardNumber;
   final String date;
-  final String cvv;
 
   CheckMethodsScreen({
     this.nameOnCard = 'Nombre',
-    this.cardNumber = '1234123412341234',
+    this.cardNumber = '1234',
     this.date = '00/00',
-    this.cvv = '123',
   });
 
   @override
@@ -80,7 +77,7 @@ class _CheckMethodsScreenState extends State<CheckMethodsScreen> {
                           ),
                           SizedBox(height: 8.0),
                           Text(
-                            widget.cardNumber,
+                            "**** **** **** ${widget.cardNumber}",
                             style: interLightStyle(
                               fSize: 14.0,
                               color: Color(0xffC4C4C4),
@@ -121,7 +118,7 @@ class _CheckMethodsScreenState extends State<CheckMethodsScreen> {
                                     ),
                                     SizedBox(height: 8.0),
                                     Text(
-                                      widget.cvv,
+                                      "***",
                                       style: interLightStyle(
                                         fSize: 14.0,
                                         color: Color(0xffC4C4C4),

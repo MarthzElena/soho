@@ -6,6 +6,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/ui/payments/check_method.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_methods.dart';
 
@@ -40,7 +41,7 @@ class _MethodsScreen extends State<MethodsScreen> {
       onWillPop: () async => false,
       child: ScopedModel<MethodsScreenState>(
         model: model,
-        child: ScopedModelDescendant(
+        child: ScopedModelDescendant<MethodsScreenState>(
           builder: (builder, child, model) {
             return Scaffold(
               resizeToAvoidBottomPadding: true,
@@ -153,12 +154,34 @@ class _MethodsScreen extends State<MethodsScreen> {
             ),
           ],
         );
-        var cardRow = Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            cardDetails,
-            Image(image: paymentForward),
-          ],
+        var cardRow = GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CheckMethodsScreen(
+                nameOnCard: card.cardName,
+                cardNumber: card.last4,
+                date: card.expiration
+              ))
+            );
+          },
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 19.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  cardDetails,
+                  Image(image: paymentForward),
+                ],
+              ),
+              SizedBox(height: 19.0),
+              Divider(
+                height: 1.0,
+                color: Color(0xffE5E4E5),
+              )
+            ],
+          ),
         );
         result.add(cardRow);
       }
@@ -182,14 +205,8 @@ class _MethodsScreen extends State<MethodsScreen> {
             height: 1.0,
             color: Color(0xffE5E4E5),
           ),
-          SizedBox(height: 16.0),
           Column(
             children: getCardItems(),
-          ),
-          SizedBox(height: 16.0),
-          Divider(
-            height: 1.0,
-            color: Color(0xffE5E4E5),
           ),
           SizedBox(height: 46.0),
         ],

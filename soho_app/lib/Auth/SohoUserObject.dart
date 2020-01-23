@@ -81,10 +81,12 @@ class SohoUserObject {
     if (stripeId.isNotEmpty) {
       await getAllCardsCall(customerId: stripeId).then((response) {
         for (var item in response.data) {
+          var month = item.expMonth < 10 ? "0${item.expMonth}" : item.expMonth.toString();
+          var year = item.expYear.toString().substring(2);
           CardInfoReduced info = CardInfoReduced(
             last4: item.last4,
             cardName: item.name,
-            expiration: "${item.expMonth} / ${item.expYear}",
+            expiration: "$month / $year",
             cardType: item.brand == "MasterCard" ? CardType.masterCard : CardType.visa, //TODO: Handle card type error (!= VISA || MasterCard)
           );
           cardsReduced.add(info);
