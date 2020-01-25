@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
@@ -136,7 +137,7 @@ class _MethodsScreen extends State<MethodsScreen> {
       for (var card in Application.currentUser.cardsReduced) {
         var cardDetails = Row(
           children: <Widget>[
-            Image(image: masterCard),
+            Image(image: card.cardType == CardType.masterCard ? masterCard : visaCard),
             SizedBox(width: 20.0),
             Text(
               '****  ****  **** ',

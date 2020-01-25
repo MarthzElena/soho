@@ -11,7 +11,7 @@ Future<AddNewCardResponse> addNewCardCall({AddNewCardRequest request, customerId
         'Authorization': 'Bearer ' + Application.stripeSecretKey,
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: addNewCardRequestToJson(request),
+      body: addNewCardRequestToMap(request),
     );
 
     if (response.statusCode == 200 || response.statusCode == 202) {

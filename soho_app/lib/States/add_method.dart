@@ -53,38 +53,58 @@ class AddMethodState extends Model {
 
       await StripePayment.createTokenWithCard(card).then((token) async {
         cardToken = token;
-        print('token: ' + cardToken.toJson().toString());
-        // Create customer
-        var request = CreateCustomerRequest(
-          description: nameController.text.trim(),
-          source: cardToken.tokenId.trim(),
-          email: email,
-        );
-        await createCustomerCall(request: request).then((response) async {
-          // Add Stripe id to the current user
-          await Application.currentUser.addStripeId(response.id).then((result) async {
-            // Update local user cards info
-            await Application.currentUser.getCardsShortInfo();
-            // Verify if add method was successful
-            if (!result) {
-              // TODO: Handle error fail to save card
-            }
-            // Update methods screen state and pop view
-            locator<MethodsScreenState>().updateState();
-            Navigator.pop(context);
 
+        // Check if customer is new
+        if (Application.currentUser.stripeId.isEmpty) {
+          // Create new customer
+          var request = CreateCustomerRequest(
+            description: nameController.text.trim(),
+            source: cardToken.tokenId.trim(),
+            email: email,
+          );
+          await createCustomerCall(request: request).then((response) async {
+            // Add Stripe id to the current user
+            await Application.currentUser.addStripeId(response.id).then((result) async {
+              await completeCardInformation(result, context);
+
+            }).catchError((error) {
+              setError(error, "Error in addStripeId: ");
+            });
           }).catchError((error) {
-            setError(error, "Error in addStripeId: ");
+            setError(error, "Error in createCustomerCall: ");
           });
-        }).catchError((error) {
-          setError(error, "Error in createCustomerCall: ");
-        });
+        } else {
+          // Add new card to existing customer
+          var request = AddNewCardRequest(source: cardToken.tokenId.trim());
+          await addNewCardCall(request: request, customerId: Application.currentUser.stripeId).then((response) async {
+            // Add card added to user info for UI purposes
+            await completeCardInformation(true, context).catchError((error) {
+              setError(error, "Error in compcompleteCardInformation: ");
+            });
+          }).catchError((error) {
+            setError(error, "Error in addNewCardCall: ");
+          });
+        }
+
+
       }).catchError((error) {
         setError(error, "Error in createTokenWithCard: ");
       });
     } else {
       // TODO: Show missing info error
     }
+  }
+
+  Future<void> completeCardInformation(bool result, BuildContext context) async {
+    // Update local user cards info
+    await Application.currentUser.getCardsShortInfo();
+    // Verify if add method was successful
+    if (!result) {
+      // TODO: Handle error fail to save card
+    }
+    // Update methods screen state and pop view
+    locator<MethodsScreenState>().updateState();
+    Navigator.pop(context);
   }
 
   void chargeCustomer({amounts, customerId, cardId}) async {
