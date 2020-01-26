@@ -25,6 +25,7 @@ class CardInfoReduced {
 
 class SohoUserObject {
   static const keyStripeId = "stripe_id";
+  static const keyPaymentMethod = "payment_method";
   static const keyEmail = "email";
   static const keyUsername = "nombre";
   static const keyUserId = "id";
@@ -47,6 +48,8 @@ class SohoUserObject {
   String photoUrl = "";
   // Stripe id
   String stripeId = "";
+  // Default card id
+  String selectedPaymentMethod = "";
 
   // Admin user
   // Admin user can read QR codes
@@ -160,6 +163,7 @@ class SohoUserObject {
     dict[keyIsAdmin] = isAdmin;
     dict[keyFirstTime] = isFirstTime;
     dict[keyStripeId] = stripeId;
+    dict[keyPaymentMethod] = selectedPaymentMethod;
     var pastOrdersDict = [];
     for (var order in pastOrders) {
       pastOrdersDict.add(order.getJson());
@@ -182,6 +186,7 @@ class SohoUserObject {
     isAdmin = json[keyIsAdmin];
     isFirstTime = json[keyFirstTime];
     stripeId = json[keyStripeId] == null ? "" : json[keyStripeId];
+    selectedPaymentMethod = json[keyPaymentMethod] == null ? "" : json[keyPaymentMethod];
     if (json[keyPastOrders] != null) {
       var pastOrdersDict = json[keyPastOrders];
       for (var order in pastOrdersDict) {

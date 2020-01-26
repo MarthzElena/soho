@@ -90,7 +90,7 @@ class Routes {
     // Payment methods
     router.define(paymentMethods,
         handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-          return MethodsScreen();
+          return MethodsScreen(selectingPayment: false);
         }));
 
     // Location

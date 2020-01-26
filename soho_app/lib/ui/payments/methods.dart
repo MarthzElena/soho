@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
+import 'package:soho_app/SohoMenu/OrderDetailState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
@@ -12,6 +14,7 @@ import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_methods.dart';
 
 class MethodsScreenState extends Model {
+  bool isSelectingPayment = false;
 
   void updateState() {
     notifyListeners();
@@ -20,6 +23,9 @@ class MethodsScreenState extends Model {
 }
 
 class MethodsScreen extends StatefulWidget {
+  final bool selectingPayment;
+
+  const MethodsScreen({this.selectingPayment});
 
   @override
   State<StatefulWidget> createState() {
@@ -30,6 +36,14 @@ class MethodsScreen extends StatefulWidget {
 
 class _MethodsScreen extends State<MethodsScreen> {
   MethodsScreenState model = locator<MethodsScreenState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Notify the state that we want to select a payment method
+    model.isSelectingPayment = widget.selectingPayment;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,17 +170,28 @@ class _MethodsScreen extends State<MethodsScreen> {
           ],
         );
         var cardRow = GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CheckMethodsScreen(
-                nameOnCard: card.cardName,
-                cardNumber: card.last4,
-                date: card.expiration,
-                cardType: card.cardType == CardType.masterCard ? 'MASTER CARD' : 'VISA',
-                selectedCardId: card.cardId,
-              ))
-            );
+          onTap: () async {
+            if (model.isSelectingPayment) {
+              // Save the card ID to the user and update
+              Application.currentUser.selectedPaymentMethod = card.cardId;
+              await locator<AppController>().updateUserInDatabase(Application.currentUser.getJson()).then((_) {
+                // Notify Shopping cart screen that needs to update
+                locator<OrderDetailState>().updateState();
+                Navigator.pop(context);
+
+              });
+            } else {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CheckMethodsScreen(
+                    nameOnCard: card.cardName,
+                    cardNumber: card.last4,
+                    date: card.expiration,
+                    cardType: card.cardType == CardType.masterCard ? 'MASTER CARD' : 'VISA',
+                    selectedCardId: card.cardId,
+                  ))
+              );
+            }
           },
           child: Column(
             children: <Widget>[

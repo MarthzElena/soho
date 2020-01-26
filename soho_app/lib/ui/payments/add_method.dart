@@ -51,6 +51,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                     width: double.infinity,
                     height: 50.0,
                     decoration: BoxDecoration(
+
                       color: Color(0xffE51F4F),
                       borderRadius: BorderRadius.circular(50.0),
                     ),

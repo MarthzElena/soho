@@ -12,6 +12,7 @@ class OrderDetailState extends Model {
   bool showCustomTip = false;
 
   double currentTip = 0.0;
+  double orderSubtotal = 0.0;
 
   bool isTipOther() {
     return showCustomTip;
@@ -25,6 +26,10 @@ class OrderDetailState extends Model {
   }
   bool isTipTwenty() {
     return currentTip == TIP_TWENTY;
+  }
+
+  void updateState() {
+    notifyListeners();
   }
 
   void updateShowCode() {
@@ -42,6 +47,7 @@ class OrderDetailState extends Model {
 
   void updateTip(double toValue) {
     currentTip = toValue;
+    showCustomTip = false;
     if (Application.currentOrder != null) {
       Application.currentOrder.tip = toValue;
     }

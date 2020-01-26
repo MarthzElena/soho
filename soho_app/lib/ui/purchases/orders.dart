@@ -5,11 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
 import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/ui/payments/methods.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_simple.dart';
 import 'package:soho_app/ui/widgets/bottoms/bottom.dart';
@@ -50,6 +52,8 @@ class _OrderScreenState extends State<OrderScreen> {
         // Add price to subTotal
         subTotal += product.price;
       }
+      // Update order subtotal in model
+      _model.orderSubtotal = subTotal;
     } else {
       list.add(OrderElement(name: "No olvides agregar productos a tu pedido!"));
     }
@@ -60,6 +64,10 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
 
     orderItems = _prepareOrderElements();
+    var paymentMethod = "";
+    if (Application.currentUser != null) {
+      paymentMethod = Application.currentUser.selectedPaymentMethod;
+    }
 
     return WillPopScope(
       onWillPop: () async => false,
@@ -551,7 +559,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                 color: Color(0xffE5E4E5),
                               ),
                               SizedBox(height: 24.0),
-                              getNoPaymentMethod(), // TODO: Choose selected payment method if any
+                              paymentMethod.isEmpty ? getNoPaymentMethod(context) : getPaymentMethod(paymentMethod, context), // TODO: Choose selected payment method if any
                               SizedBox(height: 36.0),
                             ],
                           ),
@@ -568,7 +576,7 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget getNoPaymentMethod() {
+  Widget getNoPaymentMethod(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
@@ -582,7 +590,7 @@ class _OrderScreenState extends State<OrderScreen> {
         ),
         GestureDetector(
           onTap: () {
-            // TODO: Go to add payment method
+            Navigator.push(context, MaterialPageRoute(builder: (ctxt) => MethodsScreen(selectingPayment: true)));
           },
           child: Text(
             'Agregar',
@@ -597,46 +605,53 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget getPaymentMethod() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Image(image: purchasesVisa),
-            SizedBox(width: 12.0),
-            Text(
-              '****  ****  ****',
-              style: interMediumStyle(
-                fSize: 14.0,
-                color: Color(0xff5A6265),
+  Widget getPaymentMethod(String paymentId, BuildContext context) {
+    if (Application.currentUser != null) {
+      for (var card in Application.currentUser.cardsReduced) {
+        if (card.cardId == paymentId) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Image(image: card.cardType == CardType.visa ? purchasesVisa : masterCard),
+                  SizedBox(width: 12.0),
+                  Text(
+                    '****  ****  ****',
+                    style: interMediumStyle(
+                      fSize: 14.0,
+                      color: Color(0xff5A6265),
+                    ),
+                  ),
+                  SizedBox(width: 12.0),
+                  Text(
+                    card.last4,
+                    style: interMediumStyle(
+                      fSize: 14.0,
+                      color: Color(0xff5A6265),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            SizedBox(width: 12.0),
-            Text(
-              '8763',
-              style: interMediumStyle(
-                fSize: 14.0,
-                color: Color(0xff5A6265),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (ctxt) => MethodsScreen(selectingPayment: true)));
+                },
+                child: Text(
+                  'Cambiar',
+                  style: interStyle(
+                    fSize: 14.0,
+                    color: Color(0xffE51F4F),
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
               ),
-            ),
-          ],
-        ),
-        GestureDetector(
-          onTap: () {
-            // TODO: Go to payment methods
-          },
-          child: Text(
-            'Cambiar',
-            style: interStyle(
-              fSize: 14.0,
-              color: Color(0xffE51F4F),
-              decoration: TextDecoration.underline,
-            ),
-          ),
-        ),
-      ],
-    );
+            ],
+          );
+        }
+      }
+    }
+    return getNoPaymentMethod(context);
   }
 }
