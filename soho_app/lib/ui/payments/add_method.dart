@@ -28,6 +28,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
         androidPayMode: 'test',
       ),
     );
+    _model.clearControllerValues();
   }
 
   @override
@@ -157,6 +158,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.all(10.0),
                                       hintText: '****  ****  ****  ****',
+                                      counterText: "",
                                       hintStyle: interLightStyle(
                                         fSize: 14.0,
                                         color: Color(0xffC4C4C4),
@@ -207,6 +209,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                               decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(10.0),
                                                 hintText: 'MM / AA',
+                                                counterText: "",
                                                 hintStyle: interLightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xffC4C4C4),
@@ -267,6 +270,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                                 ),
                                                 contentPadding: EdgeInsets.all(10.0),
                                                 hintText: '***',
+                                                counterText: "",
                                                 hintStyle: interLightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xffC4C4C4),

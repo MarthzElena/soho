@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:soho_app/Auth/AppController.dart';
+import 'package:soho_app/States/EditCardState.dart';
 import 'package:soho_app/States/EditProfileState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
@@ -23,7 +24,7 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
   EditMethodAppBar({
     this.title = 'EDITAR MÉTODO DE PAGO',
     this.isPencil = false,
-    this.state = EditMethodAppBarState.PROFILE
+    this.state = EditMethodAppBarState.PAYMENT_METHODS
   });
 
   @override
@@ -85,7 +86,12 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                             }
                             break;
                           case EditMethodAppBarState.PAYMENT_METHODS:
-                          // TODO
+                            // Call method to update from model
+                            await locator<EditCardState>().updateCardData().then((_) {
+                              Navigator.pop(context);
+                            }).catchError((error) {
+                              // TODO: Handle update card error
+                            });
                             break;
                         }
                       },

@@ -11,11 +11,15 @@ class CheckMethodsScreen extends StatefulWidget {
   final String nameOnCard;
   final String cardNumber;
   final String date;
+  final String cardType;
+  final String selectedCardId;
 
   CheckMethodsScreen({
     this.nameOnCard = 'Nombre',
     this.cardNumber = '1234',
     this.date = '00/00',
+    this.cardType = 'MASTER CARD',
+    this.selectedCardId = "",
   });
 
   @override
@@ -30,7 +34,7 @@ class _CheckMethodsScreenState extends State<CheckMethodsScreen> {
       child: Scaffold(
         resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.white,
-        appBar: CheckMethodAppBar(cardType: 'MASTER CARD'),
+        appBar: CheckMethodAppBar(cardType: widget.cardType, name: widget.nameOnCard, number: widget.cardNumber, date: widget.date, selectedCardId: widget.selectedCardId),
         body: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),

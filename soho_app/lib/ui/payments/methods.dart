@@ -162,7 +162,9 @@ class _MethodsScreen extends State<MethodsScreen> {
               MaterialPageRoute(builder: (context) => CheckMethodsScreen(
                 nameOnCard: card.cardName,
                 cardNumber: card.last4,
-                date: card.expiration
+                date: card.expiration,
+                cardType: card.cardType == CardType.masterCard ? 'MASTER CARD' : 'VISA',
+                selectedCardId: card.cardId,
               ))
             );
           },

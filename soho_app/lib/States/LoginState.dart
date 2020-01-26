@@ -181,6 +181,7 @@ class LoginState extends Model {
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(10.0),
                       hintText: '- - - - - -',
+                      counterText: "",
                       hintStyle: interLightStyle(
                         fSize: 14.0,
                         color: Color(0xffC4C4C4),

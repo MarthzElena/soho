@@ -36,6 +36,13 @@ class AddMethodState extends Model {
   Token cardToken = Token();
   var charge = {'0.01', 'MXN'};
 
+  void clearControllerValues() {
+    nameController.text = "";
+    numberController.text = "";
+    expDateController.text = "";
+    cvvController.text = "";
+  }
+
   void getCardInformation(BuildContext context) async {
     if (nameController.text.trim().isNotEmpty &&
         numberController.text.trim().isNotEmpty &&

@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:soho_app/Auth/AppController.dart';
+import 'package:soho_app/States/EditCardState.dart';
 import 'package:soho_app/States/LoginState.dart';
 import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/States/OnboardingState.dart';
@@ -26,6 +27,7 @@ void setUpLocator() {
   locator.registerLazySingleton<OnboardingState>(() => OnboardingState());
   locator.registerLazySingleton<AddMethodState>(() => AddMethodState());
   locator.registerLazySingleton<MethodsScreenState>(() => MethodsScreenState());
+  locator.registerLazySingleton<EditCardState>(() => EditCardState());
   // Category Detail State
   locator.registerLazySingleton<CategoryItemsState>(() => CategoryItemsState());
   // Auth Controller

@@ -18,8 +18,9 @@ class CardInfoReduced {
   String cardName;
   String expiration;
   CardType cardType;
+  String cardId;
 
-  CardInfoReduced({this.last4, this.cardName, this.expiration, this.cardType});
+  CardInfoReduced({this.last4, this.cardName, this.expiration, this.cardType, this.cardId});
 }
 
 class SohoUserObject {
@@ -88,6 +89,7 @@ class SohoUserObject {
             cardName: item.name,
             expiration: "$month / $year",
             cardType: item.brand == "MasterCard" ? CardType.masterCard : CardType.visa, //TODO: Handle card type error (!= VISA || MasterCard)
+            cardId: item.id,
           );
           cardsReduced.add(info);
         }
