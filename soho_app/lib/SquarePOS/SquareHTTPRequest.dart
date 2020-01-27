@@ -8,25 +8,26 @@ import 'package:soho_app/SohoMenu/CategoryObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemObject.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
+import 'package:soho_app/SquarePOS/SquareDiscountModel.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:uuid/uuid.dart';
 
 class SquareHTTPRequest {
 
   static const _token = "EAAAEOjIOtjeZhu3M35n3uhYp4iQCBfOxfseiRthdNaFzS9o4P99IW48fP6uTEcZ";
-  static const _location = "NQ95EVXZF402W";
 
   // Request URL
-  static const _squareHost = "https://connect.squareup.com/v2/";
-  static const _catalog = "catalog/";
-  static const _search = "search";
-  static const _inventory = "inventory/";
-  static const _batchChange = "batch-change";
-  static const _list = "list?";
-  static const _types = "types=";
-  static const _categoryParam = "CATEGORY";
-  static const _itemParam = "ITEM";
-  static var _requestHeader = {
+  final _squareHost = "https://connect.squareup.com/v2/";
+  final _catalog = "catalog/";
+  final _search = "search";
+  final _inventory = "inventory/";
+  final _batchChange = "batch-change";
+  final _list = "list?";
+  final _types = "types=";
+  final _categoryParam = "CATEGORY";
+  final _discountParam = "DISCOUNT";
+  final _itemParam = "ITEM";
+  var _requestHeader = {
     HttpHeaders.acceptHeader : "application/json",
     HttpHeaders.contentTypeHeader : "application/json; charset=utf-8",
     HttpHeaders.authorizationHeader : "Bearer $_token",
@@ -34,7 +35,7 @@ class SquareHTTPRequest {
   };
 
   /// Returns a list with the CategoryObject items to populate the Category carousel in HomePageWidget
-  static Future<List<CategoryObject>> getSquareCategories() async {
+  Future<List<CategoryObject>> getSquareCategories() async {
     // Init empty list to save the categories
     List<CategoryObject> categoryList = new List<CategoryObject>();
     // Get categories from API
@@ -93,7 +94,7 @@ class SquareHTTPRequest {
 
   /// Return a list of CategoryItemObjects to populate the category detail view
   ///
-  static Future<CategoryItemObject> getCategoryDetail(String categoryId, String categoryName) async {
+  Future<CategoryItemObject> getCategoryDetail(String categoryId, String categoryName) async {
     // Init empty list for result
 
     var categorySearchArrayResult = await _getItemsForCategory(categoryId);
@@ -106,7 +107,7 @@ class SquareHTTPRequest {
   }
 
   /// Parses the result of a Search query from different categories
-  static Future<List<SubcategoryItems>> _parseSearchResult(List<dynamic> searchResult) async {
+  Future<List<SubcategoryItems>> _parseSearchResult(List<dynamic> searchResult) async {
     List<SubcategoryItems> result = List<SubcategoryItems>();
     for (var searchItem in searchResult) {
       //  Get item_data
@@ -178,7 +179,7 @@ class SquareHTTPRequest {
   }
 
   /// Parses the result of a search query, from the same category
-  static Future<CategoryItemObject> _parseCategoryElementsResult(List<dynamic> searchResult, String categoryName) async {
+  Future<CategoryItemObject> _parseCategoryElementsResult(List<dynamic> searchResult, String categoryName) async {
     CategoryItemObject categoryDetails = CategoryItemObject();
     for (var categoryItem in searchResult) {
       //  Get item_data
@@ -240,7 +241,7 @@ class SquareHTTPRequest {
   /// Request to get all the items in a specific category
   /// PARAMS:
   /// - String categoryID - String  ID for category given by  SQUARE
-  static Future<List<dynamic>> _getItemsForCategory(String categoryId) async {
+  Future<List<dynamic>> _getItemsForCategory(String categoryId) async {
     var itemsInCategoryHost = _squareHost + _catalog + _search;
     var request = await http.post(itemsInCategoryHost, body: _buildSearchItemsByCategoryRequestBody(categoryId), headers: _requestHeader);
     var jsonCategorySearch = json.decode(utf8.decode(request.bodyBytes));
@@ -250,7 +251,7 @@ class SquareHTTPRequest {
 
   /// Request to search for items by NAME
   /// Returns an array of
-  static Future<List<SubcategoryItems>> searchForItems(String query) async {
+  Future<List<SubcategoryItems>> searchForItems(String query) async {
     var searchHost = _squareHost + _catalog + _search;
     var request = await http.post(searchHost, body: _builsSearchItemsByNameRequestBody(query), headers: _requestHeader);
     var jsonProductSearch = json.decode(utf8.decode(request.bodyBytes));
@@ -262,7 +263,7 @@ class SquareHTTPRequest {
 
   /// Request Variation inventory count
   /// Returns the updated variation if count is greater than 0.
-  static Future<VariationItemObject> _isVariationAvailable({VariationItemObject variation}) async {
+  Future<VariationItemObject> _isVariationAvailable({VariationItemObject variation}) async {
     var itemInventoryHost = _squareHost + _inventory + variation.squareID;
     var request = await http.get(itemInventoryHost, headers: _requestHeader);
     var jsonInventoryResult = json.decode(utf8.decode(request.bodyBytes));
@@ -286,7 +287,7 @@ class SquareHTTPRequest {
 
   /// Request Product inventory count
   /// Returns the updatedProduct if count is greater than 0.
-  static Future<ProductItemObject> _isProductAvailable({ProductItemObject product}) async {
+  Future<ProductItemObject> _isProductAvailable({ProductItemObject product}) async {
     var itemInventoryHost = _squareHost + _inventory + product.squareID;
     var request = await http.get(itemInventoryHost, headers: _requestHeader);
     var jsonInventoryResult = json.decode(utf8.decode(request.bodyBytes));
@@ -309,7 +310,7 @@ class SquareHTTPRequest {
   }
 
   /// Makes sure the elements without subCategory are first
-  static Future<CategoryItemObject> _orderCategoryItems(CategoryItemObject item) async {
+  Future<CategoryItemObject> _orderCategoryItems(CategoryItemObject item) async {
     if (item.allItems.first.subcategoryName.isEmpty) {
       // Elements already ordered
       return item;
@@ -328,7 +329,7 @@ class SquareHTTPRequest {
   }
 
   /// POST an update in the inventory of the purchased items
-  static Future<void> updateInventoryForOrder(SohoOrderObject order) async {
+  Future<void> updateInventoryForOrder(SohoOrderObject order) async {
     final String adjustmentType = "ADJUSTMENT";
     final String stateSold = "SOLD";
 
@@ -395,15 +396,43 @@ class SquareHTTPRequest {
     }
   }
 
+  Future<dynamic> getDiscountObject(String code) async {
+    var categoriesHost = _squareHost + _catalog + _list + _types + _discountParam;
+    dynamic result;
+    var discountResponse = await http.get(categoriesHost, headers: _requestHeader).catchError((error) {
+      print("ERROR on getDiscountObject: ${error.toString()}");
+    });
+
+    if (discountResponse != null) {
+      var jsonResponse = json.decode(utf8.decode(discountResponse.bodyBytes));
+      var discountList = List.from(jsonResponse["objects"]);
+      for (var discount in discountList) {
+        var percentageDiscount = SquareDiscountModelPercentage.fromJson(discount);
+        if (percentageDiscount.discountDataPercentage.discountType == discountFixedPercentage) {
+          if (percentageDiscount.discountDataPercentage.name == code) {
+            result = percentageDiscount;
+            break;
+          }
+        } else {
+          var fixedAmountDiscount = SquareDiscountModelFixed.fromJson(discount);
+          if (fixedAmountDiscount.discountDataFixed.name == code) {
+            result = fixedAmountDiscount;
+            break;
+          }
+        }
+      }
+    }
+    return result;
+  }
 
   /// Builds a String with the body for the getItemsForCategory(categoryID) request
   /// PARAMS:
   /// - categoryId - String  ID for category given by  SQUARE
-  static String _buildSearchItemsByCategoryRequestBody(String categoryId) {
+  String _buildSearchItemsByCategoryRequestBody(String categoryId) {
     return jsonEncode({"object_types": ["ITEM"],"query": {"prefix_query": {"attribute_name": "category_id","attribute_prefix": "$categoryId"}},"limit": 100});
   }
 
-  static String _builsSearchItemsByNameRequestBody(String name) {
+  String _builsSearchItemsByNameRequestBody(String name) {
     return jsonEncode({"object_types": ["ITEM"],"query": {"prefix_query": {"attribute_name": "name","attribute_prefix": "$name"}},"limit": 100});
   }
 

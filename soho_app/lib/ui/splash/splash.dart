@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 500)).then((_) {
-      SquareHTTPRequest.getSquareCategories().then((categories) async {
+      locator<SquareHTTPRequest>().getSquareCategories().then((categories) async {
         AppController authController = locator<AppController>();
         // Get featured photo if any
         await authController.getFeaturedImageFromStorage();

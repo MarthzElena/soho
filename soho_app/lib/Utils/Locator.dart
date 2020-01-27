@@ -1,6 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:soho_app/Auth/AppController.dart';
+import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/States/EditCardState.dart';
 import 'package:soho_app/States/LoginState.dart';
 import 'package:soho_app/States/HomePageState.dart';
@@ -28,18 +29,12 @@ void setUpLocator() {
   locator.registerLazySingleton<AddMethodState>(() => AddMethodState());
   locator.registerLazySingleton<MethodsScreenState>(() => MethodsScreenState());
   locator.registerLazySingleton<EditCardState>(() => EditCardState());
-  // Category Detail State
   locator.registerLazySingleton<CategoryItemsState>(() => CategoryItemsState());
-  // Auth Controller
   locator.registerLazySingleton<AppController>(() => AppController());
-  // Product item state
   locator.registerLazySingleton<ProductItemState>(() => ProductItemState());
-  // Home Page State
   locator.registerLazySingleton<HomePageState>(() => HomePageState());
-  // Order Detail State
   locator.registerLazySingleton<OrderDetailState>(() => OrderDetailState());
-  // Edit Profile State
   locator.registerLazySingleton<UserProfileState>(() => UserProfileState());
-  // Search Screen State
   locator.registerLazySingleton<SearchState>(() => SearchState());
+  locator.registerLazySingleton<SquareHTTPRequest>(() => SquareHTTPRequest());
 }

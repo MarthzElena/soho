@@ -145,7 +145,7 @@ class SohoUserObject {
     // Add to ongoingOrders
     ongoingOrders.add(order);
     // Update inventory for order
-    await SquareHTTPRequest.updateInventoryForOrder(order);
+    await locator<SquareHTTPRequest>().updateInventoryForOrder(order);
     // Update values in database
     var userJson = getJson();
     await locator<AppController>().updateUserInDatabase(userJson);

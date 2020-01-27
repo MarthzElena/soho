@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
+import 'package:soho_app/SquarePOS/SquareDiscountModel.dart';
+import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
@@ -30,7 +32,7 @@ class OrderElement {
 class _OrderScreenState extends State<OrderScreen> {
   List<OrderElement> orderItems = List<OrderElement>();
   OrderDetailState _model = locator<OrderDetailState>();
-  double subTotal = 0.0;
+  double productsSubTotal = 0.0;
 
   List<OrderElement> _prepareOrderElements() {
     var list = List<OrderElement>();
@@ -50,10 +52,10 @@ class _OrderScreenState extends State<OrderScreen> {
         // Add empty element for space between products
         list.add(OrderElement());
         // Add price to subTotal
-        subTotal += product.price;
+        productsSubTotal += product.price;
       }
       // Update order subtotal in model
-      _model.orderSubtotal = subTotal;
+      _model.orderSubtotal = productsSubTotal;
     } else {
       list.add(OrderElement(name: "No olvides agregar productos a tu pedido!"));
     }
@@ -61,9 +63,15 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
 
     orderItems = _prepareOrderElements();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
     var paymentMethod = "";
     if (Application.currentUser != null) {
       paymentMethod = Application.currentUser.selectedPaymentMethod;
@@ -303,45 +311,80 @@ class _OrderScreenState extends State<OrderScreen> {
                                     style: interStyle(fSize: 14.0),
                                   ),
                                   SizedBox(height: 8.0),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 40.0,
-                                    child: TextField(
-                                      onChanged: (value) {
-                                        // TODO: Add change to price
-                                      },
-                                      textAlignVertical: TextAlignVertical.center,
-                                      style: interLightStyle(
-                                        fSize: 14.0,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      Container(
+                                        width: MediaQuery.of(context).size.width * 0.73,
+                                        height: 40.0,
+                                        child: TextField(
+                                          onChanged: (value) {
+                                           model.discountCode = value;
+                                          },
+                                          textAlignVertical: TextAlignVertical.center,
+                                          style: interLightStyle(
+                                            fSize: 14.0,
+                                          ),
+                                          decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.all(10.0),
+                                            hintText: '--------------------',
+                                            hintStyle: interLightStyle(
+                                              fSize: 14.0,
+                                              color: Color(0xffC4C4C4),
+                                            ),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(3.0),
+                                              borderSide: const BorderSide(
+                                                color: Color(0xffE5E4E5),
+                                                width: 1.0,
+                                              ),
+                                            ),
+                                            enabledBorder: const OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                color: Color(0xffE5E4E5),
+                                                width: 1.0,
+                                              ),
+                                            ),
+                                            focusedBorder: const OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                color: Color(0xffE5E4E5),
+                                                width: 1.0,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.all(10.0),
-                                        hintText: '--------------------',
-                                        hintStyle: interLightStyle(
-                                          fSize: 14.0,
-                                          color: Color(0xffC4C4C4),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(3.0),
-                                          borderSide: const BorderSide(
-                                            color: Color(0xffE5E4E5),
-                                            width: 1.0,
-                                          ),
-                                        ),
-                                        enabledBorder: const OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Color(0xffE5E4E5),
-                                            width: 1.0,
-                                          ),
-                                        ),
-                                        focusedBorder: const OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Color(0xffE5E4E5),
-                                            width: 1.0,
+                                      GestureDetector(
+                                        onTap: () async {
+                                          if (!model.hasExchangedCode) {
+                                            await locator<SquareHTTPRequest>().getDiscountObject(model.discountCode).then((discount) {
+                                              if (discount != null) {
+                                                if (discount is SquareDiscountModelPercentage) {
+                                                  // Update subtotal
+                                                  var percentage = double.parse(discount.discountDataPercentage.percentage);
+                                                  model.updateTotalPercentageDiscount(productsSubTotal, percentage.round());
+                                                } else if (discount is SquareDiscountModelFixed) {
+                                                  // Update subtotal
+                                                  var amount = discount.discountDataFixed.amountMoney.amount / 100;
+                                                  model.updateTotalFixedDiscount(productsSubTotal, amount);
+                                                }
+                                              } else {
+                                                // TODO: Error invalid discount
+                                                print("NULL!");
+                                              }
+                                            });
+                                          }
+                                        },
+                                        child: Text(
+                                          'Aplicar',
+                                          style: interStyle(
+                                            fSize: 14.0,
+                                            color: Color(0xffE51F4F),
+                                            decoration: TextDecoration.underline,
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                   SizedBox(height: 16.0),
                                 ],
@@ -509,7 +552,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                     ),
                                   ),
                                   Text(
-                                    '\$${subTotal}0',
+                                    '\$${productsSubTotal.toString()}0',
                                     style: interMediumStyle(
                                       fSize: 14.0,
                                       color: Color(0xff5A6265),
@@ -539,6 +582,27 @@ class _OrderScreenState extends State<OrderScreen> {
                                 ],
                               ),
                               SizedBox(height: 16.0),
+                              model.hasExchangedCode ? Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Text(
+                                    'Descuento',
+                                    style: interMediumStyle(
+                                      fSize: 14.0,
+                                      color: Color(0xff5A6265),
+                                    ),
+                                  ),
+                                  Text(
+                                    '-\$${model.discount}0',
+                                    style: interMediumStyle(
+                                      fSize: 14.0,
+                                      color: Color(0xff5A6265),
+                                    ),
+                                  ),
+                                ],
+                              ) : SizedBox.shrink(),
+                              model.hasExchangedCode ? SizedBox(height: 16.0) : SizedBox.shrink(),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 mainAxisSize: MainAxisSize.max,
@@ -548,7 +612,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                     style: interMediumStyle(),
                                   ),
                                   Text(
-                                    '\$${subTotal + model.currentTip}0',
+                                    '\$${model.orderSubtotal + model.currentTip}0',
                                     style: interMediumStyle(fSize: 18.0),
                                   ),
                                 ],

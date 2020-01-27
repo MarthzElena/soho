@@ -14,6 +14,10 @@ class OrderDetailState extends Model {
   double currentTip = 0.0;
   double orderSubtotal = 0.0;
 
+  String discountCode = "";
+  bool hasExchangedCode = false;
+  double discount = 0.0;
+
   bool isTipOther() {
     return showCustomTip;
   }
@@ -52,6 +56,24 @@ class OrderDetailState extends Model {
       Application.currentOrder.tip = toValue;
     }
     notifyListeners();
+  }
+
+  void updateTotalPercentageDiscount(double productsTotal, int percentage) {
+    if (!hasExchangedCode) {
+      discount = productsTotal * (percentage/100);
+      orderSubtotal = productsTotal - discount;
+      hasExchangedCode = true;
+      notifyListeners();
+    }
+  }
+
+  void updateTotalFixedDiscount(double productsTotal, double amount) {
+    if (!hasExchangedCode) {
+      orderSubtotal = productsTotal - amount;
+      hasExchangedCode = true;
+      discount = amount;
+      notifyListeners();
+    }
   }
 
 }

@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemObject.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/items/item_detail.dart';
 
 class SearchState extends Model{
@@ -27,7 +28,7 @@ class SearchState extends Model{
   }
 
   void performSearch(String query) async {
-    await SquareHTTPRequest.searchForItems(query).then((result) {
+    await locator<SquareHTTPRequest>().searchForItems(query).then((result) {
       // Only continue if query is current
       if (currentQuery == query) {
         clearResults();

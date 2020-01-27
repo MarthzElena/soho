@@ -73,7 +73,7 @@ class _ItemListState extends State<ItemList> {
                             borderRadius: BorderRadius.circular(16.0),
                           ),
                           child: FutureBuilder(
-                            future: SquareHTTPRequest.getCategoryDetail(
+                            future: locator<SquareHTTPRequest>().getCategoryDetail(
                               category.squareID,
                               category.name,
                             ),
