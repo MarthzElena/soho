@@ -237,9 +237,23 @@ class _OrderScreenState extends State<OrderScreen> {
                                             element.name,
                                             style: interBoldStyle(fSize: 14.0),
                                           ),
-                                          Text(
-                                            element.price,
-                                            style: avenirHeavyStyle(fSize: 16.0),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text(
+                                                element.price,
+                                                style: avenirHeavyStyle(fSize: 16.0),
+                                              ),
+                                              SizedBox(width: 15.0),
+                                              GestureDetector(
+                                                onTap: () {
+
+                                                },
+                                                child: Image(image: menuCross),
+                                              ),
+                                            ],
                                           ),
                                         ]
                                     );
