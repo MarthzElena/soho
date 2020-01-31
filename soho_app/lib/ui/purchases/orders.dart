@@ -9,6 +9,8 @@ import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
 import 'package:soho_app/SquarePOS/SquareDiscountModel.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
+import 'package:soho_app/States/CategoryItemsState.dart';
+import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
@@ -163,6 +165,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       color: Color(0xff789090),
                                     ),
                                   ),
+                                  SizedBox(height: 25.0),
                                   GestureDetector(
                                     onTap: () {
                                       locator<ProductItemState>().setBottomState(ProductItemState.GO_TO_CHECKOUT_TEXT);
@@ -170,6 +173,22 @@ class _OrderScreenState extends State<OrderScreen> {
                                     },
                                     child: Text(
                                       'Agregar algo más',
+                                      style: interStyle(
+                                        fSize: 14.0,
+                                        color: Color(0xffE51F4F),
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Application.currentOrder = null;
+                                      locator<HomePageState>().updateState();
+                                      locator<CategoryItemsState>().updateState();
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      'Limpiar carrito',
                                       style: interStyle(
                                         fSize: 14.0,
                                         color: Color(0xffE51F4F),

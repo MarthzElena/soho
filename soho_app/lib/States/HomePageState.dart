@@ -19,6 +19,10 @@ class HomePageState extends Model {
   final int maxItems = 10;
   Widget drawer = Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget(photoUrl: Application.currentUser.photoUrl);
 
+  void updateState() {
+    notifyListeners();
+  }
+
   void updateDrawer() {
     drawer = Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget(photoUrl: Application.currentUser.photoUrl);
     notifyListeners();
