@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/States/HomePageState.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/items/onboarding_item.dart';
 
 class NoUserMenuWidget extends StatelessWidget {
   final AppController authController = locator<AppController>();
@@ -70,9 +72,17 @@ class NoUserMenuWidget extends StatelessWidget {
                       SizedBox(height: 16.0),
                       GestureDetector(
                         onTap: () {
+                          Navigator.pop(context);
+                          locator<HomePageState>().updateSpinner(show: true);
                           authController.initiateFacebookLogin().then((_) {
+                            locator<HomePageState>().updateSpinner(show: false);
+                            // Check first user
+                            var user = Application.currentUser;
+                            if (user != null && user.isFirstTime) {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+                            }
+                            // Make sure drawer is updated
                             locator<HomePageState>().updateDrawer();
-                            Navigator.pop(context);
                           });
                         },
                         child: Container(
@@ -96,9 +106,17 @@ class NoUserMenuWidget extends StatelessWidget {
                       SizedBox(height: 16.0),
                       GestureDetector(
                         onTap: () {
+                          Navigator.pop(context);
+                          locator<HomePageState>().updateSpinner(show: true);
                           authController.initiateGoogleLogin().then((_) {
+                            locator<HomePageState>().updateSpinner(show: false);
+                            // Check first user
+                            var user = Application.currentUser;
+                            if (user != null && user.isFirstTime) {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+                            }
+                            // Make sure drawer is updated
                             locator<HomePageState>().updateDrawer();
-                            Navigator.pop(context);
                           });
                         },
                         child: Container(

@@ -15,11 +15,16 @@ class RecentOrdersElement {
 }
 
 class HomePageState extends Model {
-
+  bool showSpinner = false;
   final int maxItems = 10;
   Widget drawer = Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget(photoUrl: Application.currentUser.photoUrl);
 
   void updateState() {
+    notifyListeners();
+  }
+
+  void updateSpinner({bool show}) {
+    showSpinner = show;
     notifyListeners();
   }
 

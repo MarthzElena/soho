@@ -11,8 +11,6 @@ class Constants {
   static const KEY_FIRST_TIME = "KEY_FIRST_TIME";
 
   /// Secure Storage - Saved Provider
-  static const KEY_FACEBOOK_PROVIDER = "KEY_FACEBOOK_PROVIDER";
-  static const KEY_GOOGLE_PROVIDER = "KEY_GOOGLE_PROVIDER";
   static const KEY_PHONE_PROVIDER = "KEY_PHONE_PROVIDER";
 
   /// Firebase Database keys

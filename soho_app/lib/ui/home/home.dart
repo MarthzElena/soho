@@ -15,6 +15,7 @@ import 'package:soho_app/ui/widgets/layouts/carousel_large.dart';
 import 'package:soho_app/ui/widgets/layouts/carousel_small.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:soho_app/Utils/FBPush.dart';
+import 'package:soho_app/ui/widgets/layouts/spinner.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -62,52 +63,57 @@ class _HomeScreenState extends State<HomeScreen> {
                     statusBarColor: Colors.transparent,
                     statusBarBrightness: Brightness.dark,
                   ),
-                  child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(height: 35.0),
-                        Application.featuredProduct.isEmpty ? FeaturedWidget() :
-                        Container(
-                          width: double.infinity,
-                          child: Center(
-                            child: Image(image: NetworkImage(Application.featuredProduct)),
-                          ),
-                        ),
-                        SizedBox(height: 35.0),
-                        LargeCarousel(list: Application.sohoCategories),
-                        SizedBox(height: 35.0),
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.only(left: 20.0),
-                          child: Text(
-                            'Pedido recientemente',
-                            style: interBoldStyle(fSize: 16.0),
-                          ),
-                        ),
-                        SizedBox(height: 16.0),
-                        model.getOrderList().isEmpty ?
-                        Container(
-                          margin: EdgeInsets.only(left: 16.0, right: 16.0),
-                          height: 90.0,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
-                            border: Border.all(color: Color(0xffE4E4E4))
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Todavía no has realizado ninguna orden.',
-                              style: interLightStyle(fSize: 12.0),
+                  child: Stack(
+                    children: <Widget>[
+                      SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            SizedBox(height: 35.0),
+                            Application.featuredProduct.isEmpty ? FeaturedWidget() :
+                            Container(
+                              width: double.infinity,
+                              child: Center(
+                                child: Image(image: NetworkImage(Application.featuredProduct)),
+                              ),
                             ),
-                          ),
-                        ) :
-                        SmallCarousel(list: model.getOrderList()),
-                        SizedBox(height: 16.0),
-                      ],
-                    ),
+                            SizedBox(height: 35.0),
+                            LargeCarousel(list: Application.sohoCategories),
+                            SizedBox(height: 35.0),
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.only(left: 20.0),
+                              child: Text(
+                                'Pedido recientemente',
+                                style: interBoldStyle(fSize: 16.0),
+                              ),
+                            ),
+                            SizedBox(height: 16.0),
+                            model.getOrderList().isEmpty ?
+                            Container(
+                              margin: EdgeInsets.only(left: 16.0, right: 16.0),
+                              height: 90.0,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border: Border.all(color: Color(0xffE4E4E4))
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Todavía no has realizado ninguna orden.',
+                                  style: interLightStyle(fSize: 12.0),
+                                ),
+                              ),
+                            ) :
+                            SmallCarousel(list: model.getOrderList()),
+                            SizedBox(height: 16.0),
+                          ],
+                        ),
+                      ),
+                      model.showSpinner ? SohoSpinner() : SizedBox.shrink(),
+                    ],
                   ),
                 ),
               ),

@@ -68,6 +68,7 @@ class LoginState extends Model {
         await user.getIdToken(refresh: true).then((token) async {
           await appController.savePhoneCredentials().then((_) async {
             await appController.saveUserToDatabase(userDictionary);
+            locator<HomePageState>().updateDrawer();
             Navigator.pop(context);
             Navigator.pop(context);
           });
