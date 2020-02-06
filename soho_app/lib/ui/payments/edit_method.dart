@@ -3,21 +3,25 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/States/EditCardState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_edit_method.dart';
+import 'package:soho_app/ui/widgets/layouts/spinner.dart';
 
 class EditMethodsScreen extends StatefulWidget {
   final String nameOnCard;
   final String cardNumber;
   final String date;
-  final String cvv;
+  final String cardStripeId;
 
   EditMethodsScreen({
     this.nameOnCard = 'Nombre',
     this.cardNumber = '1234123412341234',
     this.date = '00/00',
-    this.cvv = '123',
+    this.cardStripeId,
   });
 
   @override
@@ -25,110 +29,58 @@ class EditMethodsScreen extends StatefulWidget {
 }
 
 class _EditMethodsScreenState extends State<EditMethodsScreen> {
-  TextEditingController controllerName = TextEditingController();
-  TextEditingController controllerCard = TextEditingController();
-  TextEditingController controllerDate = TextEditingController();
-  TextEditingController controllerCVV = TextEditingController();
+  EditCardState _model = locator<EditCardState>();
 
   @override
   void initState() {
     super.initState();
-    controllerName.text = widget.nameOnCard;
-    controllerCard.text = widget.cardNumber;
-    controllerDate.text = widget.date;
-    controllerCVV.text = widget.cvv;
+    // Make sure edited data is clean
+    _model.initData(widget.cardStripeId, widget.nameOnCard, widget.date);
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: Scaffold(
-        resizeToAvoidBottomPadding: true,
-        backgroundColor: Colors.white,
-        appBar: EditMethodAppBar(),
-        body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-          child: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: (Platform.isAndroid)
-                ? SystemUiOverlayStyle.dark.copyWith(
+      child: ScopedModel<EditCardState>(
+        model: _model,
+        child: ScopedModelDescendant<EditCardState>(
+          builder: (builder, child, model) {
+            return Scaffold(
+              resizeToAvoidBottomPadding: true,
+              backgroundColor: Colors.white,
+              appBar: EditMethodAppBar(),
+              body: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+                child: AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: (Platform.isAndroid)
+                      ? SystemUiOverlayStyle.dark.copyWith(
                     statusBarColor: Colors.transparent,
                     statusBarBrightness: Brightness.light,
                   )
-                : SystemUiOverlayStyle.light.copyWith(
+                      : SystemUiOverlayStyle.light.copyWith(
                     statusBarColor: Colors.transparent,
                     statusBarBrightness: Brightness.dark,
                   ),
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Stack(
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(height: 32.0),
-                          Text(
-                            'Nombre en la tarjeta',
-                            style: interStyle(fSize: 14.0),
-                          ),
-                          SizedBox(height: 8.0),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 40.0,
-                            child: TextField(
-                              controller: controllerName,
-                              onChanged: (value) {},
-                              textAlignVertical: TextAlignVertical.center,
-                              style: interLightStyle(
-                                fSize: 14.0,
-                              ),
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(10.0),
-                                hintText: 'ej. Horacio Solis',
-                                hintStyle: interLightStyle(
-                                  fSize: 14.0,
-                                  color: Color(0xffC4C4C4),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(3.0),
-                                  borderSide: const BorderSide(
-                                    color: Color(0xffE5E4E5),
-                                    width: 1.0,
-                                  ),
-                                ),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0xffE5E4E5),
-                                    width: 1.0,
-                                  ),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color(0xffE5E4E5),
-                                    width: 1.0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 40.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Stack (
+                    children: [
+                      SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Stack(
                             children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2.5,
+                              Align(
+                                alignment: Alignment.topCenter,
                                 child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
+                                    SizedBox(height: 32.0),
                                     Text(
-                                      'Fecha de Expiración',
+                                      'Nombre en la tarjeta',
                                       style: interStyle(fSize: 14.0),
                                     ),
                                     SizedBox(height: 8.0),
@@ -136,15 +88,17 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                       width: MediaQuery.of(context).size.width,
                                       height: 40.0,
                                       child: TextField(
-                                        controller: controllerDate,
-                                        onChanged: (value) {},
+                                        controller: model.nameController,
+                                        onChanged: (value) {
+                                          model.updatedName = value;
+                                        },
                                         textAlignVertical: TextAlignVertical.center,
                                         style: interLightStyle(
                                           fSize: 14.0,
                                         ),
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.all(10.0),
-                                          hintText: 'DD / MM',
+                                          hintText: "ej. Horacio Solis",
                                           hintStyle: interLightStyle(
                                             fSize: 14.0,
                                             color: Color(0xffC4C4C4),
@@ -171,79 +125,112 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2.5,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      'CVV',
-                                      style: interStyle(fSize: 14.0),
-                                    ),
-                                    SizedBox(height: 8.0),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 40.0,
-                                      child: TextField(
-                                        controller: controllerCVV,
-                                        onChanged: (value) {},
-                                        textAlignVertical: TextAlignVertical.center,
-                                        style: interLightStyle(
-                                          fSize: 14.0,
+                                    SizedBox(height: 40.0),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Container(
+                                          width: MediaQuery.of(context).size.width / 2.5,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                'Fecha de Expiración',
+                                                style: interStyle(fSize: 14.0),
+                                              ),
+                                              SizedBox(height: 8.0),
+                                              Container(
+                                                width: MediaQuery.of(context).size.width,
+                                                height: 60.0,
+                                                child: TextField(
+                                                  controller: model.expDateController,
+                                                  onChanged: (value) {
+                                                    var dateArray = value.split('/');
+                                                    print(value);
+                                                    if (dateArray.length == 2) {
+                                                      var newMonth = dateArray[0];
+                                                      if (int.parse(newMonth) > 0 && int.parse(newMonth) < 13) {
+                                                        model.updatedMonth = newMonth;
+                                                      } else {
+                                                        // TODO: Show ui error
+                                                      }
+
+                                                      model.updatedYear = dateArray[1];
+                                                    }
+                                                  },
+                                                  maxLength: 5,
+                                                  keyboardType: TextInputType.number,
+                                                  decoration: InputDecoration(
+                                                    contentPadding: EdgeInsets.all(10.0),
+                                                    hintText: 'MM / AA',
+                                                    counterText: "",
+                                                    hintStyle: interLightStyle(
+                                                      fSize: 14.0,
+                                                      color: Color(0xffC4C4C4),
+                                                    ),
+                                                    border: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(3.0),
+                                                      borderSide: const BorderSide(
+                                                        color: Color(0xffE5E4E5),
+                                                        width: 1.0,
+                                                      ),
+                                                    ),
+                                                    enabledBorder: const OutlineInputBorder(
+                                                      borderSide: const BorderSide(
+                                                        color: Color(0xffE5E4E5),
+                                                        width: 1.0,
+                                                      ),
+                                                    ),
+                                                    focusedBorder: const OutlineInputBorder(
+                                                      borderSide: const BorderSide(
+                                                        color: Color(0xffE5E4E5),
+                                                        width: 1.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        decoration: InputDecoration(
-                                          suffixIcon: IconButton(
-                                            onPressed: () => cvvDialog(context),
-                                            icon: Icon(Icons.info),
-                                            iconSize: 20.0,
-                                            color: Color(0xff5A6265),
-                                          ),
-                                          contentPadding: EdgeInsets.all(10.0),
-                                          hintText: '***',
-                                          hintStyle: interLightStyle(
-                                            fSize: 14.0,
-                                            color: Color(0xffC4C4C4),
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(3.0),
-                                            borderSide: const BorderSide(
-                                              color: Color(0xffE5E4E5),
-                                              width: 1.0,
-                                            ),
-                                          ),
-                                          enabledBorder: const OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                              color: Color(0xffE5E4E5),
-                                              width: 1.0,
-                                            ),
-                                          ),
-                                          focusedBorder: const OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                              color: Color(0xffE5E4E5),
-                                              width: 1.0,
-                                            ),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width / 2.5,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                'CVV',
+                                                style: interStyle(fSize: 14.0),
+                                              ),
+                                              SizedBox(height: 8.0),
+                                              Text(
+                                                "***",
+                                                style: interLightStyle(
+                                                  fSize: 14.0,
+                                                  color: Color(0xffC4C4C4),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
+                                    SizedBox(height: 32.0),
                                   ],
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 32.0),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                      locator<EditCardState>().showSpinner ? SohoSpinner() : SizedBox.shrink(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
+            );
+          }
+        )
       ),
     );
   }

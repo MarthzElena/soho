@@ -47,6 +47,17 @@ class SohoOrderItem {
     }
   }
 
+  void addOnboardingVariations(String sugar, String milk) {
+    var typeMilk = VariationTypeObject("Leche");
+    var itemMilk = VariationItemObject(milk, "", 0.0);
+    typeMilk.variations.add(itemMilk);
+    productVariations.add(typeMilk);
+    var typeSugar = VariationTypeObject("Endulzante");
+    var itemSugar = VariationItemObject(sugar, "", 0.0);
+    typeSugar.variations.add(itemSugar);
+    productVariations.add(typeSugar);
+  }
+
   Map<String, dynamic> getJson() {
     var dict = Map<String, dynamic>();
     dict[keyProductName] = name;

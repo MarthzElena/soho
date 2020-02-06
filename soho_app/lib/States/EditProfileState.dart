@@ -5,7 +5,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Locator.dart';
@@ -94,7 +94,7 @@ class UserProfileState extends Model{
           if (Application.currentUser != null) {
             fileName = Application.currentUser.userId;
           }
-          await locator<AuthController>().saveImageToCloud(fileName, _imageFile).then((imageUrl) {
+          await locator<AppController>().saveImageToCloud(fileName, _imageFile).then((imageUrl) {
             // Upload of image is complete, update image
             photoUrl = imageUrl;
             // Update homepage drawer

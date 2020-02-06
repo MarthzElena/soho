@@ -11,7 +11,7 @@ Future<CreateCustomerResponse> createCustomerCall({CreateCustomerRequest request
         'Authorization': 'Bearer ' + Application.stripeSecretKey,
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: createCustomerRequestToJson(request),
+      body: createCustomerRequestToMap(request),
     );
 
     if (response.statusCode == 200 || response.statusCode == 202) {
@@ -20,6 +20,6 @@ Future<CreateCustomerResponse> createCustomerCall({CreateCustomerRequest request
       return createCustomerResponseFromJson(response.statusCode.toString());
     }
   } catch (e) {
-    return createCustomerResponseFromJson('error');
+    return createCustomerResponseFromJson(e.toString());
   }
 }

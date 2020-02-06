@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderQR.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
@@ -89,7 +89,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     selectedTab == 0 ?
                     barcode.isEmpty ? _scanButtonWidget() : _codeScannedWidget() :
                     FutureBuilder(
-                      future: locator<AuthController>().getKitchenOrders(),
+                      future: locator<AppController>().getKitchenOrders(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData && snapshot.data != null) {
                           return ListView(
@@ -203,7 +203,7 @@ class _AdminScreenState extends State<AdminScreen> {
             // Convert to dictionary
             var orderDict = sohoOrder.getJson();
             // Send to kitchen
-            await locator<AuthController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate);
+            await locator<AppController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate);
             setState(() {
               barcode = "";
             });
@@ -306,7 +306,7 @@ class _AdminScreenState extends State<AdminScreen> {
             SizedBox(height: 24.0),
             GestureDetector(
               onTap: () async {
-                await locator<AuthController>().completeKitchenOrder(order.order.completionDate, order.userName).then((value) {
+                await locator<AppController>().completeKitchenOrder(order.order.completionDate, order.userName).then((value) {
                   setState(() {});
                 });
               },
@@ -389,9 +389,31 @@ class _AdminScreenState extends State<AdminScreen> {
           Text(
             product.name,
             style: interMediumStyle(fSize: 14.0),
-          ),
+          ), // TODO: Add variations!!
         ],
       ));
+      for (var variation in product.productVariations) {
+        for (var item in variation.variations) {
+          list.add(Padding(
+              padding: const EdgeInsets.only(left: 40.0),
+              child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      item.name,
+                      style: interLightStyle(
+                        fSize: 14.0,
+                        color: Color(0xff789090),
+                      ),
+                    ),
+                  ]
+              ),
+            )
+          );
+        }
+      }
       list.add(SizedBox(height: 5.0));
 
     }

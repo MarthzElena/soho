@@ -7,10 +7,18 @@ import 'dart:convert';
 ChargeCustomerRequest chargeCustomerRequestFromJson(String str) =>
     ChargeCustomerRequest.fromJson(json.decode(str));
 
-String chargeCustomerRequestToJson(ChargeCustomerRequest data) => json.encode(data.toJson());
+Map chargeCustomerRequestToMap(ChargeCustomerRequest data) {
+  return {
+    "amount" : data.amount,
+    "currency" : data.currency,
+    "description" : data.description,
+    "source" : data.source,
+    "customer" : data.customer,
+  };
+}
 
 class ChargeCustomerRequest {
-  int amount;
+  String amount;
   String currency;
   String description;
   String source;

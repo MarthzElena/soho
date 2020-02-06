@@ -15,8 +15,18 @@ class RecentOrdersElement {
 }
 
 class HomePageState extends Model {
-
+  bool showSpinner = false;
+  final int maxItems = 10;
   Widget drawer = Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget(photoUrl: Application.currentUser.photoUrl);
+
+  void updateState() {
+    notifyListeners();
+  }
+
+  void updateSpinner({bool show}) {
+    showSpinner = show;
+    notifyListeners();
+  }
 
   void updateDrawer() {
     drawer = Application.currentUser == null ? NoUserMenuWidget() : LoggedInUserMenuWidget(photoUrl: Application.currentUser.photoUrl);
@@ -27,47 +37,31 @@ class HomePageState extends Model {
     List<RecentOrdersElement> result = List<RecentOrdersElement>();
     var currentUser = Application.currentUser;
     if (currentUser != null) {
-      if (currentUser.ongoingOrders.isNotEmpty) {
-        if (currentUser.ongoingOrders.length >= 2) {
-          var last = currentUser.ongoingOrders.elementAt(1);
-          for (var product in last.selectedProducts) {
-            var lastElement = RecentOrdersElement(product.categoryName, product.name, product.photoUrl, last.getCompletedDateShort(), true);
-            result.add(lastElement);
+      // First attempt to add from ongoing orders
+      for (var order in currentUser.ongoingOrders) {
+        for (var product in order.selectedProducts) {
+          var element = RecentOrdersElement(product.categoryName, product.name, product.photoUrl, order.getCompletedDateShort(), true);
+          if (result.length < maxItems) {
+            result.add(element);
+          } else {
+            return result;
           }
         }
-        if (currentUser.ongoingOrders.length >= 1) {
-          var last = currentUser.ongoingOrders.elementAt(0);
-          for (var product in last.selectedProducts) {
-            var lastElement = RecentOrdersElement(product.categoryName, product.name, product.photoUrl, last.getCompletedDateShort(), true);
-            result.add(lastElement);
-          }
-        }
-      }
-
-      // If result already has values return that
-      if (result.isNotEmpty) {
-        return result;
       }
 
       // Attempt to add from past orders
-      if (currentUser.pastOrders.isNotEmpty) {
-        if (currentUser.pastOrders.length >= 2) {
-          var last = currentUser.pastOrders.elementAt(1);
-          for (var product in last.selectedProducts) {
-            var lastElement = RecentOrdersElement(product.categoryName, product.name, product.photoUrl, last.getCompletedDateShort(), false);
-            result.add(lastElement);
-          }
-        }
-        if (currentUser.pastOrders.length >= 1) {
-          var last = currentUser.pastOrders.elementAt(0);
-          for (var product in last.selectedProducts) {
-            var lastElement = RecentOrdersElement(product.categoryName, product.name, product.photoUrl, last.getCompletedDateShort(), false);
-            result.add(lastElement);
+      for (var order in currentUser.pastOrders) {
+        for (var product in order.selectedProducts) {
+          var element = RecentOrdersElement(product.categoryName, product.name, product.photoUrl, order.getCompletedDateShort(), true);
+          if (result.length < maxItems) {
+            result.add(element);
+          } else {
+            return result;
           }
         }
       }
-
     }
+
     return result;
   }
 

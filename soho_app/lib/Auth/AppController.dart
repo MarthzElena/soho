@@ -17,15 +17,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:soho_app/Utils/Locator.dart';
 
-class AuthController {
+class AppController {
 
-  final storage = new FlutterSecureStorage();
+  final storage = locator<FlutterSecureStorage>();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final FacebookLogin facebookLogin = FacebookLogin();
-  String _phoneVerificationId = "";
 
   // Returns a SohoAuthObject if there's a token saved
   Future<void> getSavedAuthObject() async{
@@ -42,39 +41,13 @@ class AuthController {
   }
 
   Future<void> logoutUser() async {
-    // Get the current Auth provider
-    String provider = await storage.read(key: Constants.KEY_AUTH_PROVIDER);
-    // Logo utt he  respective provider
-    switch (provider) {
-      case Constants.KEY_FACEBOOK_PROVIDER:
-        {
-          // Logout Facebook
-          await logoutFacebook();
-        }
-        break;
-
-      case Constants.KEY_GOOGLE_PROVIDER:
-        {
-          // Logout Google
-          await logoutGoogle();
-        }
-        break;
-
-      case Constants.KEY_PHONE_PROVIDER:
-        {
-          // Logout Phone
-          await logoutPhoneUser();
-        }
-        break;
-    }
-
+    // Logout the user
+    await logoutPhoneUser();
   }
 
-  Future<void> deleteAuthStoredValues() async {
-    await storage.delete(key: Constants.KEY_AUTH_PROVIDER).then((_) async {
-      // Clear saved user locally
-      Application.currentUser = null;
-    });
+  void deleteAuthStoredValues() {
+    // Clear saved user locally
+    Application.currentUser = null;
   }
 
   Future<void> savePhoneCredentials() async {
@@ -83,12 +56,11 @@ class AuthController {
 
   Future<void> logoutPhoneUser() async {
     await firebaseAuth.signOut().then((_) async {
-      await deleteAuthStoredValues();
+      deleteAuthStoredValues();
     });
   }
 
   Future<void> initiateFacebookLogin() async {
-    // TODO: This permissions should be used: 'email,user_gender,user_birthday'
     await facebookLogin.logInWithReadPermissions(['email']).then((facebookLoginResult) async {
 
       var facebookToken = facebookLoginResult.accessToken.token;
@@ -103,41 +75,37 @@ class AuthController {
           break;
 
         case FacebookLoginStatus.loggedIn:
-        // Save auth data and provider
-          await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_FACEBOOK_PROVIDER).then((_) async {
-            // Save user to Firebase Auth
-            await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
-              var firebaseId = user.uid;
-              // Get user data
-              await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=$facebookToken').then((graphResponse) async {
-                var profile = json.decode(graphResponse.body);
-                var email = profile['email'].toString();
-                var username = profile['name'].toString();
-                var userId = firebaseId;
-                var photoUrl = "";
-                var picture = profile['picture'];
-                if (picture != null) {
-                  var pictureData = picture['data'];
-                  if (pictureData != null) {
-                    photoUrl = pictureData['url'];
-                  }
+          await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
+            var firebaseId = user.uid;
+            // Get user data
+            await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=$facebookToken').then((graphResponse) async {
+              var profile = json.decode(graphResponse.body);
+              var email = profile['email'].toString();
+              var username = profile['name'].toString();
+              var userId = firebaseId;
+              var photoUrl = "";
+              var picture = profile['picture'];
+              if (picture != null) {
+                var pictureData = picture['data'];
+                if (pictureData != null) {
+                  photoUrl = pictureData['url'];
                 }
+              }
 
-                var user = SohoUserObject.createUserDictionary(
-                    username: username,
-                    email: email,
-                    userId: userId,
-                    photoUrl: photoUrl,
-                    phoneNumber: "",
-                    isAdmin: false
-                );
-                await saveUserToDatabase(user);
-              });
+              var user = SohoUserObject.createUserDictionary(
+                  username: username,
+                  email: email,
+                  userId: userId,
+                  photoUrl: photoUrl,
+                  phoneNumber: "",
+                  isAdmin: false,
+                  firstTime: true
+              );
+              await saveUserToDatabase(user);
             });
           }).catchError((error) {
             // TODO: Handle error
           });
-
           break;
 
         default:
@@ -147,14 +115,6 @@ class AuthController {
     }).catchError((error) {
       // TODO: Handle error
       return null;
-    });
-  }
-
-  Future<void> logoutFacebook() async {
-    // Logout from the provider
-    await facebookLogin.logOut().then((_) async {
-      // Remove values from storage
-      await deleteAuthStoredValues();
     });
   }
 
@@ -180,12 +140,7 @@ class AuthController {
               isAdmin: false
           );
 
-          await saveUserToDatabase(user).then((_) async {
-
-            // Make sure to save credentials only if login is completed
-            await storage.write(key: Constants.KEY_AUTH_PROVIDER, value: Constants.KEY_GOOGLE_PROVIDER);
-
-          });
+          await saveUserToDatabase(user);
 
         }).catchError((fireBaseSignInError) {
           // TODO: Handle error
@@ -200,13 +155,6 @@ class AuthController {
       print("Sign in error: ${signInError.toString()}");
     });
 
-  }
-
-  Future<void> logoutGoogle() async {
-    // Logout from provider
-    await googleSignIn.signOut();
-    // Remove stored values
-    await deleteAuthStoredValues();
   }
 
   Future<bool> isNewUser(String userId) async {
@@ -299,8 +247,6 @@ class AuthController {
 
     // Save locally
     Application.currentUser = sohoUser;
-    // Update home page state
-    locator<HomePageState>().updateDrawer();
     
     await savedUser.once().then((item) async {
       if (item.value == null) {
@@ -317,8 +263,6 @@ class AuthController {
           if (userDict != null) {
             // Save locally
             Application.currentUser = SohoUserObject.fromJson(userDict);
-            // Update home page state
-            locator<HomePageState>().updateDrawer();
           }
         }
       }
@@ -326,6 +270,32 @@ class AuthController {
     });
 
     return true;
+  }
+
+  Future<void> getFeaturedImageFromStorage() async {
+    // First get the reference URL
+    var featuredPhotoRef = dataBaseRootRef.child(Constants.DATABASE_KEY_FEATURED_PRODUCT);
+    // Get URL from database
+    await featuredPhotoRef.once().then((item) async {
+      if (item.value != null) {
+        var photoUrl = item.value.toString();
+        if (photoUrl != null && photoUrl.isNotEmpty) {
+          // Get storage reference
+          await firebaseStorage.getReferenceFromUrl(photoUrl).then((storageReference) async {
+            if (storageReference != null) {
+              final String photoUrl = await storageReference.getDownloadURL();
+              // Save image to Application
+              if (photoUrl != null && photoUrl.isNotEmpty) {
+                Application.featuredProduct = photoUrl;
+              }
+            }
+          });
+        }
+      }
+    }).catchError((error) {
+      // TODO: Handle error
+      print("Erro while getting featured product image: ${error.toString()}");
+    });
   }
 
   Future<String> saveImageToCloud(String fileName, File file) async {
@@ -436,6 +406,14 @@ class AuthController {
 
     return result;
 
+  }
+
+  bool isQrCodeValid(DateTime codeGenerated) {
+    var currentDate = DateTime.now();
+    final daysDifference = currentDate.difference(codeGenerated).inDays;
+    final daysAbsolute = daysDifference.abs();
+
+    return daysAbsolute <= 8;
   }
 
 }

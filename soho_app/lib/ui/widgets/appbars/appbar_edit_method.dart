@@ -1,7 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:soho_app/Auth/AuthController.dart';
+import 'package:soho_app/Auth/AppController.dart';
+import 'package:soho_app/States/EditCardState.dart';
 import 'package:soho_app/States/EditProfileState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
@@ -23,7 +24,7 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
   EditMethodAppBar({
     this.title = 'EDITAR MÉTODO DE PAGO',
     this.isPencil = false,
-    this.state = EditMethodAppBarState.PROFILE
+    this.state = EditMethodAppBarState.PAYMENT_METHODS
   });
 
   @override
@@ -79,13 +80,21 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                             } else {
                               // Save data
                               locator<UserProfileState>().updateUserData();
-                              await locator<AuthController>().updateUserInDatabase(Application.currentUser.getJson()).then((_) {
+                              await locator<AppController>().updateUserInDatabase(Application.currentUser.getJson()).then((_) {
                                 Navigator.pop(context);
                               });
                             }
                             break;
                           case EditMethodAppBarState.PAYMENT_METHODS:
-                          // TODO
+                            // Call method to update from model
+                            var model = locator<EditCardState>();
+                            model.updateSpinner(show: true);
+                            await model.updateCardData().then((_) {
+                              model.updateSpinner(show: false);
+                              Navigator.pop(context);
+                            }).catchError((error) {
+                              // TODO: Handle update card error
+                            });
                             break;
                         }
                       },

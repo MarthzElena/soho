@@ -12,6 +12,10 @@ class CategoryItemsState extends Model {
   List<Widget> widgetsList = List<Widget>();
   BuildContext context;
 
+  void updateState() {
+    notifyListeners();
+  }
+
   void changeItemsDistribution(context) {
     if (isDistributionList) {
       // Change to GRIDview

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:soho_app/Auth/AuthController.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Application.dart';
+import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
-import 'package:soho_app/ui/home/home.dart';
+import 'package:soho_app/ui/items/onboarding_item.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/layouts/preconfigured_layout.dart';
 
@@ -18,13 +20,36 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 500)).then((_) {
-      SquareHTTPRequest.getSquareCategories().then((categories) {
+      locator<SquareHTTPRequest>().getSquareCategories().then((categories) async {
+        AppController authController = locator<AppController>();
+        // Get featured photo if any
+        await authController.getFeaturedImageFromStorage();
 
         // Get logged in user if any
-        locator<AuthController>().getSavedAuthObject().then((_) {
+        await authController.getSavedAuthObject().then((_) async {
           if (categories.isNotEmpty) {
             Application.sohoCategories = categories;
-            Navigator.of(context).pushNamed(Routes.homePage);
+
+            // Get card info from square
+            if (Application.currentUser != null) {
+              await Application.currentUser.getCardsShortInfo();
+            }
+
+            // Check if is first time
+            String firstTimeSaved = await locator<FlutterSecureStorage>().read(key: Constants.KEY_FIRST_TIME);
+            var firstTime = firstTimeSaved == null ? true : firstTimeSaved;
+            if (Application.currentUser != null) {
+              firstTime = Application.currentUser.isFirstTime;
+
+              if (firstTime) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+              } else {
+                Navigator.of(context).pushNamed(Routes.homePage);
+              }
+            } else {
+              // If no user is logged in go directly to Home Page
+              Navigator.of(context).pushNamed(Routes.homePage);
+            }
           }
         });
 

@@ -11,7 +11,7 @@ Future<ChargeCustomerResponse> chargeCustomerCall({ChargeCustomerRequest request
         'Authorization': 'Bearer ' + Application.stripeSecretKey,
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: chargeCustomerRequestToJson(request),
+      body: chargeCustomerRequestToMap(request),
     );
 
     if (response.statusCode == 200 || response.statusCode == 202) {

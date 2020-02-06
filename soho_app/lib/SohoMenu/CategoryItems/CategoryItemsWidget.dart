@@ -56,7 +56,7 @@ class _CategoryItemsState extends State<CategoryItemsWidget> {
                       ),
                       child: new FutureBuilder(
                           future:
-                              SquareHTTPRequest.getCategoryDetail(category.squareID, category.name),
+                              locator<SquareHTTPRequest>().getCategoryDetail(category.squareID, category.name),
                           builder: (BuildContext context, AsyncSnapshot snapshot) {
                             if (snapshot.hasData && snapshot.data != null) {
                               // Init the values in the model

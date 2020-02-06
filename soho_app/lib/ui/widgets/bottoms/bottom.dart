@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/Models/requests/charge_customer.dart';
+import 'package:soho_app/Network/charge_customer/call.dart';
+import 'package:soho_app/SohoMenu/OrderDetailState.dart';
 import 'package:soho_app/SohoMenu/ProductItems/ProductItemObject.dart';
 import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
@@ -69,16 +72,42 @@ class _BottomBarState extends State<BottomBar> {
                   // Set bottom to complete order
                   _productItemModel.setBottomState(ProductItemState.COMPLETE_ORDER);
                 } else if (_productItemModel.shouldGoToCompleteOrder()) {
-                  // TODO: Process payment!! (This should happen only if payment is completed)
-                  if (Application.currentOrder != null && Application.currentUser != null) {
-                    await Application.currentUser.completeOrder(Application.currentOrder).then((codeData) {
-                      // Reset current order
-                      Application.currentOrder = null;
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => ThanksScreen(codeData))
-                      );
-                    });
+                  // Only continue if there is an ongoing order and a logged in user
+                  var currentOrder = Application.currentOrder;
+                  var currentUser = Application.currentUser;
+                  if (currentOrder != null && currentUser != null) {
+                    if (currentUser.selectedPaymentMethod.isNotEmpty) {
+                      // Get all info needed for payment
+                      var model = locator<OrderDetailState>();
+                      var amountTotal = model.orderSubtotal + model.currentTip;
+                      var amountInt = amountTotal.round() * 100;
+                      var amount = amountInt.toString(); // Amount needs to include decimal zeros without the point
+                      var currency = 'MXN';
+                      var description = currentOrder.getSelectedProductDescription();
+                      var source = currentUser.selectedPaymentMethod;
+                      var customer = currentUser.stripeId;
+                      var chargeRequest = ChargeCustomerRequest(amount: amount, currency: currency, description: description, source: source, customer: customer);
+                      model.updateSpinner(show: true);
+                      await chargeCustomerCall(request: chargeRequest).then((response) async {
+                        await Application.currentUser.completeOrder(Application.currentOrder).then((codeData) {
+                          model.updateSpinner(show: false);
+                          // Reset current order
+                          Application.currentOrder = null;
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => ThanksScreen(codeData))
+                          );
+                        });
+                      }).catchError((error) {
+                        // TODO: Handle error with payment
+                        print("Error with chargeCustomerCall: ${error.toString()}");
+                      });
 
+                    } else {
+                      // TODO: Show error on missing payment
+                    }
+
+                  } else {
+                    // TODO: Go to home? Show error!
                   }
 
                 } else {

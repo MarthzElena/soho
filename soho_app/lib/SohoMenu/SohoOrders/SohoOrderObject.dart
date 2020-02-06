@@ -55,6 +55,14 @@ class SohoOrderObject {
     return formatter.format(completionDate);
   }
 
+  String getSelectedProductDescription() {
+    var result = "";
+    for (var item in selectedProducts) {
+      result = "$result, ${item.name}";
+    }
+    return result;
+  }
+
   Map<String, dynamic> getJson() {
     var dict = Map<String, dynamic>();
     dict[keyCompletionDate] = getCompletedDateString();

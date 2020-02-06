@@ -28,6 +28,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
         androidPayMode: 'test',
       ),
     );
+    _model.clearControllerValues();
   }
 
   @override
@@ -45,11 +46,12 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
               bottomNavigationBar: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
                 child: GestureDetector(
-                  onTap: () => model.getCardInformation(),
+                  onTap: () => model.getCardInformation(context),
                   child: Container(
                     width: double.infinity,
                     height: 50.0,
                     decoration: BoxDecoration(
+
                       color: Color(0xffE51F4F),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
@@ -157,6 +159,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.all(10.0),
                                       hintText: '****  ****  ****  ****',
+                                      counterText: "",
                                       hintStyle: interLightStyle(
                                         fSize: 14.0,
                                         color: Color(0xffC4C4C4),
@@ -207,6 +210,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                               decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(10.0),
                                                 hintText: 'MM / AA',
+                                                counterText: "",
                                                 hintStyle: interLightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xffC4C4C4),
@@ -267,6 +271,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                                 ),
                                                 contentPadding: EdgeInsets.all(10.0),
                                                 hintText: '***',
+                                                counterText: "",
                                                 hintStyle: interLightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xffC4C4C4),

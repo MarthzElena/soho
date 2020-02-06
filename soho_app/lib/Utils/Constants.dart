@@ -8,14 +8,15 @@ class Constants {
 
   /// Secure Storage - Auth credentials
   static const KEY_AUTH_PROVIDER = "KEY_AUTH_PROVIDER";
+  static const KEY_FIRST_TIME = "KEY_FIRST_TIME";
+
   /// Secure Storage - Saved Provider
-  static const KEY_FACEBOOK_PROVIDER = "KEY_FACEBOOK_PROVIDER";
-  static const KEY_GOOGLE_PROVIDER = "KEY_GOOGLE_PROVIDER";
   static const KEY_PHONE_PROVIDER = "KEY_PHONE_PROVIDER";
 
   /// Firebase Database keys
   static const DATABASE_KEY_USERS = "usuarios";
   static const DATABASE_KEY_KITCHEN_ORDERS = "ordenes_cocina";
+  static const DATABASE_KEY_FEATURED_PRODUCT = "foto_destacada";
 
   /// Category Items
   static const PARAM_CATEGORY_NAME = "DIC_KEY_CATEGORY_NAME";
