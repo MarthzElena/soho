@@ -17,7 +17,7 @@ Map updateCardRequestToMap(UpdateCardRequest data) {
       "exp_month" : data.expMonth,
       "exp_year" : data.expYear,
     };
-  } else {
+  } else if (data.name.isNotEmpty) {
     // Only update name
     return {
       "name" : data.name,

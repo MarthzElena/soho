@@ -4,6 +4,8 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Models/requests/update_card.dart';
 import 'package:soho_app/Network/update_card/call.dart';
 import 'package:soho_app/Utils/Application.dart';
+import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/ui/payments/check_method.dart';
 
 class EditCardState extends Model {
   // Selected card ID
@@ -15,12 +17,19 @@ class EditCardState extends Model {
   String updatedYear = "";
   String updatedCVV = "";
 
+  bool showSpinner = false;
+
   // Editing controllers
   TextEditingController nameController = TextEditingController();
   MaskedTextController expDateController = MaskedTextController(
     text: '',
     mask: '00/00',
   );
+
+  void updateSpinner({bool show}) {
+    showSpinner = show;
+    notifyListeners();
+  }
 
   void initData(String cardId, String name, String date) {
     updatedName = "";
@@ -47,6 +56,13 @@ class EditCardState extends Model {
         var cardYear = int.parse("$first2$updatedYear");
         if (yearToday.compareTo(cardYear) < 0) {
           if (monthToday.compareTo(cardMonth) < 0) {
+            // Update data on model for check_method.dart
+            locator<CheckMethodsState>().updateDate("$updatedMonth/$updatedYear");
+            // Check if name needs to be updated
+            if (updatedName.isNotEmpty) {
+              locator<CheckMethodsState>().updateName(updatedName);
+            }
+
             await executeUpdateRequest(cardMonth.toString(), cardYear.toString());
           } else {
             showInvalidExpirationDate();
@@ -57,6 +73,7 @@ class EditCardState extends Model {
 
       } else {
         // Update only card name
+        locator<CheckMethodsState>().updateName(updatedName);
         await executeUpdateRequest("", "");
       }
     }
@@ -67,7 +84,6 @@ class EditCardState extends Model {
     var request = UpdateCardRequest(name: updatedName, expMonth: cardMonth, expYear: cardYear);
     await updateCardCall(request: request, customerId: Application.currentUser.stripeId, cardId: selectedCardId).then((response) {
       // Update the card info
-      print("FOUND RESPONSE");
       for (var card in Application.currentUser.cardsReduced) {
         if (card.cardId == response.id) {
           card.cardName = response.name;
@@ -75,7 +91,6 @@ class EditCardState extends Model {
           var yearString = response.expYear.toString().substring(2);
           var monthString = response.expMonth < 10 ? "0${response.expMonth.toString()}" : response.expMonth.toString();
           card.expiration = "$monthString / $yearString";
-          print("UPDATE CARD");
           break;
         }
       }

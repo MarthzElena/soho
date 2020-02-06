@@ -16,6 +16,7 @@ import 'package:soho_app/ui/purchases/history.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_share.dart';
 import 'package:flutter_share_file/flutter_share_file.dart';
+import 'package:soho_app/ui/widgets/layouts/spinner.dart';
 
 class ThanksScreen extends StatefulWidget {
   final String qrCodeData;
@@ -29,6 +30,7 @@ class ThanksScreen extends StatefulWidget {
 class _ThanksScreenState extends State<ThanksScreen> {
   GlobalKey _globalKey = GlobalKey();
   int selectedTab = 0;
+  bool showSpinner = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,182 +53,187 @@ class _ThanksScreenState extends State<ThanksScreen> {
                     statusBarColor: Colors.transparent,
                     statusBarBrightness: Brightness.dark,
                   ),
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  RepaintBoundary(
-                    key: _globalKey,
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            width: double.infinity,
-                            height: 265.0,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: purchasesBag,
-                                fit: BoxFit.contain,
-                                alignment: Alignment.bottomRight,
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  Text(
-                                    'GRACIAS\nPOR TU\nCOMPRA',
-                                    style: interThinStyle(fSize: 32.0),
+            child: Stack (
+              children: [
+                SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      RepaintBoundary(
+                        key: _globalKey,
+                        child: Container(
+                          color: Colors.white,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                width: double.infinity,
+                                height: 265.0,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: purchasesBag,
+                                    fit: BoxFit.contain,
+                                    alignment: Alignment.bottomRight,
                                   ),
-                                  SizedBox(height: 4.0),
-                                  RichText(
-                                    text: TextSpan(
-                                      text: 'Escanea este código en\ntu sucursal de Soho\nfavorita. ',
-                                      style: interLightStyle(
-                                        fSize: 14.0,
-                                        color: Color(0xff292929),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 20.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      Text(
+                                        'GRACIAS\nPOR TU\nCOMPRA',
+                                        style: interThinStyle(fSize: 32.0),
                                       ),
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: 'Ver ubicación',
-                                          style: interStyle(
+                                      SizedBox(height: 4.0),
+                                      RichText(
+                                        text: TextSpan(
+                                          text: 'Escanea este código en\ntu sucursal de Soho\nfavorita. ',
+                                          style: interLightStyle(
                                             fSize: 14.0,
-                                            color: Color(0xffE51F4F),
-                                            decoration: TextDecoration.underline,
+                                            color: Color(0xff292929),
                                           ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: 'Ver ubicación',
+                                              style: interStyle(
+                                                fSize: 14.0,
+                                                color: Color(0xffE51F4F),
+                                                decoration: TextDecoration.underline,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 32.0),
+                              Center(
+                                child: Container(
+                                  width: 223.0,
+                                  height: 223.0,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffF5F5F5),
+                                    borderRadius: BorderRadius.circular(40.0),
+                                  ),
+                                  child: Container(
+                                    margin: EdgeInsets.all(16.0),
+                                    width: 191.0,
+                                    height: 191.0,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(40.0),
+                                    ),
+                                    child: QrImage(
+                                      data: widget.qrCodeData,
                                     ),
                                   ),
-                                ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 32.0),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => HistoryScreen(isOngoingOrder: true)),
+                                    ModalRoute.withName(Routes.homePage)
+                                );
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                height: 50.0,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffE51F4F),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Guardar en mis pedidos',
+                                    style: interBoldStyle(
+                                      fSize: 14.0,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: 32.0),
-                          Center(
-                            child: Container(
-                              width: 223.0,
-                              height: 223.0,
+                            SizedBox(height: 40.0),
+                            Container(
+                              width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
                                 color: Color(0xffF5F5F5),
-                                borderRadius: BorderRadius.circular(40.0),
+                                borderRadius: BorderRadius.circular(16.0),
                               ),
-                              child: Container(
-                                margin: EdgeInsets.all(16.0),
-                                width: 191.0,
-                                height: 191.0,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(40.0),
-                                ),
-                                child: QrImage(
-                                  data: widget.qrCodeData,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 32.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(builder: (context) => HistoryScreen(isOngoingOrder: true)),
-                              ModalRoute.withName(Routes.homePage)
-                            );
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 50.0,
-                            decoration: BoxDecoration(
-                              color: Color(0xffE51F4F),
-                              borderRadius: BorderRadius.circular(50.0),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Guardar en mis pedidos',
-                                style: interBoldStyle(
-                                  fSize: 14.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 40.0),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: Color(0xffF5F5F5),
-                            borderRadius: BorderRadius.circular(16.0),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  '🎁  ¿Tu orden es un regalo?',
-                                  style: interBoldStyle(fSize: 14.0),
-                                ),
-                                SizedBox(height: 16.0),
-                                Text(
-                                  'Envía esta compra a tu novia, tu mamá, o tu mejor amigo. Él o ella podrá redimirlo en la sucursal de SOHO.',
-                                  style: interLightStyle(fSize: 14.0),
-                                ),
-                                SizedBox(height: 24.0),
-                                GestureDetector(
-                                  onTap: () {
-                                    _shareCode();
-                                  },
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: 50.0,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffF0AB31),
-                                      borderRadius: BorderRadius.circular(50.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      '🎁  ¿Tu orden es un regalo?',
+                                      style: interBoldStyle(fSize: 14.0),
                                     ),
-                                    child: Center(
-                                      child: Text(
-                                        'Enviar código QR',
-                                        style: interBoldStyle(
-                                          fSize: 14.0,
-                                          color: Colors.white,
+                                    SizedBox(height: 16.0),
+                                    Text(
+                                      'Envía esta compra a tu novia, tu mamá, o tu mejor amigo. Él o ella podrá redimirlo en la sucursal de SOHO.',
+                                      style: interLightStyle(fSize: 14.0),
+                                    ),
+                                    SizedBox(height: 24.0),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _shareCode();
+                                      },
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: 50.0,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xffF0AB31),
+                                          borderRadius: BorderRadius.circular(50.0),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            'Enviar código QR',
+                                            style: interBoldStyle(
+                                              fSize: 14.0,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+                            SizedBox(height: 36.0),
+                          ],
                         ),
-                        SizedBox(height: 36.0),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                showSpinner ? SohoSpinner() : SizedBox.shrink(),
+              ],
             ),
           ),
         ),
@@ -236,6 +243,9 @@ class _ThanksScreenState extends State<ThanksScreen> {
 
   Future<void> _shareCode() async {
     try {
+      setState(() {
+        showSpinner = true;
+      });
       RenderRepaintBoundary boundary = _globalKey.currentContext.findRenderObject();
       var image = await boundary.toImage();
       ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
@@ -244,6 +254,9 @@ class _ThanksScreenState extends State<ThanksScreen> {
       final tempDir = await getTemporaryDirectory();
       final file = await new File('${tempDir.path}/image.png').create();
       await file.writeAsBytes(pngBytes);
+      setState(() {
+        showSpinner = false;
+      });
       FlutterShareFile.shareImage(file.path, 'image.png', 'Share image test');
 
     } catch(e) {

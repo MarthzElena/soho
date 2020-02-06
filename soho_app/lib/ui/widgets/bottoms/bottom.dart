@@ -87,8 +87,10 @@ class _BottomBarState extends State<BottomBar> {
                       var source = currentUser.selectedPaymentMethod;
                       var customer = currentUser.stripeId;
                       var chargeRequest = ChargeCustomerRequest(amount: amount, currency: currency, description: description, source: source, customer: customer);
+                      model.updateSpinner(show: true);
                       await chargeCustomerCall(request: chargeRequest).then((response) async {
                         await Application.currentUser.completeOrder(Application.currentOrder).then((codeData) {
+                          model.updateSpinner(show: false);
                           // Reset current order
                           Application.currentOrder = null;
                           Navigator.of(context).push(

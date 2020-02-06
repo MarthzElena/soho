@@ -10,6 +10,7 @@ class OrderDetailState extends Model {
 
   bool showCode = false;
   bool showCustomTip = false;
+  bool showSpinner = false;
 
   double currentTip = 0.0;
   double orderSubtotal = 0.0;
@@ -17,6 +18,11 @@ class OrderDetailState extends Model {
   String discountCode = "";
   bool hasExchangedCode = false;
   double discount = 0.0;
+
+  void updateSpinner({bool show}) {
+    showSpinner = show;
+    notifyListeners();
+  }
 
   bool isTipOther() {
     return showCustomTip;

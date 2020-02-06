@@ -12,11 +12,18 @@ import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/payments/check_method.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_methods.dart';
+import 'package:soho_app/ui/widgets/layouts/spinner.dart';
 
 class MethodsScreenState extends Model {
   bool isSelectingPayment = false;
+  bool showSpinner = false;
 
   void updateState() {
+    notifyListeners();
+  }
+
+  void updateSpinner({bool show}) {
+    showSpinner = show;
     notifyListeners();
   }
 
@@ -75,49 +82,55 @@ class _MethodsScreen extends State<MethodsScreen> {
                     statusBarColor: Colors.transparent,
                     statusBarBrightness: Brightness.dark,
                   ),
-                  child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          width: double.infinity,
-                          height: 265.0,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: paymentWallet,
-                              fit: BoxFit.contain,
-                              alignment: Alignment.bottomRight,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Text(
-                                  'MÉTODOS\nDE PAGO',
-                                  style: interThinStyle(fSize: 32.0),
+                  child: Stack(
+                    children: [
+                      SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              width: double.infinity,
+                              height: 265.0,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: paymentWallet,
+                                  fit: BoxFit.contain,
+                                  alignment: Alignment.bottomRight,
                                 ),
-                                SizedBox(height: 4.0),
-                                Text(
-                                  'Laboris adipisicing magna\nconsequat excepteur\nconsectetur eu.', //TODO: Change this!
-                                  style: interLightStyle(
-                                    fSize: 14.0,
-                                    color: Color(0xff292929),
-                                  ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Text(
+                                      'MÉTODOS\nDE PAGO',
+                                      style: interThinStyle(fSize: 32.0),
+                                    ),
+                                    SizedBox(height: 4.0),
+                                    Text(
+                                      'Laboris adipisicing magna\nconsequat excepteur\nconsectetur eu.', //TODO: Change this!
+                                      style: interLightStyle(
+                                        fSize: 14.0,
+                                        color: Color(0xff292929),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+                            hasPaymentMethods ? getCardPreview() : getNoPaymentsSaved(),
+                          ],
                         ),
-                        hasPaymentMethods ? getCardPreview() : getNoPaymentsSaved(),
-                      ],
-                    ),
+                      ),
+                      model.showSpinner ?
+                      SohoSpinner() : SizedBox.shrink(),
+                    ],
                   ),
                 ),
               ),
@@ -172,24 +185,24 @@ class _MethodsScreen extends State<MethodsScreen> {
         var cardRow = GestureDetector(
           onTap: () async {
             if (model.isSelectingPayment) {
+              // Update spinner
+              model.updateSpinner(show: true);
               // Save the card ID to the user and update
               Application.currentUser.selectedPaymentMethod = card.cardId;
               await locator<AppController>().updateUserInDatabase(Application.currentUser.getJson()).then((_) {
                 // Notify Shopping cart screen that needs to update
                 locator<OrderDetailState>().updateState();
+                model.updateSpinner(show: false);
                 Navigator.pop(context);
 
               });
             } else {
+              // Set model for check card screen
+              locator<CheckMethodsState>().updateValues(card.cardName, card.last4, card.expiration, card.cardType == CardType.masterCard ? 'MASTER CARD' : 'VISA', card.cardId);
+              // Push view
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CheckMethodsScreen(
-                    nameOnCard: card.cardName,
-                    cardNumber: card.last4,
-                    date: card.expiration,
-                    cardType: card.cardType == CardType.masterCard ? 'MASTER CARD' : 'VISA',
-                    selectedCardId: card.cardId,
-                  ))
+                  MaterialPageRoute(builder: (context) => CheckMethodsScreen())
               );
             }
           },

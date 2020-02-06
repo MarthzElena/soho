@@ -13,6 +13,7 @@ import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/States/EditProfileState.dart';
 import 'package:soho_app/States/SearchState.dart';
 import 'package:soho_app/States/add_method.dart';
+import 'package:soho_app/ui/payments/check_method.dart';
 import 'package:soho_app/ui/payments/methods.dart';
 
 GetIt locator = GetIt();
@@ -37,4 +38,5 @@ void setUpLocator() {
   locator.registerLazySingleton<UserProfileState>(() => UserProfileState());
   locator.registerLazySingleton<SearchState>(() => SearchState());
   locator.registerLazySingleton<SquareHTTPRequest>(() => SquareHTTPRequest());
+  locator.registerLazySingleton<CheckMethodsState>(() => CheckMethodsState());
 }

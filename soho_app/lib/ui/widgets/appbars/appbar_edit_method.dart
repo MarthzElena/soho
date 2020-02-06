@@ -87,7 +87,10 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                             break;
                           case EditMethodAppBarState.PAYMENT_METHODS:
                             // Call method to update from model
-                            await locator<EditCardState>().updateCardData().then((_) {
+                            var model = locator<EditCardState>();
+                            model.updateSpinner(show: true);
+                            await model.updateCardData().then((_) {
+                              model.updateSpinner(show: false);
                               Navigator.pop(context);
                             }).catchError((error) {
                               // TODO: Handle update card error
