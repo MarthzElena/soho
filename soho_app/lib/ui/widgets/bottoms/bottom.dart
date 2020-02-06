@@ -88,7 +88,8 @@ class _BottomBarState extends State<BottomBar> {
                       var customer = currentUser.stripeId;
                       var chargeRequest = ChargeCustomerRequest(amount: amount, currency: currency, description: description, source: source, customer: customer);
                       model.updateSpinner(show: true);
-                      await chargeCustomerCall(request: chargeRequest).then((response) async {
+                      // TODO: UNCOMMENT THIS TO ACTIVATE PAYMENTS!!
+//                      await chargeCustomerCall(request: chargeRequest).then((response) async {
                         await Application.currentUser.completeOrder(Application.currentOrder).then((codeData) {
                           model.updateSpinner(show: false);
                           // Reset current order
@@ -97,10 +98,10 @@ class _BottomBarState extends State<BottomBar> {
                               MaterialPageRoute(builder: (context) => ThanksScreen(codeData))
                           );
                         });
-                      }).catchError((error) {
-                        // TODO: Handle error with payment
-                        print("Error with chargeCustomerCall: ${error.toString()}");
-                      });
+//                      }).catchError((error) {
+//                        // TODO: Handle error with payment
+//                        print("Error with chargeCustomerCall: ${error.toString()}");
+//                      });
 
                     } else {
                       // TODO: Show error on missing payment

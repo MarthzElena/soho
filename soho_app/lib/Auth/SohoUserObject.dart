@@ -84,6 +84,8 @@ class SohoUserObject {
   Future<void> getCardsShortInfo() async {
     if (stripeId.isNotEmpty) {
       await getAllCardsCall(customerId: stripeId).then((response) {
+        // Clear data
+        cardsReduced.clear();
         for (var item in response.data) {
           var month = item.expMonth < 10 ? "0${item.expMonth}" : item.expMonth.toString();
           var year = item.expYear.toString().substring(2);
