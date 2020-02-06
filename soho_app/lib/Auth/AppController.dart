@@ -211,6 +211,8 @@ class AppController {
           var sohoUser = SohoUserObject.fromJson(user);
           // Save locally
           Application.currentUser = sohoUser;
+          // Update payments info
+          await Application.currentUser.getCardsShortInfo();
           // Update home page state
           locator<HomePageState>().updateDrawer();
         }
@@ -263,6 +265,8 @@ class AppController {
           if (userDict != null) {
             // Save locally
             Application.currentUser = SohoUserObject.fromJson(userDict);
+            // Update payments info
+            await Application.currentUser.getCardsShortInfo();
           }
         }
       }
