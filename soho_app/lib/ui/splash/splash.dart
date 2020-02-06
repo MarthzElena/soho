@@ -40,14 +40,16 @@ class _SplashScreenState extends State<SplashScreen> {
             var firstTime = firstTimeSaved == null ? true : firstTimeSaved;
             if (Application.currentUser != null) {
               firstTime = Application.currentUser.isFirstTime;
+
+              if (firstTime) {
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+              } else {
+                Navigator.of(context).pushNamed(Routes.homePage);
+              }
+            } else {
+              // If no user is logged in go directly to Home Page
+              Navigator.of(context).pushNamed(Routes.homePage);
             }
-            // TODO: Fix this: only show onboarding if FIRST LOGIN
-//            if (firstTime) {
-//              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
-//            } else {
-//              Navigator.of(context).pushNamed(Routes.homePage);
-//            }
-            Navigator.of(context).pushNamed(Routes.homePage);
           }
         });
 

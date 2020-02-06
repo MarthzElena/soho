@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Auth/AppController.dart';
+import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
@@ -8,6 +9,7 @@ import 'package:soho_app/Utils/Routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:soho_app/ui/auth/register.dart';
+import 'package:soho_app/ui/items/onboarding_item.dart';
 
 import '../Auth/SohoUserObject.dart';
 
@@ -48,8 +50,9 @@ class LoginState extends Model {
       print("SIGN IN ERROR: ${signInError.toString()}");
       // TODO: HAndle error
     });
+    var appController = locator<AppController>();
     if (user != null) {
-      bool isNewUser = await locator<AppController>().isNewUser(user.uid);
+      bool isNewUser = await appController.isNewUser(user.uid);
       if (isNewUser) {
         // Create user dictionary for Database
         var userDictionary = SohoUserObject.createUserDictionary(
@@ -63,8 +66,8 @@ class LoginState extends Model {
         );
         // Get token
         await user.getIdToken(refresh: true).then((token) async {
-          await locator<AppController>().savePhoneCredentials().then((_) async {
-            await locator<AppController>().saveUserToDatabase(userDictionary);
+          await appController.savePhoneCredentials().then((_) async {
+            await appController.saveUserToDatabase(userDictionary);
             Navigator.pop(context);
             Navigator.pop(context);
           });
@@ -79,6 +82,14 @@ class LoginState extends Model {
       } else {
         Navigator.pop(context);
         Navigator.pop(context);
+        // Start session in app
+        await appController.startSessionFromUserId(user.uid).then((_) {
+          var user = Application.currentUser;
+          if (user != null && user.isFirstTime) {
+            // Go to onboarding
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+          }
+        });
       }
     } else {
       print("*** ERROR with user");
