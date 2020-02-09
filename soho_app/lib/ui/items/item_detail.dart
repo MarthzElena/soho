@@ -43,7 +43,7 @@ class _ProductDetailState extends State<ProductDetail> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: ProductDetailAppBar(),
-              bottomNavigationBar: _productItemModel.shouldShowBottomForProductDetail()
+              bottomNavigationBar: _productItemModel.shouldShowBottomForProductDetail(!product.isVariationRequired())
                   ? BottomBar(buttonState: ProductItemState.ADD_ITEM_TEXT)
                   : SizedBox.shrink(),
               body: GestureDetector(
@@ -143,9 +143,7 @@ class _ProductDetailState extends State<ProductDetail> {
       Map<VariationItemObject, bool> current = _productItemModel.availableVariations[variationType];
       for (var variationElement in current.keys) {
         var value = current[variationElement];
-        Widget elementRow = _productItemModel.variationRequired
-            ? getRequiredVariations(variationElement, variationType)
-            : getOptionalVariations(value, variationType, variationElement);
+        Widget elementRow = getVariations(variationElement, variationType);
         list.add(elementRow);
       }
     }
@@ -153,40 +151,8 @@ class _ProductDetailState extends State<ProductDetail> {
     return list;
   }
 
-  Widget getOptionalVariations(
-      bool value, String variationType, VariationItemObject variationElement) {
-    // Update variation type in model
-    _productItemModel.updateVariationType(isRequired: false);
-
-    var widget = Row(
-      children: <Widget>[
-        Theme(
-          data: ThemeData(
-            unselectedWidgetColor: Color(0xffE4E4E4),
-          ),
-          child: Checkbox(
-            value: value,
-            materialTapTargetSize: MaterialTapTargetSize.padded,
-            onChanged: (value) {
-              _productItemModel.updateCheckboxValue(variationType, variationElement, value);
-            },
-          ),
-        ),
-        SizedBox(width: 16.0),
-        Text(
-          variationElement.name,
-          style: avenirHeavyStyle(fSize: 16.0),
-        )
-      ],
-    );
-    return widget;
-  }
-
-  Widget getRequiredVariations(VariationItemObject selectedVariation, String fromType) {
-    // Update variation type in model
-    _productItemModel.updateVariationType(isRequired: true);
-
-    var widget = Row(
+  Widget getVariations(VariationItemObject selectedVariation, String fromType) {
+    return Row(
       children: <Widget>[
         Theme(
           data: ThemeData(
@@ -205,6 +171,5 @@ class _ProductDetailState extends State<ProductDetail> {
         ),
       ],
     );
-    return widget;
   }
 }

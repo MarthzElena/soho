@@ -69,16 +69,9 @@ class ProductItemObject {
     }
   }
 
-  /// Defines whether the variation list for this object will be REQUIRED or OPTIONAL
-  /// TODO! Update this with FINAL values
-  bool isVariationsRequired() {
-    if (category.toLowerCase().startsWith(_categoryCoffee)) {
-      return false;
-    } else if (category.toLowerCase().startsWith(_categoryTea)) {
-      return false;
-    } else {
-      return false;
-    }
+  // TODO: Validate this with final variations (Currently all variations are optional)
+  bool isVariationRequired() {
+    return false;
   }
 
   Future<void> addProductVariation(VariationItemObject variation, String variationType) async {

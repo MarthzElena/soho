@@ -13,7 +13,6 @@ class ProductItemState extends Model {
   Map<String, List<VariationItemObject>> selectedVariations = {};
   double selectedItemPrice = 0.0;
 
-  bool variationRequired = false;
   bool isRequiredVariationAdded = false;
 
   // Settings for Add To Cart button
@@ -26,7 +25,7 @@ class ProductItemState extends Model {
     // Set initial price
     selectedItemPrice = fromProduct.price;
     // Set variations
-    initAvailableVariations(fromProduct.productVariations, fromProduct.isVariationsRequired());
+    initAvailableVariations(fromProduct.productVariations);
     // Clear selected variations
     selectedVariations.clear();
     // Set bottom
@@ -66,14 +65,11 @@ class ProductItemState extends Model {
     notifyListeners();
   }
 
-  bool shouldShowBottomForProductDetail() {
-    if (variationRequired) {
-      return isRequiredVariationAdded;
-    }
-    return true;
+  bool shouldShowBottomForProductDetail(bool shouldShowBottom) {
+    return shouldShowBottom;
   }
 
-  void initAvailableVariations(List<VariationTypeObject> allVariations, bool isRequired) {
+  void initAvailableVariations(List<VariationTypeObject> allVariations) {
     availableVariations.clear();
     for (var variationType in allVariations) {
       Map<VariationItemObject, bool> values = {};
@@ -82,12 +78,6 @@ class ProductItemState extends Model {
       }
       availableVariations[variationType.variationTypeName] = values;
     }
-    // Set if variation is required
-    variationRequired = isRequired;
-    if (isRequired) {
-      isRequiredVariationAdded = false;
-    }
-
     notifyListeners();
   }
 
@@ -127,8 +117,8 @@ class ProductItemState extends Model {
       selectedVariations[fromType] = List<VariationItemObject>();
     }
 
-    // If variation is required && already selected, remove the current variation for the type value
-    if (variationRequired && selectedVariations[fromType].isNotEmpty) {
+    // If variation is already selected, remove the current variation for the type value
+    if (selectedVariations[fromType].isNotEmpty) {
       // First update the price
       selectedItemPrice -= selectedVariations[fromType].first.price;
       // Clear the list
@@ -152,10 +142,5 @@ class ProductItemState extends Model {
     } else {
       return null;
     }
-  }
-
-  void updateVariationType({bool isRequired}) {
-    variationRequired = isRequired;
-    notifyListeners();
   }
 }
