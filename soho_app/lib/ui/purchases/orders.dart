@@ -25,12 +25,6 @@ class OrderScreen extends StatefulWidget {
   _OrderScreenState createState() => _OrderScreenState();
 }
 
-class OrderElement {
-  String name = "";
-  String price = "";
-  OrderElement({this.name = "", this.price = ""});
-}
-
 class _OrderScreenState extends State<OrderScreen> {
   OrderDetailState _model = locator<OrderDetailState>();
 
@@ -155,6 +149,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       GestureDetector(
                                         onTap: () {
                                           Application.currentOrder = null;
+                                          model.clearDiscount();
                                           locator<HomePageState>().updateState();
                                           locator<CategoryItemsState>().updateState();
                                           Navigator.pop(context);
@@ -184,7 +179,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       var element = model.orderItems[index];
                                       if (element.name.isEmpty) {
                                         return SizedBox(height: 10.0);
-                                      } else if (element.price.isEmpty) {
+                                      } else if (element.price == 0.0) {
                                         return Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -215,13 +210,13 @@ class _OrderScreenState extends State<OrderScreen> {
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: <Widget>[
                                                   Text(
-                                                    element.price,
+                                                    "\$${element.price}0",
                                                     style: avenirHeavyStyle(fSize: 16.0),
                                                   ),
                                                   SizedBox(width: 15.0),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      // TODO: Delete item from cart
+                                                      model.deleteElement(element);
                                                     },
                                                     child: Image(image: menuCross),
                                                   ),
@@ -242,6 +237,12 @@ class _OrderScreenState extends State<OrderScreen> {
                                     width: MediaQuery.of(context).size.width,
                                     height: 40.0,
                                     child: TextField(
+                                      onChanged: (value) {
+                                        model.notes = value;
+                                        if (Application.currentOrder != null) {
+                                          Application.currentOrder.notes = value;
+                                        }
+                                      },
                                       textAlignVertical: TextAlignVertical.center,
                                       style: interLightStyle(
                                         fSize: 14.0,
@@ -361,7 +362,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                           ),
                                           GestureDetector(
                                             onTap: () async {
-                                              if (!model.hasExchangedCode) {
+                                              if (!model.hasExchangedCode && Application.currentOrder != null) {
                                                 model.updateSpinner(show: true);
                                                 await locator<SquareHTTPRequest>().getDiscountObject(model.discountCode).then((discount) {
                                                   model.updateSpinner(show: false);
@@ -619,7 +620,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         style: interMediumStyle(),
                                       ),
                                       Text(
-                                        '\$${model.orderTotal + model.currentTip}0',
+                                        '\$${model.orderTotal + model.currentTip - model.discount}0',
                                         style: interMediumStyle(fSize: 18.0),
                                       ),
                                     ],

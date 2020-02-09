@@ -1,6 +1,12 @@
 import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/Utils/Application.dart';
-import 'package:soho_app/ui/purchases/orders.dart';
+
+class OrderElement {
+  String name = "";
+  double price = 0.0;
+  OrderElement({this.name = "", this.price = 0.0});
+}
 
 class OrderDetailState extends Model {
 
@@ -15,6 +21,7 @@ class OrderDetailState extends Model {
 
   double currentTip = 0.0;
   double orderTotal = 0.0;
+  String notes = "";
 
   String discountCode = "";
   bool hasExchangedCode = false;
@@ -31,8 +38,7 @@ class OrderDetailState extends Model {
 
     if (Application.currentOrder != null) {
       for (var product in Application.currentOrder.selectedProducts) {
-        var price = "\$${product.price}0";
-        var productElement = OrderElement(name: product.name, price: price);
+        var productElement = OrderElement(name: product.name, price: product.price);
         orderItems.add(productElement);
         // Add variations
         for (var variationType in product.productVariations) {
@@ -50,6 +56,32 @@ class OrderDetailState extends Model {
       orderTotal = productsSubTotal;
     } else {
       orderItems.add(OrderElement(name: "No olvides agregar productos a tu pedido!"));
+    }
+    notifyListeners();
+  }
+
+  void deleteElement(OrderElement element) {
+    // Find element in order
+    SohoOrderItem productToDelete;
+    if (Application.currentOrder != null) {
+      for (var product in Application.currentOrder.selectedProducts) {
+        if (product.name == element.name) {
+          productToDelete = product;
+          break;
+        }
+      }
+      if (productToDelete != null) {
+        var removed = Application.currentOrder.selectedProducts.remove(productToDelete);
+        if (removed) {
+          if (Application.currentOrder.selectedProducts.isEmpty) {
+            // Clear current order since it has no elements
+            Application.currentOrder = null;
+            // Clear discount
+            clearDiscount();
+          }
+          prepareOrderElements();
+        }
+      }
     }
     notifyListeners();
   }
@@ -99,10 +131,16 @@ class OrderDetailState extends Model {
     notifyListeners();
   }
 
+  void clearDiscount () {
+    hasExchangedCode = false;
+    discount = 0.0;
+    discountCode = "";
+    notifyListeners();
+  }
+
   void updateTotalPercentageDiscount(int percentage) {
     if (!hasExchangedCode) {
       discount = productsSubTotal * (percentage/100);
-      orderTotal = productsSubTotal - discount;
       hasExchangedCode = true;
       notifyListeners();
     }
@@ -110,7 +148,6 @@ class OrderDetailState extends Model {
 
   void updateTotalFixedDiscount(double amount) {
     if (!hasExchangedCode) {
-      orderTotal = productsSubTotal - amount;
       hasExchangedCode = true;
       discount = amount;
       notifyListeners();
