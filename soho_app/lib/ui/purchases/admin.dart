@@ -258,7 +258,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     Text(
                       'Datos de la orden',
                       style: interBoldStyle(
-                        fSize: 14.0,
+                        fSize: 16.0,
                         color: Color(0xff5A6265),
                       ),
                     ),
@@ -273,6 +273,22 @@ class _AdminScreenState extends State<AdminScreen> {
                     SizedBox(height: 8.0),
                     Text(
                       "Orden para ${order.userName}",
+                      style: interLightStyle(
+                        fSize: 14.0,
+                        color: Color(0xff5A6265),
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      "Notas:",
+                      style: interBoldStyle(
+                        fSize: 14.0,
+                        color: Color(0xff5A6265),
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      order.order.notes,
                       style: interLightStyle(
                         fSize: 14.0,
                         color: Color(0xff5A6265),
