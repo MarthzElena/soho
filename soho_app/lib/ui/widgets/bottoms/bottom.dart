@@ -79,7 +79,7 @@ class _BottomBarState extends State<BottomBar> {
                     if (currentUser.selectedPaymentMethod.isNotEmpty) {
                       // Get all info needed for payment
                       var model = locator<OrderDetailState>();
-                      var amountTotal = model.orderSubtotal + model.currentTip;
+                      var amountTotal = model.orderTotal + model.currentTip;
                       var amountInt = amountTotal.round() * 100;
                       var amount = amountInt.toString(); // Amount needs to include decimal zeros without the point
                       var currency = 'MXN';

@@ -32,43 +32,13 @@ class OrderElement {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  List<OrderElement> orderItems = List<OrderElement>();
   OrderDetailState _model = locator<OrderDetailState>();
-  double productsSubTotal = 0.0;
-
-  List<OrderElement> _prepareOrderElements() {
-    var list = List<OrderElement>();
-
-    if (Application.currentOrder != null) {
-      for (var product in Application.currentOrder.selectedProducts) {
-        var price = "\$${product.price}0";
-        var productElement = OrderElement(name: product.name, price: price);
-        list.add(productElement);
-        // Add variations
-        for (var variationType in product.productVariations) {
-          for (var variation in variationType.variations) {
-            var itemVariation = OrderElement(name: variation.name);
-            list.add(itemVariation);
-          }
-        }
-        // Add empty element for space between products
-        list.add(OrderElement());
-        // Add price to subTotal
-        productsSubTotal += product.price;
-      }
-      // Update order subtotal in model
-      _model.orderSubtotal = productsSubTotal;
-    } else {
-      list.add(OrderElement(name: "No olvides agregar productos a tu pedido!"));
-    }
-    return list;
-  }
 
   @override
   void initState() {
     super.initState();
 
-    orderItems = _prepareOrderElements();
+    _model.prepareOrderElements();
   }
 
   @override
@@ -209,9 +179,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                   ListView.builder(
                                     physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
-                                    itemCount: orderItems.length,
+                                    itemCount: model.orderItems.length,
                                     itemBuilder: (BuildContext ctxt, int index) {
-                                      var element = orderItems[index];
+                                      var element = model.orderItems[index];
                                       if (element.name.isEmpty) {
                                         return SizedBox(height: 10.0);
                                       } else if (element.price.isEmpty) {
@@ -399,11 +369,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                                     if (discount is SquareDiscountModelPercentage) {
                                                       // Update subtotal
                                                       var percentage = double.parse(discount.discountDataPercentage.percentage);
-                                                      model.updateTotalPercentageDiscount(productsSubTotal, percentage.round());
+                                                      model.updateTotalPercentageDiscount(percentage.round());
                                                     } else if (discount is SquareDiscountModelFixed) {
                                                       // Update subtotal
                                                       var amount = discount.discountDataFixed.amountMoney.amount / 100;
-                                                      model.updateTotalFixedDiscount(productsSubTotal, amount);
+                                                      model.updateTotalFixedDiscount(amount);
                                                     }
                                                   } else {
                                                     // TODO: Error invalid discount
@@ -463,7 +433,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          model.updateTip(OrderDetailState.TIP_TEN);
+                                          model.updateTip(OrderDetailState.TIP_TEN, isCustomTip: false);
                                         },
                                         child: Chip(
                                           label: Text('\$10.00'),
@@ -481,7 +451,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          model.updateTip(OrderDetailState.TIP_FIFTEEN);
+                                          model.updateTip(OrderDetailState.TIP_FIFTEEN, isCustomTip: false);
                                         },
                                         child: Chip(
                                           label: Text('\$15.00'),
@@ -499,7 +469,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          model.updateTip(OrderDetailState.TIP_TWENTY);
+                                          model.updateTip(OrderDetailState.TIP_TWENTY, isCustomTip: false);
                                         },
                                         child: Chip(
                                           label: Text('\$20.00'),
@@ -533,7 +503,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         height: 40.0,
                                         child: TextField(
                                           onChanged: (value) {
-                                            model.updateTip(double.parse(value));
+                                            model.updateTip(double.parse(value), isCustomTip: true);
                                           },
                                           keyboardType: TextInputType.number,
                                           textAlignVertical: TextAlignVertical.center,
@@ -589,7 +559,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         ),
                                       ),
                                       Text(
-                                        '\$${productsSubTotal.toString()}0',
+                                        '\$${model.productsSubTotal.toString()}0',
                                         style: interMediumStyle(
                                           fSize: 14.0,
                                           color: Color(0xff5A6265),
@@ -649,7 +619,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         style: interMediumStyle(),
                                       ),
                                       Text(
-                                        '\$${model.orderSubtotal + model.currentTip}0',
+                                        '\$${model.orderTotal + model.currentTip}0',
                                         style: interMediumStyle(fSize: 18.0),
                                       ),
                                     ],
