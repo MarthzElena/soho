@@ -26,7 +26,13 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        if (Platform.isAndroid) {
+          _model.clearResults();
+          locator<SearchState>().showSpinner(false);
+        }
+        return Platform.isAndroid;
+      },
       child: ScopedModel<SearchState>(
           model: _model,
           child: ScopedModelDescendant<SearchState>(

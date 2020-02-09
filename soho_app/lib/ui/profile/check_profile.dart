@@ -39,7 +39,9 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
   Widget build(BuildContext context) {
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: ScopedModel<UserProfileState>(
         model: _state,
         child: ScopedModelDescendant<UserProfileState>(

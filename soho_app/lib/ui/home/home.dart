@@ -39,7 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        if (Platform.isAndroid) {
+          // TODO: Move to background when back on home
+        }
+        return false;
+      },
       child: ScopedModel<HomePageState>(
         model: _homePageState,
         child: ScopedModelDescendant<HomePageState>(

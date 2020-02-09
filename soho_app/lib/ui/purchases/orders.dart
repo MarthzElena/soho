@@ -44,7 +44,12 @@ class _OrderScreenState extends State<OrderScreen> {
     }
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        if (Platform.isAndroid) {
+          locator<ProductItemState>().setBottomState(ProductItemState.GO_TO_CHECKOUT_TEXT);
+        }
+        return Platform.isAndroid;
+      },
       child: ScopedModel<OrderDetailState>(
         model: _model,
         child: ScopedModelDescendant<OrderDetailState>(

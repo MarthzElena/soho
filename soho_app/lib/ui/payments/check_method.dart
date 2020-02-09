@@ -51,7 +51,9 @@ class _CheckMethodsScreenState extends State<CheckMethodsScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: ScopedModel<CheckMethodsState>(
         model: _model,
         child: ScopedModelDescendant<CheckMethodsState>(

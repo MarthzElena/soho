@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/States/OnboardingState.dart';
+import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
@@ -30,7 +31,12 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
   Widget build(BuildContext context) {
 
     return WillPopScope(
-        onWillPop: () async => false,
+        onWillPop: () async {
+          if (Platform.isAndroid) {
+            locator<ProductItemState>().setBottomState(ProductItemState.GO_TO_CHECKOUT_TEXT);
+          }
+          return Platform.isAndroid;
+        },
         child: ScopedModel<OnboardingState>(
           model: model,
           child: ScopedModelDescendant<OnboardingState>(

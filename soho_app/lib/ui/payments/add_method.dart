@@ -34,7 +34,9 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: ScopedModel<AddMethodState>(
         model: _model,
         child: ScopedModelDescendant<AddMethodState>(

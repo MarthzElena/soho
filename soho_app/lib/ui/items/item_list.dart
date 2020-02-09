@@ -7,6 +7,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/States/CategoryItemsState.dart';
 import 'package:soho_app/SohoMenu/CategoryObject.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
+import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_detail.dart';
@@ -32,7 +33,12 @@ class _ItemListState extends State<ItemList> {
     );
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        if (Platform.isAndroid) {
+          locator<ProductItemState>().setBottomState(ProductItemState.GO_TO_CHECKOUT_TEXT);
+        }
+        return Platform.isAndroid;
+      },
       child: ScopedModel<CategoryItemsState>(
         model: _categoryItemsState,
         child: ScopedModelDescendant<CategoryItemsState>(

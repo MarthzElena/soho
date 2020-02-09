@@ -28,7 +28,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async => false,
+        onWillPop: () async {
+          return Platform.isAndroid;
+        },
         child: ScopedModel<UserProfileState>(
           model: _state,
           child: ScopedModelDescendant<UserProfileState>(

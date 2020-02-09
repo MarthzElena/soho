@@ -25,6 +25,8 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () {
+                      locator<SearchState>().clearResults();
+                      locator<SearchState>().showSpinner(false);
                       Navigator.pop(context);
                     },
                     child: Container(

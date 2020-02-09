@@ -43,7 +43,9 @@ class _AdminScreenState extends State<AdminScreen> {
   Widget build(BuildContext context) {
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: Scaffold(
         resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.white,

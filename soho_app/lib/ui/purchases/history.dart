@@ -73,7 +73,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
     orderItems = _prepareOrderElements();
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: Scaffold(
         resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.white,

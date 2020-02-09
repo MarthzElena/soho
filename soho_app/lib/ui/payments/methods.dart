@@ -60,7 +60,9 @@ class _MethodsScreen extends State<MethodsScreen> {
     }
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: ScopedModel<MethodsScreenState>(
         model: model,
         child: ScopedModelDescendant<MethodsScreenState>(

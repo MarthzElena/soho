@@ -41,7 +41,9 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: ScopedModel<EditCardState>(
         model: _model,
         child: ScopedModelDescendant<EditCardState>(
