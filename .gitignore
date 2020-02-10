@@ -3,3 +3,6 @@
 
 # iOS
 soho_app/ios/Podfile.lock
+
+# Android
+soho_app/android/key.properties
