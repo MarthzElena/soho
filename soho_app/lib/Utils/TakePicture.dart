@@ -44,6 +44,18 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
     } on CameraException catch (e) {
       print("Camera exception: ${e.toString()}");
       // TODO: Handle error
+      await showDialog(
+        context: context,
+        child: SimpleDialog(
+          title: Text("Error con la cámara"),
+          children: <Widget>[
+            SimpleDialogOption(
+              child: Text("OK"),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      );
     }
 
     if (mounted) {

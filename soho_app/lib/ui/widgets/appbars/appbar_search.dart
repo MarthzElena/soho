@@ -42,7 +42,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                     width: MediaQuery.of(context).size.width - 70.0,
                     height: 40.0,
                     child: TextField(
-                      onChanged: (value) {
+                      onChanged: (value) async {
                         var model = locator<SearchState>();
                         model.currentQuery = value;
                         if (value.isEmpty) {
@@ -52,7 +52,22 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                           // Show spinner while search is completed
                           model.showSpinner(true);
                           // Execute the search
-                          model.performSearch(value);
+                          await model.performSearch(value).then((error) async {
+                            if (error.isNotEmpty) {
+                              await showDialog(
+                                context: context,
+                                child: SimpleDialog(
+                                  title: Text(error),
+                                  children: <Widget>[
+                                    SimpleDialogOption(
+                                      child: Text("OK"),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          });
                         }
 
                       },

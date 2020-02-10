@@ -49,7 +49,8 @@ class AddMethodState extends Model {
     cvvController.text = "";
   }
 
-  void getCardInformation(BuildContext context) async {
+  Future<String> getCardInformation(BuildContext context) async {
+    var stringError = "";
     if (nameController.text.trim().isNotEmpty &&
         numberController.text.trim().isNotEmpty &&
         expDateController.text.trim().isNotEmpty &&
@@ -84,9 +85,11 @@ class AddMethodState extends Model {
 
             }).catchError((error) {
               setError(error, "Error in addStripeId: ");
+              stringError = "Error al agregar ID de Sripe";
             });
           }).catchError((error) {
             setError(error, "Error in createCustomerCall: ");
+            stringError = "Error al crear cliente de Stripe";
           });
         } else {
           // Add new card to existing customer
@@ -94,22 +97,27 @@ class AddMethodState extends Model {
           await addNewCardCall(request: request, customerId: Application.currentUser.stripeId).then((response) async {
             // Add card added to user info for UI purposes
             await completeCardInformation(true, context).catchError((error) {
-              setError(error, "Error in compcompleteCardInformation: ");
+              setError(error, "Error in completeCardInformation: ");
+              stringError = "Error al agregar datos de tarjeta al usuario";
             });
           }).catchError((error) {
             setError(error, "Error in addNewCardCall: ");
+            stringError = "Error al agregar nueva tarjeta";
           });
         }
 
 
       }).catchError((error) {
         setError(error, "Error in createTokenWithCard: ");
+        stringError = "Error al guardar tarjeta";
       });
     } else {
       // TODO: Show missing info error
+      stringError = "Falta información de la tarjeta";
     }
     // Make sure spinner is dismissed
     updateSpinner(show: false);
+    return stringError;
   }
 
   Future<void> completeCardInformation(bool result, BuildContext context) async {
@@ -124,72 +132,9 @@ class AddMethodState extends Model {
     Navigator.pop(context);
   }
 
-  void chargeCustomer({amounts, customerId, cardId}) async {
-    Future.delayed(Duration(seconds: 1)).then((_) {
-      chargeCustomerCall(
-        request: ChargeCustomerRequest(
-          amount: amounts,
-          currency: 'MXN',
-          description: '',
-          source: cardId,
-          customer: customerId,
-        ),
-      );
-    });
-  }
-
-  void addNewCard({customerId, source}) async {
-    Future.delayed(Duration(seconds: 1)).then((_) {
-      addNewCardCall(
-        request: AddNewCardRequest(source: source),
-        customerId: customerId,
-      );
-    });
-  }
-
-  void deleteCard({customerId, cardId}) async {
-    Future.delayed(Duration(seconds: 1)).then((_) {
-      deleteCardCall(
-        customerId: customerId,
-        cardId: cardId,
-      );
-    });
-  }
-
-  void updateCard({customerId, cardId}) async {
-    Future.delayed(Duration(seconds: 1)).then((_) {
-      updateCardCall(
-        request: UpdateCardRequest(
-          name: '',
-          expMonth: '',
-          expYear: '',
-        ),
-        customerId: customerId,
-        cardId: cardId,
-      );
-    });
-  }
-
-  void getAllCards({customerId}) async {
-    Future.delayed(Duration(seconds: 1)).then((_) {
-      getAllCardsCall(customerId: customerId);
-    });
-  }
-
   void checkIfCustomerExists({customerId, stripeTkn}) async {
     Future.delayed(Duration(seconds: 1)).then((_) {
       getCustomerCall(customerId: customerId);
-    });
-  }
-
-  void createCustomer({cardTkn}) async {
-    Future.delayed(Duration(seconds: 1)).then((_) {
-      createCustomerCall(
-        request: CreateCustomerRequest(
-          description: 'Customer for Soho',
-          source: cardTkn.tokenId,
-        ),
-      );
     });
   }
 

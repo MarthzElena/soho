@@ -43,7 +43,7 @@ class EditCardState extends Model {
     selectedCardId = cardId;
   }
 
-  Future<void> updateCardData() async {
+  Future<void> updateCardData(BuildContext context) async {
     if (Application.currentUser != null) {
       if (updatedMonth.isNotEmpty && updatedYear.isNotEmpty) {
         // Validate date is future date
@@ -65,10 +65,10 @@ class EditCardState extends Model {
 
             await executeUpdateRequest(cardMonth.toString(), cardYear.toString());
           } else {
-            showInvalidExpirationDate();
+            showInvalidExpirationDate(context);
           }
         } else {
-          showInvalidExpirationDate();
+          showInvalidExpirationDate(context);
         }
 
       } else {
@@ -101,8 +101,20 @@ class EditCardState extends Model {
     });
   }
 
-  void showInvalidExpirationDate() {
+  Future<void> showInvalidExpirationDate(BuildContext context) async {
     // TODO: Show UI that expiration date is invalid
     print("EXPIRATION DATE INVALID");
+    await showDialog(
+      context: context,
+      child: SimpleDialog(
+        title: Text('Fecha de vencimiento inválida'),
+        children: <Widget>[
+          SimpleDialogOption(
+            child: Text("OK"),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+    );
   }
 }

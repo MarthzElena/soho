@@ -184,7 +184,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                   mainAxisSize: MainAxisSize.max,
                                   children: <Widget>[
                                     GestureDetector(
-                                      onTap: () => model.facebookLoginPressed(context),
+                                      onTap: () {
+                                        model.facebookLoginPressed(context).then((error) async {
+                                          await showDialog(
+                                            context: context,
+                                            child: SimpleDialog(
+                                              title: Text(error),
+                                              children: <Widget>[
+                                                SimpleDialogOption(
+                                                  child: Text("OK"),
+                                                  onPressed: () => Navigator.pop(context),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                      },
                                       child: Container(
                                         width: MediaQuery.of(context).size.width / 2.5,
                                         height: 50.0,
@@ -204,7 +219,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                                     GestureDetector(
-                                      onTap: () => model.googleLoginPressed(context),
+                                      onTap: () async {
+                                        await model.googleLoginPressed(context).then((error) async {
+                                          await showDialog(
+                                            context: context,
+                                            child: SimpleDialog(
+                                              title: Text(error),
+                                              children: <Widget>[
+                                                SimpleDialogOption(
+                                                  child: Text("OK"),
+                                                  onPressed: () => Navigator.pop(context),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                      },
                                       child: Container(
                                         width: MediaQuery.of(context).size.width / 2.5,
                                         height: 50.0,

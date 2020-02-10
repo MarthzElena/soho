@@ -49,7 +49,24 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
               bottomNavigationBar: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
                 child: GestureDetector(
-                  onTap: () => model.getCardInformation(context),
+                  onTap: () async {
+                    model.getCardInformation(context).then((error) async {
+                      if (error.isNotEmpty) {
+                        await showDialog(
+                          context: context,
+                          child: SimpleDialog(
+                            title: Text(error),
+                            children: <Widget>[
+                              SimpleDialogOption(
+                                child: Text("OK"),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    });
+                  },
                   child: Container(
                     width: double.infinity,
                     height: 50.0,

@@ -146,7 +146,7 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                                 height: 60.0,
                                                 child: TextField(
                                                   controller: model.expDateController,
-                                                  onChanged: (value) {
+                                                  onChanged: (value) async {
                                                     var dateArray = value.split('/');
                                                     print(value);
                                                     if (dateArray.length == 2) {
@@ -155,6 +155,18 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                                         model.updatedMonth = newMonth;
                                                       } else {
                                                         // TODO: Show ui error
+                                                        await showDialog(
+                                                          context: context,
+                                                          child: SimpleDialog(
+                                                            title: Text("Fecha de expiración inválida"),
+                                                            children: <Widget>[
+                                                              SimpleDialogOption(
+                                                                child: Text("OK"),
+                                                                onPressed: () => Navigator.pop(context),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
                                                       }
 
                                                       model.updatedYear = dateArray[1];

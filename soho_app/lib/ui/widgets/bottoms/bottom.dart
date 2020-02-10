@@ -105,10 +105,33 @@ class _BottomBarState extends State<BottomBar> {
 
                     } else {
                       // TODO: Show error on missing payment
+                      await showDialog(
+                        context: context,
+                        child: SimpleDialog(
+                          title: Text("No hay método de pago"),
+                          children: <Widget>[
+                            SimpleDialogOption(
+                              child: Text("OK"),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        ),
+                      );
                     }
-
                   } else {
                     // TODO: Go to home? Show error!
+                    await showDialog(
+                      context: context,
+                      child: SimpleDialog(
+                        title: Text("No hay una órden en curso"),
+                        children: <Widget>[
+                          SimpleDialogOption(
+                            child: Text("OK"),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      ),
+                    );
                   }
 
                 } else {

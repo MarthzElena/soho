@@ -369,7 +369,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                             onTap: () async {
                                               if (!model.hasExchangedCode && Application.currentOrder != null) {
                                                 model.updateSpinner(show: true);
-                                                await locator<SquareHTTPRequest>().getDiscountObject(model.discountCode).then((discount) {
+                                                await locator<SquareHTTPRequest>().getDiscountObject(model.discountCode).then((discount) async {
                                                   model.updateSpinner(show: false);
                                                   if (discount != null) {
                                                     if (discount is SquareDiscountModelPercentage) {
@@ -383,7 +383,18 @@ class _OrderScreenState extends State<OrderScreen> {
                                                     }
                                                   } else {
                                                     // TODO: Error invalid discount
-                                                    print("NULL!");
+                                                    await showDialog(
+                                                      context: context,
+                                                      child: SimpleDialog(
+                                                        title: Text("No existe descuento para el código"),
+                                                        children: <Widget>[
+                                                          SimpleDialogOption(
+                                                            child: Text("OK"),
+                                                            onPressed: () => Navigator.pop(context),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
                                                   }
                                                 });
                                               }
@@ -636,7 +647,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                     color: Color(0xffE5E4E5),
                                   ),
                                   SizedBox(height: 24.0),
-                                  paymentMethod.isEmpty ? getNoPaymentMethod(context) : getPaymentMethod(paymentMethod, context), // TODO: Choose selected payment method if any
+                                  paymentMethod.isEmpty ? getNoPaymentMethod(context) : getPaymentMethod(paymentMethod, context),
                                   SizedBox(height: 36.0),
                                 ],
                               ),

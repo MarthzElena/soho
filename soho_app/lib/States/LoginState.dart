@@ -22,33 +22,50 @@ class LoginState extends Model {
 
   AppController authController = locator<AppController>();
 
-  Future<void> facebookLoginPressed(BuildContext context) async {
-    await authController.initiateFacebookLogin().then((_) {
+  Future<String> facebookLoginPressed(BuildContext context) async {
+    var errorValue = "";
+    await authController.initiateFacebookLogin().then((error) {
       if (Application.currentUser != null) {
         Navigator.pushNamed(context, Routes.homePage);
       } else {
         // TODO: Show some error
-        print("****** FACEBOOK Login ERROR");
+        errorValue = error.isEmpty ? "Error con Facebook Login" : error;
       }
     });
+    return errorValue;
   }
 
-  Future<void> googleLoginPressed(BuildContext context) async {
-    await authController.initiateGoogleLogin().then((_) {
+  Future<String> googleLoginPressed(BuildContext context) async {
+    var errorString = "";
+    await authController.initiateGoogleLogin().then((error) {
       if (Application.currentUser != null) {
         // TODO: Do something with this user?
         Navigator.pushNamed(context, Routes.homePage);
       } else {
         // TODO: Show some error
         print("****** Google Login ERROR");
+        errorString = error.isEmpty ? "Error con Google Login" : error;
       }
     });
+    return errorString;
   }
 
   Future<void> signInWithPhoneCredential(BuildContext context, AuthCredential credential) async {
-    final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential).catchError((signInError) {
+    final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential).catchError((signInError) async {
       print("SIGN IN ERROR: ${signInError.toString()}");
       // TODO: HAndle error
+      await showDialog(
+        context: context,
+        child: SimpleDialog(
+          title: Text("Error con el número de télefono"),
+          children: <Widget>[
+            SimpleDialogOption(
+              child: Text("OK"),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      );
     });
     var appController = locator<AppController>();
     if (user != null) {
@@ -94,7 +111,18 @@ class LoginState extends Model {
       }
     } else {
       print("*** ERROR with user");
-      // TODO: HAndle error
+      await showDialog(
+        context: context,
+        child: SimpleDialog(
+          title: Text('Error con usuario al iniciar sesión con teléfono'),
+          children: <Widget>[
+            SimpleDialogOption(
+              child: Text("OK"),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -130,9 +158,21 @@ class LoginState extends Model {
             print("**** Verificatioon COMPLETE! $phoneAuthCredential");
             await signInWithPhoneCredential(context, phoneAuthCredential);
           },
-          verificationFailed: (AuthException exception) {
+          verificationFailed: (AuthException exception) async {
             // TODO: Handle error
             print('Error with verification: ${exception.message}');
+            await showDialog(
+              context: context,
+              child: SimpleDialog(
+                title: Text('Error con verificación de teléfono'),
+                children: <Widget>[
+                  SimpleDialogOption(
+                    child: Text("OK"),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            );
           });
     } catch (e) {
       handleError(e, context);

@@ -89,11 +89,23 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                             // Call method to update from model
                             var model = locator<EditCardState>();
                             model.updateSpinner(show: true);
-                            await model.updateCardData().then((_) {
+                            await model.updateCardData(context).then((_) {
                               model.updateSpinner(show: false);
                               Navigator.pop(context);
-                            }).catchError((error) {
+                            }).catchError((error) async {
                               // TODO: Handle update card error
+                              await showDialog(
+                                context: context,
+                                child: SimpleDialog(
+                                  title: Text("Error al actualizar método de pago"),
+                                  children: <Widget>[
+                                    SimpleDialogOption(
+                                      child: Text("OK"),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                  ],
+                                ),
+                              );
                             });
                             break;
                         }

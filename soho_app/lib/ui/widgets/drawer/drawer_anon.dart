@@ -71,18 +71,33 @@ class NoUserMenuWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 16.0),
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           Navigator.pop(context);
                           locator<HomePageState>().updateSpinner(show: true);
-                          authController.initiateFacebookLogin().then((_) {
-                            locator<HomePageState>().updateSpinner(show: false);
-                            // Check first user
-                            var user = Application.currentUser;
-                            if (user != null && user.isFirstTime) {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+                          await authController.initiateFacebookLogin().then((error) async {
+                            if (error.isNotEmpty) {
+                              await showDialog(
+                                  context: context,
+                                  child: SimpleDialog(
+                                    title: Text(error),
+                                    children: <Widget>[
+                                      SimpleDialogOption(
+                                        child: Text("OK"),
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                    ],
+                                  ),
+                              );
+                            } else {
+                              locator<HomePageState>().updateSpinner(show: false);
+                              // Check first user
+                              var user = Application.currentUser;
+                              if (user != null && user.isFirstTime) {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+                              }
+                              // Make sure drawer is updated
+                              locator<HomePageState>().updateDrawer();
                             }
-                            // Make sure drawer is updated
-                            locator<HomePageState>().updateDrawer();
                           });
                         },
                         child: Container(
@@ -105,18 +120,36 @@ class NoUserMenuWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 16.0),
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           Navigator.pop(context);
                           locator<HomePageState>().updateSpinner(show: true);
-                          authController.initiateGoogleLogin().then((_) {
-                            locator<HomePageState>().updateSpinner(show: false);
-                            // Check first user
-                            var user = Application.currentUser;
-                            if (user != null && user.isFirstTime) {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+                          await authController.initiateGoogleLogin().then((error) async {
+                            if (error.isNotEmpty) {
+                              await showDialog(
+                                context: context,
+                                child: SimpleDialog(
+                                  title: Text(error),
+                                  children: <Widget>[
+                                    SimpleDialogOption(
+                                      child: Text("OK"),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              locator<HomePageState>().updateSpinner(
+                                  show: false);
+                              // Check first user
+                              var user = Application.currentUser;
+                              if (user != null && user.isFirstTime) {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        OnboardingScreen()));
+                              }
+                              // Make sure drawer is updated
+                              locator<HomePageState>().updateDrawer();
                             }
-                            // Make sure drawer is updated
-                            locator<HomePageState>().updateDrawer();
                           });
                         },
                         child: Container(

@@ -214,7 +214,22 @@ class _AdminScreenState extends State<AdminScreen> {
                   // Convert to dictionary
                   var orderDict = sohoOrder.getJson();
                   // Send to kitchen
-                  await locator<AppController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate);
+                  await locator<AppController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate).then((error) async {
+                    if (error.isNotEmpty) {
+                      await showDialog(
+                        context: context,
+                        child: SimpleDialog(
+                          title: Text(error),
+                          children: <Widget>[
+                            SimpleDialogOption(
+                              child: Text("OK"),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  });
                   setState(() {
                     barcode = "";
                   });
@@ -224,10 +239,34 @@ class _AdminScreenState extends State<AdminScreen> {
               if (!orderValid) {
                 // TODO: Show error for user not found
                 print("INVALID ORDER!");
+                await showDialog(
+                  context: context,
+                  child: SimpleDialog(
+                    title: Text("Orden inválida (Fecha es mayor a 7 días)"),
+                    children: <Widget>[
+                      SimpleDialogOption(
+                        child: Text("OK"),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                );
               }
             } else {
               // TODO: Show error for user not found
               print("INVALID ORDER! (User not found)");
+              await showDialog(
+                context: context,
+                child: SimpleDialog(
+                  title: Text("No existe usuario para la órden"),
+                  children: <Widget>[
+                    SimpleDialogOption(
+                      child: Text("OK"),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              );
             }
 
 
@@ -430,7 +469,7 @@ class _AdminScreenState extends State<AdminScreen> {
           Text(
             product.name,
             style: interMediumStyle(fSize: 14.0),
-          ), // TODO: Add variations!!
+          ),
         ],
       ));
       for (var variation in product.productVariations) {

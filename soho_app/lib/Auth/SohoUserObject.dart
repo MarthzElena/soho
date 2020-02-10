@@ -99,6 +99,11 @@ class SohoUserObject {
           );
           cardsReduced.add(info);
         }
+        if (cardsReduced.isEmpty) {
+          selectedPaymentMethod = "";
+        } else {
+          selectedPaymentMethod = cardsReduced.first.cardId;
+        }
       }).catchError((error) {
         print("ERROR getting cards: ${error.toString()}");
       });

@@ -61,7 +61,8 @@ class AppController {
     });
   }
 
-  Future<void> initiateFacebookLogin() async {
+  Future<String> initiateFacebookLogin() async {
+    var errorString = "";
     await facebookLogin.logInWithReadPermissions(['email']).then((facebookLoginResult) async {
 
       var facebookToken = facebookLoginResult.accessToken.token;
@@ -69,6 +70,7 @@ class AppController {
         case FacebookLoginStatus.error:
           print("Error");
           // TODO: Handle error
+          errorString = "Error con Facebook Login";
           break;
 
         case FacebookLoginStatus.cancelledByUser:
@@ -106,6 +108,7 @@ class AppController {
             });
           }).catchError((error) {
             // TODO: Handle error
+            errorString = "Error al iniciar sesión con Facebook";
           });
           break;
 
@@ -115,11 +118,14 @@ class AppController {
 
     }).catchError((error) {
       // TODO: Handle error
-      return null;
+      errorString = "Error con Facebook Login request";
+      return errorString;
     });
+    return errorString;
   }
 
-  Future<void> initiateGoogleLogin() async {
+  Future<String> initiateGoogleLogin() async {
+    var errorString = "";
     await googleSignIn.signIn().then((googleSignInAccount) async {
 
       await googleSignInAccount.authentication.then((googleAuth) async {
@@ -146,15 +152,19 @@ class AppController {
         }).catchError((fireBaseSignInError) {
           // TODO: Handle error
           print("Sign in Firebase error: ${fireBaseSignInError.toString()}");
+          errorString = "Error al iniciar sesión con Firebase";
         });
 
       }).catchError((authenticationError) {
         print("Authentication error: ${authenticationError.toString()}");
+        errorString = "Error al validar usuario";
       });
 
     }).catchError((signInError) {
       print("Sign in error: ${signInError.toString()}");
+      errorString = "Error durante Login";
     });
+    return errorString;
 
   }
 
@@ -371,7 +381,8 @@ class AppController {
     });
   }
 
-  Future<void> sendOrderToKitchen(Map<String, dynamic> order, DateTime completionDate) async {
+  Future<String> sendOrderToKitchen(Map<String, dynamic> order, DateTime completionDate) async {
+    var errorString = "";
     var kitchenOrdersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_KITCHEN_ORDERS);
 
     // Get user from DB
@@ -423,8 +434,9 @@ class AppController {
     }).catchError((error) {
       //TODO: handle error
       print("Error from updating kitchen orders database ${error.toString()}");
+      errorString = "Error al obtener órdenes de cocina de la base de datos";
     });
-
+    return errorString;
   }
 
   Future<List<SohoOrderQR>> getKitchenOrders() async {

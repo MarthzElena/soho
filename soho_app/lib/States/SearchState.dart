@@ -27,7 +27,8 @@ class SearchState extends Model{
     notifyListeners();
   }
 
-  void performSearch(String query) async {
+  Future<String> performSearch(String query) async {
+    var errorString = "";
     await locator<SquareHTTPRequest>().searchForItems(query).then((result) {
       // Only continue if query is current
       if (currentQuery == query) {
@@ -41,7 +42,9 @@ class SearchState extends Model{
     }).catchError((error) {
       // TODO: Handle error
       print("Search error: ${error.toString()}");
+      errorString = "Error al realizar búsqueda";
     });
+    return errorString;
   }
 
   List<Widget> _getWidgetList(List<SubcategoryItems> searchResult) {
