@@ -225,7 +225,7 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                           ),
                         ),
                       ),
-                      locator<EditCardState>().showSpinner ? SohoSpinner() : SizedBox.shrink(),
+                      model.showSpinner ? SohoSpinner() : SizedBox.shrink(),
                     ],
                   ),
                 ),

@@ -35,6 +35,12 @@ class AddMethodState extends Model {
   CreditCard card;
   Token cardToken = Token();
   var charge = {'0.01', 'MXN'};
+  bool showSpinner = false;
+
+  void updateSpinner({bool show}) {
+    showSpinner = show;
+    notifyListeners();
+  }
 
   void clearControllerValues() {
     nameController.text = "";
@@ -49,6 +55,8 @@ class AddMethodState extends Model {
         expDateController.text.trim().isNotEmpty &&
         cvvController.text.trim().isNotEmpty &&
         Application.currentUser != null) {
+      // Show spinner
+      updateSpinner(show: true);
       card = CreditCard(
         number: numberController.text.trim(),
         expMonth: int.parse(expDateController.text.substring(0, 2).trim()),
@@ -100,6 +108,8 @@ class AddMethodState extends Model {
     } else {
       // TODO: Show missing info error
     }
+    // Make sure spinner is dismissed
+    updateSpinner(show: false);
   }
 
   Future<void> completeCardInformation(bool result, BuildContext context) async {

@@ -222,6 +222,26 @@ class AppController {
     });
   }
 
+  Future<SohoUserObject> getUserFromID(String userId) async {
+    var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+    var user = usersRef.child(userId);
+    SohoUserObject sohoUser;
+
+    await user.once().then((item) async {
+      if (item != null && item.value != null) {
+        LinkedHashMap linkedMap = item.value;
+        Map<String, dynamic> user = linkedMap.cast();
+        if (user != null) {
+          // Create local user
+          sohoUser = SohoUserObject.fromJson(user);
+        }
+      }
+      return null;
+    });
+
+    return sohoUser;
+  }
+
   Future<void> updateUserInDatabase(Map<String, dynamic> user) async {
     // Get user from database
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
@@ -351,7 +371,6 @@ class AppController {
           for (var ongoing in ongoingOrders) {
             if (ongoing.completionDate == completionDate) {
               var completedOrder = orderUser.ongoingOrders.removeAt(index);
-              completedOrder.isQRCodeValid = false;
               orderUser.pastOrders.add(completedOrder);
               await updateUserInDatabase(orderUser.getJson());
               break;

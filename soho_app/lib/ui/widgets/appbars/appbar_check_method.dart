@@ -3,9 +3,13 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:soho_app/Network/delete_card/call.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/payments/add_method.dart';
+import 'package:soho_app/ui/payments/check_method.dart';
 import 'package:soho_app/ui/payments/edit_method.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
@@ -79,8 +83,19 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     )
                                   ),
                                   CupertinoActionSheetAction(
-                                    onPressed: () {
-                                      // TODO: Add delete card
+                                    onPressed: () async {
+                                      if (Application.currentUser != null) {
+                                        locator<CheckMethodsState>().updateSpinner(show: true);
+                                        var customerId = Application.currentUser.stripeId;
+                                        await deleteCardCall(customerId: customerId, cardId: selectedCardId).then((response) async {
+                                          if (response != null && response.deleted) {
+                                            await Application.currentUser.getCardsShortInfo();
+                                            locator<CheckMethodsState>().updateSpinner(show: false);
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          }
+                                        });
+                                      }
                                     },
                                     child: Text(
                                       'Borrar método de pago',
@@ -122,8 +137,19 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     ),
                                     Divider(),
                                     GestureDetector(
-                                      onTap: () {
-                                        // TODO: Add delete card
+                                      onTap: () async {
+                                        if (Application.currentUser != null) {
+                                          locator<CheckMethodsState>().updateSpinner(show: true);
+                                          var customerId = Application.currentUser.stripeId;
+                                          await deleteCardCall(customerId: customerId, cardId: selectedCardId).then((response) async {
+                                            if (response != null && response.deleted) {
+                                              await Application.currentUser.getCardsShortInfo();
+                                              locator<CheckMethodsState>().updateSpinner(show: false);
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+                                            }
+                                          });
+                                        }
                                       },
                                       child: Container(
                                         height: 56,
@@ -166,10 +192,6 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
         context,
         MaterialPageRoute(builder: (context) => EditMethodsScreen(nameOnCard: name, cardNumber: number, date: date, cardStripeId: selectedCardId))
     );
-  }
-
-  Future<void> deleteCreditCard() async {
-
   }
 
   @override

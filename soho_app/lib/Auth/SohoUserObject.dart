@@ -7,6 +7,7 @@ import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderQR.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:uuid/uuid.dart';
 
 enum CardType {
   visa,
@@ -93,7 +94,7 @@ class SohoUserObject {
             last4: item.last4,
             cardName: item.name,
             expiration: "$month / $year",
-            cardType: item.brand == "MasterCard" ? CardType.masterCard : CardType.visa, //TODO: Handle card type error (!= VISA || MasterCard)
+            cardType: item.brand.contains("MasterCard") ? CardType.masterCard : CardType.visa, //TODO: Handle card type error (!= VISA || MasterCard)
             cardId: item.id,
           );
           cardsReduced.add(info);
@@ -113,8 +114,6 @@ class SohoUserObject {
     order.selectedProducts.add(item);
     order.completionDate = DateTime.now();
     order.orderTotal = 0.0;
-    order.isOrderCompleted = true;
-    order.isQRCodeValid = true;
     var codeObject = SohoOrderQR(order: order, userId: userId, userName: username);
     var codeData = jsonEncode(codeObject.getJson());
     order.qrCodeData = codeData;
@@ -136,9 +135,8 @@ class SohoUserObject {
     for (var product in order.selectedProducts) {
       order.orderTotal += product.price;
     }
-    // Update completion value
-    order.isOrderCompleted = true;
-    order.isQRCodeValid = true;
+    // Add id to order
+    order.id = Uuid().v1();
     // Create QR Code  object
     var codeObject = SohoOrderQR(order: order, userId: userId, userName: username);
     var codeData = jsonEncode(codeObject.getJson());

@@ -8,6 +8,7 @@ import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_check_method.dart';
+import 'package:soho_app/ui/widgets/layouts/spinner.dart';
 
 class CheckMethodsScreen extends StatefulWidget {
 
@@ -21,8 +22,12 @@ class CheckMethodsState extends Model {
   String cardDate = '00/00';
   String cardType = 'MASTER CARD';
   String selectedCardId = "";
+  bool showSpinner = false;
 
-
+  void updateSpinner({bool show}) {
+    showSpinner = show;
+    notifyListeners();
+  }
 
   void updateValues(String name, String number, String date, String type, String cardId) {
     nameOnCard = name;
@@ -75,98 +80,103 @@ class _CheckMethodsScreenState extends State<CheckMethodsScreen> {
                     statusBarColor: Colors.transparent,
                     statusBarBrightness: Brightness.dark,
                   ),
-                  child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Stack(
-                        children: <Widget>[
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                SizedBox(height: 32.0),
-                                Text(
-                                  'Nombre en la tarjeta',
-                                  style: interStyle(fSize: 14.0),
-                                ),
-                                SizedBox(height: 8.0),
-                                Text(
-                                  model.nameOnCard,
-                                  style: interLightStyle(
-                                    fSize: 14.0,
-                                    color: Color(0xffC4C4C4),
-                                  ),
-                                ),
-                                SizedBox(height: 40.0),
-                                Text(
-                                  'Número de tarjeta',
-                                  style: interStyle(fSize: 14.0),
-                                ),
-                                SizedBox(height: 8.0),
-                                Text(
-                                  "**** **** **** ${model.cardNumber}",
-                                  style: interLightStyle(
-                                    fSize: 14.0,
-                                    color: Color(0xffC4C4C4),
-                                  ),
-                                ),
-                                SizedBox(height: 40.0),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Stack(
+                    children: <Widget>[
+                      SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Stack(
+                            children: <Widget>[
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Container(
-                                      width: MediaQuery.of(context).size.width / 2.5,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            'Fecha de Expiración',
-                                            style: interStyle(fSize: 14.0),
-                                          ),
-                                          SizedBox(height: 8.0),
-                                          Text(
-                                            model.cardDate,
-                                            style: interLightStyle(
-                                              fSize: 14.0,
-                                              color: Color(0xffC4C4C4),
-                                            ),
-                                          ),
-                                        ],
+                                    SizedBox(height: 32.0),
+                                    Text(
+                                      'Nombre en la tarjeta',
+                                      style: interStyle(fSize: 14.0),
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    Text(
+                                      model.nameOnCard,
+                                      style: interLightStyle(
+                                        fSize: 14.0,
+                                        color: Color(0xffC4C4C4),
                                       ),
                                     ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width / 2.5,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            'CVV',
-                                            style: interStyle(fSize: 14.0),
-                                          ),
-                                          SizedBox(height: 8.0),
-                                          Text(
-                                            "***",
-                                            style: interLightStyle(
-                                              fSize: 14.0,
-                                              color: Color(0xffC4C4C4),
-                                            ),
-                                          ),
-                                        ],
+                                    SizedBox(height: 40.0),
+                                    Text(
+                                      'Número de tarjeta',
+                                      style: interStyle(fSize: 14.0),
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    Text(
+                                      "**** **** **** ${model.cardNumber}",
+                                      style: interLightStyle(
+                                        fSize: 14.0,
+                                        color: Color(0xffC4C4C4),
                                       ),
                                     ),
+                                    SizedBox(height: 40.0),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Container(
+                                          width: MediaQuery.of(context).size.width / 2.5,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                'Fecha de Expiración',
+                                                style: interStyle(fSize: 14.0),
+                                              ),
+                                              SizedBox(height: 8.0),
+                                              Text(
+                                                model.cardDate,
+                                                style: interLightStyle(
+                                                  fSize: 14.0,
+                                                  color: Color(0xffC4C4C4),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width / 2.5,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                'CVV',
+                                                style: interStyle(fSize: 14.0),
+                                              ),
+                                              SizedBox(height: 8.0),
+                                              Text(
+                                                "***",
+                                                style: interLightStyle(
+                                                  fSize: 14.0,
+                                                  color: Color(0xffC4C4C4),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 32.0),
                                   ],
                                 ),
-                                SizedBox(height: 32.0),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      model.showSpinner ? SohoSpinner() : SizedBox.shrink(),
+                    ],
                   ),
                 ),
               ),

@@ -10,6 +10,7 @@ import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderQR.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
@@ -202,13 +203,35 @@ class _AdminScreenState extends State<AdminScreen> {
           onTap: () async {
             // Convert barcode to order
             var sohoOrder = SohoOrderQR.fromJson(json.decode(barcode));
-            // Convert to dictionary
-            var orderDict = sohoOrder.getJson();
-            // Send to kitchen
-            await locator<AppController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate);
-            setState(() {
-              barcode = "";
-            });
+            // First check that order hasn't been exchanged
+            var userForOrder = await locator<AppController>().getUserFromID(sohoOrder.userId);
+            if (userForOrder != null) {
+              var orderValid = false;
+              for (var order in userForOrder.ongoingOrders) {
+                if (order.id == sohoOrder.order.id) {
+                  // Found ongoing order
+                  orderValid = true;
+                  // Convert to dictionary
+                  var orderDict = sohoOrder.getJson();
+                  // Send to kitchen
+                  await locator<AppController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate);
+                  setState(() {
+                    barcode = "";
+                  });
+                  break;
+                }
+              }
+              if (!orderValid) {
+                // TODO: Show error for user not found
+                print("INVALID ORDER!");
+              }
+            } else {
+              // TODO: Show error for user not found
+              print("INVALID ORDER! (User not found)");
+            }
+
+
+
           },
           child: Container(
             width: double.infinity,
