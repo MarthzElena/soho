@@ -25,10 +25,11 @@ class HistoryScreen extends StatefulWidget {
 class OrderListElement {
   String price = "";
   String date = "";
+  String validDays = "0";
   String codeData = "";
   List<String> itemNames;
   SohoOrderObject originalOrder;
-  OrderListElement(this.price, this.date, this.codeData, this.itemNames, this.originalOrder);
+  OrderListElement(this.price, this.date, this.codeData, this.itemNames, this.originalOrder, this.validDays);
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
@@ -53,7 +54,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
             var orderItem = product.name;
             itemsList.add(orderItem);
           }
-          var listElement = OrderListElement("\$${order.orderTotal}0", order.getCompletedDateWithTime(), order.qrCodeData, itemsList, order);
+          var daysDifference = DateTime.now().difference(order.completionDate).inDays;
+          var daysLeft = 7 - daysDifference;
+          var daysLeftString = daysLeft <= 0 ? "0" : daysLeft.toString();
+          var listElement = OrderListElement("\$${order.orderTotal}0", order.getCompletedDateWithTime(), order.qrCodeData, itemsList, order, daysLeftString);
           list.add(listElement);
         }
       }
@@ -97,8 +101,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
               physics: BouncingScrollPhysics(),
               child: Application.currentUser != null ?
               FutureBuilder(
-                future: locator<AppController>().saveUserToDatabase(Application.currentUser.getJson()),
+                future: locator<AppController>().getUser(forId: Application.currentUser.userId, updateCurrentUser: true),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  orderItems = _prepareOrderElements();
                   if (snapshot.hasData && snapshot.data != null) {
                     return _getDefaultWidget();
                   } else {
@@ -330,7 +335,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Código QR listo',
+                        'Quedan ${element.validDays} días para canjear el código QR',
                         style: interBoldStyle(
                           fSize: 14.0,
                           color: Color(0xff5A6265),

@@ -204,7 +204,7 @@ class _AdminScreenState extends State<AdminScreen> {
             // Convert barcode to order
             var sohoOrder = SohoOrderQR.fromJson(json.decode(barcode));
             // First check that order hasn't been exchanged
-            var userForOrder = await locator<AppController>().getUserFromID(sohoOrder.userId);
+            var userForOrder = await locator<AppController>().getUser(forId: sohoOrder.userId, updateCurrentUser: false);
             if (userForOrder != null) {
               var orderValid = false;
               for (var order in userForOrder.ongoingOrders) {

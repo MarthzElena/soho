@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderQR.dart';
 import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
@@ -222,9 +223,9 @@ class AppController {
     });
   }
 
-  Future<SohoUserObject> getUserFromID(String userId) async {
+  Future<SohoUserObject> getUser({String forId, bool updateCurrentUser}) async {
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
-    var user = usersRef.child(userId);
+    var user = usersRef.child(forId);
     SohoUserObject sohoUser;
 
     await user.once().then((item) async {
@@ -234,6 +235,25 @@ class AppController {
         if (user != null) {
           // Create local user
           sohoUser = SohoUserObject.fromJson(user);
+          // Validate ongoing orders are still valid
+          List<SohoOrderObject> invalidOrder = List<SohoOrderObject>();
+          for (var order in sohoUser.ongoingOrders) {
+            var orderDate = order.completionDate;
+            if (!isQrCodeValid(orderDate)) {
+              sohoUser.pastOrders.add(order);
+              invalidOrder.add(order);
+            }
+          }
+          // Remove invalid orders
+          for (var oldOrder in invalidOrder) {
+            sohoUser.ongoingOrders.remove(oldOrder);
+          }
+          if (invalidOrder.isNotEmpty) {
+            await updateUserInDatabase(sohoUser.getJson());
+            if (updateCurrentUser) {
+              Application.currentUser = sohoUser;
+            }
+          }
         }
       }
       return null;
@@ -252,7 +272,7 @@ class AppController {
 
   }
 
-  Future<bool> saveUserToDatabase(Map<String, dynamic> user) async {
+  Future<void> saveUserToDatabase(Map<String, dynamic> user) async {
     // Check if user already exists in DataBase, and save if not
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
     var userId = user[SohoUserObject.keyUserId];
@@ -290,10 +310,7 @@ class AppController {
           }
         }
       }
-      return true;
     });
-
-    return true;
   }
 
   Future<void> getFeaturedImageFromStorage() async {
@@ -436,7 +453,7 @@ class AppController {
     final daysDifference = currentDate.difference(codeGenerated).inDays;
     final daysAbsolute = daysDifference.abs();
 
-    return daysAbsolute <= 8;
+    return daysAbsolute <= 7;
   }
 
 }
