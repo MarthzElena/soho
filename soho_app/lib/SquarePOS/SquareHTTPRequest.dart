@@ -92,6 +92,25 @@ class SquareHTTPRequest {
 
   }
 
+  Future<ProductItemObject> getProductById(String productId, String categoryId, String categoryName) async {
+    ProductItemObject result;
+    // First get category details
+    CategoryItemObject categoryItems = await getCategoryDetail(categoryId, categoryName);
+    // Get item from list with product ID
+    for (var item in categoryItems.allItems) {
+      for (var product in item.items) {
+        if (product.squareID == productId) {
+          var isAvailable = await _isProductAvailable(product: product);
+          if (isAvailable != null) {
+            result = isAvailable;
+          }
+          break;
+        }
+      }
+    }
+    return result;
+  }
+
   /// Return a list of CategoryItemObjects to populate the category detail view
   ///
   Future<CategoryItemObject> getCategoryDetail(String categoryId, String categoryName) async {

@@ -7,11 +7,14 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
+import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/ui/items/item_detail.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_history.dart';
+import 'package:soho_app/ui/widgets/layouts/spinner.dart';
 
 class HistoryScreen extends StatefulWidget {
   final bool isOngoingOrder;
@@ -27,9 +30,17 @@ class OrderListElement {
   String date = "";
   String validDays = "0";
   String codeData = "";
-  List<String> itemNames;
+  List<OrderSelectedProduct> items;
   SohoOrderObject originalOrder;
-  OrderListElement(this.price, this.date, this.codeData, this.itemNames, this.originalOrder, this.validDays);
+  OrderListElement(this.price, this.date, this.codeData, this.items, this.originalOrder, this.validDays);
+}
+
+class OrderSelectedProduct {
+  String name = "";
+  String squareProductId = "";
+  String squareCategoryId = "";
+  String categoryName = "";
+  OrderSelectedProduct(this.name, this.squareProductId, this.squareCategoryId, this.categoryName);
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
@@ -42,6 +53,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
   List<OrderListElement> orderItems = List<OrderListElement>();
 
   bool showCode = true;
+  bool showSpinner = false;
+
+  void updateSpinner({bool show}) {
+    setState(() {
+      showSpinner = show;
+    });
+  }
 
   List<OrderListElement> _prepareOrderElements() {
     var list = List<OrderListElement>();
@@ -49,9 +67,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       var orders = selectedTab == 0 ? Application.currentUser.pastOrders : Application.currentUser.ongoingOrders;
       if (orders != null) {
         for (var order in orders) {
-          var itemsList = List<String>();
+          var itemsList = List<OrderSelectedProduct>();
           for (var product in order.selectedProducts) {
-            var orderItem = product.name;
+            var orderItem = OrderSelectedProduct(product.name, product.productID, product.categoryID, product.categoryName);
             itemsList.add(orderItem);
           }
           var daysDifference = DateTime.now().difference(order.completionDate).inDays;
@@ -97,30 +115,35 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     statusBarColor: Colors.transparent,
                     statusBarBrightness: Brightness.dark,
                   ),
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Application.currentUser != null ?
-              FutureBuilder(
-                future: locator<AppController>().getUser(forId: Application.currentUser.userId, updateCurrentUser: true),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  orderItems = _prepareOrderElements();
-                  if (snapshot.hasData && snapshot.data != null) {
-                    return _getDefaultWidget();
-                  } else {
-                    return Center(
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(height: 150.0),
-                          Container(
-                            child: CircularProgressIndicator(),
-                          ),
-                          SizedBox(height: 150.0),
-                        ],
-                      ),
-                    );
-                  }
-                }
-              ) : _getDefaultWidget(),
+            child: Stack(
+              children: <Widget>[
+                SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Application.currentUser != null ?
+                  FutureBuilder(
+                      future: locator<AppController>().getUser(forId: Application.currentUser.userId, updateCurrentUser: true),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        orderItems = _prepareOrderElements();
+                        if (snapshot.hasData && snapshot.data != null) {
+                          return _getDefaultWidget();
+                        } else {
+                          return Center(
+                            child: Column(
+                              children: <Widget>[
+                                SizedBox(height: 150.0),
+                                Container(
+                                  child: CircularProgressIndicator(),
+                                ),
+                                SizedBox(height: 150.0),
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                  ) : _getDefaultWidget(),
+                ),
+                showSpinner ? SohoSpinner() : SizedBox.shrink(),
+              ],
             ),
           ),
         ),
@@ -235,7 +258,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
               SizedBox(height: 16.0),
               Column(
-                children: _getProductsList(element.itemNames),
+                children: _getProductsList(element.items, context),
               ),
               SizedBox(height: 16.0),
               Divider(
@@ -360,7 +383,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
               SizedBox(height: 16.0),
               Column(
-                children: _getProductsList(element.itemNames),
+                children: _getProductsList(element.items, context),
               ),
               SizedBox(height: 16.0),
               Divider(
@@ -464,32 +487,62 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return list;
   }
 
-  List<Widget> _getProductsList(List<String> products) {
+  List<Widget> _getProductsList(List<OrderSelectedProduct> products, BuildContext context) {
     List<Widget> list = List<Widget>();
     for (var product in products) {
-      list.add(Row(
-        children: <Widget>[
-          Container(
-            width: 24,
-            height: 24.0,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Color(0xffE5E4E5),
+      list.add(GestureDetector(
+        onTap: () async {
+          updateSpinner(show: true);
+          await locator<SquareHTTPRequest>().getProductById(product.squareProductId, product.squareCategoryId, product.categoryName).then((product) async {
+            updateSpinner(show: false);
+            if (product != null) {
+              Navigator.pushReplacement(context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => ProductDetail(
+                    currentProduct: product,
+                  ),
+                ),
+              );
+            } else {
+              await showDialog(
+                context: context,
+                child: SimpleDialog(
+                  title: Text("Product no longer available"),
+                  children: <Widget>[
+                    SimpleDialogOption(
+                      child: Text("OK"),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              );
+            }
+          });
+        },
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 24,
+              height: 24.0,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Color(0xffE5E4E5),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  '1',
+                  style: interMediumStyle(fSize: 14.0),
+                ),
               ),
             ),
-            child: Center(
-              child: Text(
-                '1',
-                style: interMediumStyle(fSize: 14.0),
-              ),
+            SizedBox(width: 16.0),
+            Text(
+              product.name,
+              style: interMediumStyle(fSize: 14.0),
             ),
-          ),
-          SizedBox(width: 16.0),
-          Text(
-            product,
-            style: interMediumStyle(fSize: 14.0),
-          ),
-        ],
+          ],
+        ),
       ));
       list.add(SizedBox(height: 5.0));
 
