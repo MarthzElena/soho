@@ -54,6 +54,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   bool showCode = true;
   bool showSpinner = false;
+  String emailBody = "";
 
   void updateSpinner({bool show}) {
     setState(() {
@@ -273,56 +274,26 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ),
               ),
               SizedBox(height: 16.0),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        // TODO: Add Re-order action
-
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: Color(0xffE51F4F),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Ordenar de nuevo',
-                            style: interBoldStyle(
-                              fSize: 14.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+              GestureDetector(
+                onTap: () async {
+                  await sendEmail(context);
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 50.0,
+                  decoration: BoxDecoration(
+                    color: Color(0xffF0AB31),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '¿Necesitas ayuda?',
+                      style: interBoldStyle(
+                        fSize: 14.0,
+                        color: Colors.white,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: null,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: Color(0xffF0AB31),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            '¿Necesitas ayuda?',
-                            style: interBoldStyle(
-                              fSize: 14.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
               SizedBox(height: 52.0),
@@ -429,8 +400,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        // TODO: open mailto
+                      onTap: () async {
+                        await sendEmail(context);
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width / 2.5,
@@ -550,5 +521,91 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return list;
   }
 
+  Future<void> sendEmail(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "¿Necesitas ayuda?",
+            style: interThinStyle(fSize: 24.0),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  'Envíanos un correo y nos pondremos en contacto contigo.',
+                  style: interBoldStyle(fSize: 14.0),
+                ),
+                SizedBox(height: 15.0),
+                TextField(
+                  onChanged: (value) {
+                    emailBody = value;
+                  },
+                  textAlignVertical: TextAlignVertical.center,
+                  textAlign: TextAlign.start,
+                  style: interLightStyle(
+                    fSize: 14.0,
+                  ),
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(10.0),
+                    hintText: 'Escribe aquí...',
+                    counterText: "",
+                    hintStyle: interLightStyle(
+                      fSize: 14.0,
+                      color: Color(0xffC4C4C4),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(3.0),
+                      borderSide: const BorderSide(
+                        color: Color(0xffE5E4E5),
+                        width: 1.0,
+                      ),
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color(0xffE5E4E5),
+                        width: 1.0,
+                      ),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color(0xffE5E4E5),
+                        width: 1.0,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15.0),
+                GestureDetector(
+                  onTap: () {
+                    //TODO: Send email
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: Color(0xffF0AB31),
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Enviar correo',
+                        style: interBoldStyle(
+                          fSize: 14.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    );
+  }
 
 }
