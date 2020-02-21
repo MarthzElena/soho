@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>109154806584-je0cfh626v3kh4bo47jphp8r1jmekq7u.apps.googleusercontent.com</string>
+	<string>109154806584-asthbs4ead87mdi679tik352hq75h41b.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.109154806584-je0cfh626v3kh4bo47jphp8r1jmekq7u</string>
+	<string>com.googleusercontent.apps.109154806584-asthbs4ead87mdi679tik352hq75h41b</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>109154806584-atqdh72bhqqh5e0uh8atccgs2178efou.apps.googleusercontent.com</string>
+	<string>109154806584-fs9mlctstplo29545l1rk6chcsauqd54.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBzwsGALXcO1FjY-Rv9QGGhFj8rFPJnc5E</string>
 	<key>GCM_SENDER_ID</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>mx.tafka.sohoApp</string>
+	<string>mx.tafka.soho</string>
 	<key>PROJECT_ID</key>
 	<string>soho-app-test</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:109154806584:ios:4b771ea721703453</string>
+	<string>1:109154806584:ios:6fb6b18e080adac68f6fcd</string>
 	<key>DATABASE_URL</key>
 	<string>https://soho-app-test.firebaseio.com</string>
 </dict>

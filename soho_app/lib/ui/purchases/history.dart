@@ -542,6 +542,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   onChanged: (value) {
                     emailBody = value;
                   },
+                  scrollPhysics: BouncingScrollPhysics(),
+                  minLines: 10,
+                  maxLines: 15,
                   textAlignVertical: TextAlignVertical.center,
                   textAlign: TextAlign.start,
                   style: interLightStyle(
