@@ -167,27 +167,30 @@ class CategoryItemsState extends Model {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      product.name,
-                      style: interBoldStyle(fSize: 16.0),
-                    ),
-                    SizedBox(height: 4.0),
-                    Text(
-                      product.description,
-                      style: interLightStyle(
-                        fSize: 12.0,
-                        color: Color(0xff5A6265),
+                Container(
+                  width: MediaQuery.of(context).size.width - 95 - 34,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        product.name,
+                        style: interBoldStyle(fSize: 16.0),
                       ),
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      "\$${product.price}0",
-                      style: interMediumStyle(fSize: 16.0),
-                    )
-                  ],
+                      SizedBox(height: 4.0),
+                      Text(
+                        product.description,
+                        style: interLightStyle(
+                          fSize: 12.0,
+                          color: Color(0xff5A6265),
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Text(
+                        "\$${product.price}0",
+                        style: interMediumStyle(fSize: 16.0),
+                      )
+                    ],
+                  ),
                 ),
                 Container(
                   height: 95,

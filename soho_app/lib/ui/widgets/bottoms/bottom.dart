@@ -11,6 +11,7 @@ import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/auth/login.dart';
 import 'package:soho_app/ui/purchases/thanks.dart';
 
 class BottomBar extends StatefulWidget {
@@ -67,7 +68,10 @@ class _BottomBarState extends State<BottomBar> {
                     Navigator.pushNamed(context, Routes.orderDetail);
                   } else {
                     // Go to login
-                    Navigator.pushNamed(context, Routes.login);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => LoginScreen())
+                    );
+
                   }
                   // Set bottom to complete order
                   _productItemModel.setBottomState(ProductItemState.COMPLETE_ORDER);

@@ -3,7 +3,7 @@ import 'package:soho_app/States/OnboardingState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
-import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/auth/login.dart';
 import 'package:soho_app/ui/purchases/onboarding_order.dart';
 import 'package:soho_app/ui/purchases/onboarding_thanks.dart';
 
@@ -54,7 +54,9 @@ class _OnboardingBottom extends State<OnboardingBottom> {
                   Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingOrderScreen()));
                 } else {
                   // Go to login
-                  Navigator.pushNamed(context, Routes.login);
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => LoginScreen())
+                  );
                 }
                 break;
               case "Realizar pedido ahora":

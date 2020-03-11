@@ -4,7 +4,7 @@ import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
-import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/auth/login.dart';
 import 'package:soho_app/ui/items/onboarding_item.dart';
 
 class NoUserMenuWidget extends StatelessWidget {
@@ -49,7 +49,9 @@ class NoUserMenuWidget extends StatelessWidget {
                       SizedBox(height: 16.0),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, Routes.login);
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => LoginScreen())
+                          );
                         },
                         child: Container(
                           width: double.infinity,
