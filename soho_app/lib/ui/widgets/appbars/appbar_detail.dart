@@ -4,6 +4,7 @@ import 'package:soho_app/States/CategoryItemsState.dart';
 import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
 class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -57,7 +58,9 @@ class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
                             ),
                             SizedBox(width: 20.0),
                             GestureDetector(
-                              onTap: null,
+                              onTap: () {
+                                Navigator.pushNamed(context, Routes.search);
+                              },
                               child: Container(
                                 width: 45.0,
                                 height: 45.0,

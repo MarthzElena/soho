@@ -610,7 +610,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           toastLength: Toast.LENGTH_SHORT,
                           timeInSecForIos: 2,
                           gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.black26,
+                          backgroundColor: Colors.black38,
                           textColor: Colors.white
                         );
 

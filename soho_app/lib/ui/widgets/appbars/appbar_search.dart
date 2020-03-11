@@ -52,7 +52,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                           // Show spinner while search is completed
                           model.showSpinner(true);
                           // Execute the search
-                          await model.performSearch(value).then((error) async {
+                          await model.performSearch(value, context).then((error) async {
                             if (error.isNotEmpty) {
                               await showDialog(
                                 context: context,

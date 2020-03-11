@@ -2,7 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemObject.dart';
+import 'package:soho_app/States/SearchState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/items/item_detail.dart';
 
 class CategoryItemsState extends Model {
@@ -28,6 +30,7 @@ class CategoryItemsState extends Model {
       listDistribution = Image.asset('assets/category_detail/grid_view.png');
       widgetsList = _getProductWidgetList(_categoryItems, context);
     }
+    locator<SearchState>().updateDistribution(isDistributionList);
     notifyListeners();
   }
 

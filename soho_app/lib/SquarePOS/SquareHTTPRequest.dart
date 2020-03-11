@@ -452,7 +452,7 @@ class SquareHTTPRequest {
   }
 
   String _builsSearchItemsByNameRequestBody(String name) {
-    return jsonEncode({"object_types": ["ITEM"],"query": {"prefix_query": {"attribute_name": "name","attribute_prefix": "$name"}},"limit": 100});
+    return jsonEncode({"object_types": ["ITEM"],"query": {"text_query": {"keywords": ["$name"]}},"limit": 100});
   }
 
 }
