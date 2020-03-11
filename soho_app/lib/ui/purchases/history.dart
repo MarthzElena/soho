@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mailer/smtp_server.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soho_app/Auth/AppController.dart';
-import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Application.dart';
@@ -15,6 +15,8 @@ import 'package:soho_app/ui/items/item_detail.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_history.dart';
 import 'package:soho_app/ui/widgets/layouts/spinner.dart';
+import 'package:mailer/mailer.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HistoryScreen extends StatefulWidget {
   final bool isOngoingOrder;
@@ -581,9 +583,54 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ),
                 SizedBox(height: 15.0),
                 GestureDetector(
-                  onTap: () {
-                    //TODO: Send email
-                    Navigator.pop(context);
+                  onTap: () async {
+                    // Make sure there's a logged in user
+                    var loggedUserName = Application.currentUser != null ? Application.currentUser.username : "";
+                    var loggedUserEmail = Application.currentUser != null ? Application.currentUser.email : "";
+                    if (loggedUserEmail.isNotEmpty && loggedUserName.isNotEmpty) {
+                      // Send email
+                      String username = 'sohotestemail@gmail.com';
+                      String pwd = 'J\$8gsgUAhc5\\d4qX';
+                      final smtpServer = gmail(username, pwd);
+                      final message = Message();
+                      message.from = Address(loggedUserEmail, loggedUserName);
+                      message.recipients.add('sohocoffeetea@gmail.com');
+                      message.subject = "Mensaje de soporte de $loggedUserName [$loggedUserEmail]";
+                      message.text = emailBody;
+                      message.envelopeFrom = loggedUserEmail;
+
+                      try {
+                        Navigator.pop(context);
+                        updateSpinner(show: true);
+                        await send(message, smtpServer);
+                        updateSpinner(show: false);
+                        // Notify user
+                        Fluttertoast.showToast(
+                          msg: "Mensaje enviado.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          timeInSecForIos: 2,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.black26,
+                          textColor: Colors.white
+                        );
+
+                      } on MailerException catch(e) {
+                        print("Error with email: ${e.message}");
+                        // TODO: Show error!
+                        Fluttertoast.showToast(
+                            msg: "Error al enviar email.",
+                            toastLength: Toast.LENGTH_LONG,
+                            timeInSecForIos: 4,
+                            gravity: ToastGravity.BOTTOM,
+                            backgroundColor: Colors.redAccent,
+                            textColor: Colors.white
+                        );
+                        Navigator.pop(context);
+                      }
+                    } else {
+                      // TODO: Show error!
+                    }
+
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
