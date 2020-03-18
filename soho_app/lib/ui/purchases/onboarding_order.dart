@@ -7,6 +7,7 @@ import 'package:soho_app/States/OnboardingState.dart';
 import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/ui/payments/methods.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_simple.dart';
 import 'package:soho_app/ui/widgets/bottoms/onboarding_bottom.dart';
@@ -249,7 +250,7 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        // TODO: Go to add payment method & Update UI
+                                        Navigator.push(context, MaterialPageRoute(builder: (ctxt) => MethodsScreen(selectingPayment: true)));
                                       },
                                       child: Text(
                                         'Agregar',
