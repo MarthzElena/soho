@@ -44,11 +44,11 @@ class _SplashScreenState extends State<SplashScreen> {
               if (firstTime) {
                 Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
               } else {
-                Navigator.of(context).pushNamed(Routes.homePage);
+                Navigator.of(context).pushReplacementNamed(Routes.homePage);
               }
             } else {
               // If no user is logged in go directly to Home Page
-              Navigator.of(context).pushNamed(Routes.homePage);
+              Navigator.of(context).pushReplacementNamed(Routes.homePage);
             }
           }
         });

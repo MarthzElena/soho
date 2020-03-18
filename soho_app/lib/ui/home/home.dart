@@ -40,10 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        if (Platform.isAndroid) {
-          // TODO: Move to background when back on home
-        }
-        return false;
+        return Platform.isAndroid;
       },
       child: ScopedModel<HomePageState>(
         model: _homePageState,
