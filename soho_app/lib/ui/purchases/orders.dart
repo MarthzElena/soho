@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
@@ -382,18 +383,13 @@ class _OrderScreenState extends State<OrderScreen> {
                                                       model.updateTotalFixedDiscount(amount);
                                                     }
                                                   } else {
-                                                    // TODO: Error invalid discount
-                                                    await showDialog(
-                                                      context: context,
-                                                      child: SimpleDialog(
-                                                        title: Text("No existe descuento para el código"),
-                                                        children: <Widget>[
-                                                          SimpleDialogOption(
-                                                            child: Text("OK"),
-                                                            onPressed: () => Navigator.pop(context),
-                                                          ),
-                                                        ],
-                                                      ),
+                                                    Fluttertoast.showToast(
+                                                        msg: "Código inválido, no existe descuento para el código.",
+                                                        toastLength: Toast.LENGTH_LONG,
+                                                        timeInSecForIos: 4,
+                                                        gravity: ToastGravity.BOTTOM,
+                                                        backgroundColor: Color(0x99E51F4F),
+                                                        textColor: Colors.white
                                                     );
                                                   }
                                                 });

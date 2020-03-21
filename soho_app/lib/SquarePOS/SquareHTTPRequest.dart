@@ -291,7 +291,6 @@ class SquareHTTPRequest {
       var countList = List.from(countObject);
       if (countList.length > 0) {
         var countItem = countList[0];
-        var availability = countItem["state"]; // TODO: Check that state check is not needed
         var quantity = int.tryParse(countItem["quantity"]) ?? 0;
         if (quantity > 0) {
           // Add inventory values to variation
@@ -315,7 +314,6 @@ class SquareHTTPRequest {
       var countList = List.from(countObject);
       if (countList.length > 0) {
         var countItem = countList[0];
-        var availability = countItem["state"]; // TODO: Check that state check is not needed
         var quantity = int.tryParse(countItem["quantity"]) ?? 0;
         if (quantity > 0) {
           // Add inventory values to variation

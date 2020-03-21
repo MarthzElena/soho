@@ -1,6 +1,7 @@
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -42,19 +43,13 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
     try {
       await _controller.initialize();
     } on CameraException catch (e) {
-      print("Camera exception: ${e.toString()}");
-      // TODO: Handle error
-      await showDialog(
-        context: context,
-        child: SimpleDialog(
-          title: Text("Error con la cámara"),
-          children: <Widget>[
-            SimpleDialogOption(
-              child: Text("OK"),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ),
+      Fluttertoast.showToast(
+          msg: "Error con la cámara del dispositivo.",
+          toastLength: Toast.LENGTH_LONG,
+          timeInSecForIos: 4,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Color(0x99E51F4F),
+          textColor: Colors.white
       );
     }
 

@@ -626,7 +626,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         Navigator.pop(context);
                       }
                     } else {
-                      // TODO: Show error!
+                      Fluttertoast.showToast(
+                          msg: "No se encontró un usuario activo.",
+                          toastLength: Toast.LENGTH_LONG,
+                          timeInSecForIos: 4,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Color(0x99E51F4F),
+                          textColor: Colors.white
+                      );
                     }
                   },
                   child: Container(

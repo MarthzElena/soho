@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/States/EditCardState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
@@ -148,24 +149,19 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                                   controller: model.expDateController,
                                                   onChanged: (value) async {
                                                     var dateArray = value.split('/');
-                                                    print(value);
+                                                    print("EDIT::: $value");
                                                     if (dateArray.length == 2) {
                                                       var newMonth = dateArray[0];
                                                       if (int.parse(newMonth) > 0 && int.parse(newMonth) < 13) {
                                                         model.updatedMonth = newMonth;
                                                       } else {
-                                                        // TODO: Show ui error
-                                                        await showDialog(
-                                                          context: context,
-                                                          child: SimpleDialog(
-                                                            title: Text("Fecha de expiración inválida"),
-                                                            children: <Widget>[
-                                                              SimpleDialogOption(
-                                                                child: Text("OK"),
-                                                                onPressed: () => Navigator.pop(context),
-                                                              ),
-                                                            ],
-                                                          ),
+                                                        Fluttertoast.showToast(
+                                                            msg: "La fecha de expiración es inválida.",
+                                                            toastLength: Toast.LENGTH_SHORT,
+                                                            timeInSecForIos: 4,
+                                                            gravity: ToastGravity.BOTTOM,
+                                                            backgroundColor: Color(0x99E51F4F),
+                                                            textColor: Colors.white
                                                         );
                                                       }
 

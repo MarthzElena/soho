@@ -6,6 +6,9 @@
 
 class Constants {
 
+  /// Errors
+  static const INVALID_DATE_ERROR = "Fecha de expiración inválida.";
+
   /// Secure Storage - Auth credentials
   static const KEY_AUTH_PROVIDER = "KEY_AUTH_PROVIDER";
   static const KEY_FIRST_TIME = "KEY_FIRST_TIME";

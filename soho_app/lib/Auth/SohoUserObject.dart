@@ -90,7 +90,8 @@ class SohoUserObject {
         for (var item in response.data) {
           var month = item.expMonth < 10 ? "0${item.expMonth}" : item.expMonth.toString();
           var year = item.expYear.toString().substring(2);
-          if (item.brand.contains("MasterCard") || item.brand.contains("Visa")) {
+          if (item.brand.contains("MasterCard") || item.brand.contains("Visa") || item.brand.contains("American Express")) {
+            // TODO: Add American Express icon
             CardInfoReduced info = CardInfoReduced(
               last4: item.last4,
               cardName: item.name,

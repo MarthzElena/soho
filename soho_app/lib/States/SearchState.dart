@@ -34,8 +34,7 @@ class SearchState extends Model{
     notifyListeners();
   }
 
-  Future<String> performSearch(String query, BuildContext context) async {
-    var errorString = "";
+  Future<void> performSearch(String query, BuildContext context) async {
     await locator<SquareHTTPRequest>().searchForItems(query).then((result) {
       // Only continue if query is current
       if (currentQuery == query) {
@@ -74,11 +73,15 @@ class SearchState extends Model{
       }
 
     }).catchError((error) {
-      // TODO: Handle error
-      print("Search error: ${error.toString()}");
-      errorString = "Error al realizar búsqueda";
+      Fluttertoast.showToast(
+          msg: "Error al realizar búsqueda",
+          toastLength: Toast.LENGTH_LONG,
+          timeInSecForIos: 4,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Color(0x99E51F4F),
+          textColor: Colors.white
+      );
     });
-    return errorString;
   }
 
   List<Widget> _getWidgetList(List<SubcategoryItems> searchResult, BuildContext context) {

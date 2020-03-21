@@ -10,7 +10,6 @@ class ProductItemAppBar extends StatefulWidget implements PreferredSizeWidget {
   }
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => Size.fromHeight(Constants.APP_BAR_HEIGHT);
 
 }

@@ -245,35 +245,23 @@ class _AdminScreenState extends State<AdminScreen> {
                 }
               }
               if (!orderValid) {
-                // TODO: Show error for user not found
-                print("INVALID ORDER!");
-                await showDialog(
-                  context: context,
-                  child: SimpleDialog(
-                    title: Text("Orden inválida (Fecha es mayor a 7 días)"),
-                    children: <Widget>[
-                      SimpleDialogOption(
-                        child: Text("OK"),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ],
-                  ),
+                Fluttertoast.showToast(
+                    msg: "ORDEN INVALIDA: Fecha es mayor a 7 días.",
+                    toastLength: Toast.LENGTH_LONG,
+                    timeInSecForIos: 4,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Color(0x99E51F4F),
+                    textColor: Colors.white
                 );
               }
             } else {
-              // TODO: Show error for user not found
-              print("INVALID ORDER! (User not found)");
-              await showDialog(
-                context: context,
-                child: SimpleDialog(
-                  title: Text("No existe usuario para la órden"),
-                  children: <Widget>[
-                    SimpleDialogOption(
-                      child: Text("OK"),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
+              Fluttertoast.showToast(
+                  msg: "ORDEN INVALIDA: No existe el usuario.",
+                  toastLength: Toast.LENGTH_LONG,
+                  timeInSecForIos: 4,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Color(0x99E51F4F),
+                  textColor: Colors.white
               );
             }
 

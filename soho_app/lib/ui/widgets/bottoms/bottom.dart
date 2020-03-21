@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Models/requests/charge_customer.dart';
 import 'package:soho_app/Network/charge_customer/call.dart';
@@ -108,33 +109,23 @@ class _BottomBarState extends State<BottomBar> {
 //                      });
 
                     } else {
-                      // TODO: Show error on missing payment
-                      await showDialog(
-                        context: context,
-                        child: SimpleDialog(
-                          title: Text("No hay método de pago"),
-                          children: <Widget>[
-                            SimpleDialogOption(
-                              child: Text("OK"),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                          ],
-                        ),
+                      Fluttertoast.showToast(
+                          msg: "No hay método de pago.",
+                          toastLength: Toast.LENGTH_LONG,
+                          timeInSecForIos: 4,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Color(0x99E51F4F),
+                          textColor: Colors.white
                       );
                     }
                   } else {
-                    // TODO: Go to home? Show error!
-                    await showDialog(
-                      context: context,
-                      child: SimpleDialog(
-                        title: Text("No hay una órden en curso"),
-                        children: <Widget>[
-                          SimpleDialogOption(
-                            child: Text("OK"),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      ),
+                    Fluttertoast.showToast(
+                        msg: "No hay elementos en tu órden.",
+                        toastLength: Toast.LENGTH_LONG,
+                        timeInSecForIos: 4,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Color(0x99E51F4F),
+                        textColor: Colors.white
                     );
                   }
 

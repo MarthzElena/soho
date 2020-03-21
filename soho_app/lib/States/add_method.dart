@@ -70,7 +70,9 @@ class AddMethodState extends Model {
       await StripePayment.createTokenWithCard(card).then((token) async {
         cardToken = token;
 
-        // Check if customer is new
+        // Only continue if card is from valid brand
+        if (cardToken.card.brand.contains("MasterCard") || cardToken.card.brand.contains("Visa") || cardToken.card.brand.contains("American Express")) {
+          // Check if customer is new
         if (Application.currentUser.stripeId.isEmpty) {
           // Create new customer
           var request = CreateCustomerRequest(
@@ -81,52 +83,52 @@ class AddMethodState extends Model {
           await createCustomerCall(request: request).then((response) async {
             // Add Stripe id to the current user
             await Application.currentUser.addStripeId(response.id).then((result) async {
-              await completeCardInformation(result, context);
+              if (result) {
+                await completeCardInformation(context);
+              } else {
+                stringError = "Error al generar tu información de pago.";
+              }
 
             }).catchError((error) {
               setError(error, "Error in addStripeId: ");
-              stringError = "Error al agregar ID de Sripe";
+              stringError = "Error al generar tu información de pago.";
             });
           }).catchError((error) {
             setError(error, "Error in createCustomerCall: ");
-            stringError = "Error al crear cliente de Stripe";
+            stringError = "Error al generar tu información de pago.";
           });
         } else {
           // Add new card to existing customer
           var request = AddNewCardRequest(source: cardToken.tokenId.trim());
           await addNewCardCall(request: request, customerId: Application.currentUser.stripeId).then((response) async {
             // Add card added to user info for UI purposes
-            await completeCardInformation(true, context).catchError((error) {
+            await completeCardInformation(context).catchError((error) {
               setError(error, "Error in completeCardInformation: ");
-              stringError = "Error al agregar datos de tarjeta al usuario";
+              stringError = "Error al agregar datos de tarjeta al usuario.";
             });
           }).catchError((error) {
             setError(error, "Error in addNewCardCall: ");
-            stringError = "Error al agregar nueva tarjeta";
+            stringError = "Error al agregar nueva tarjeta.";
           });
         }
-
-
+        } else {
+          stringError = "El método de pago debe ser Visa, Mastercard o American Express.";
+        }
       }).catchError((error) {
         setError(error, "Error in createTokenWithCard: ");
         stringError = "Error al guardar tarjeta";
       });
     } else {
-      // TODO: Show missing info error
-      stringError = "Falta información de la tarjeta";
+      stringError = "La información del método de pago está incompleta.";
     }
     // Make sure spinner is dismissed
     updateSpinner(show: false);
     return stringError;
   }
 
-  Future<void> completeCardInformation(bool result, BuildContext context) async {
+  Future<void> completeCardInformation(BuildContext context) async {
     // Update local user cards info
     await Application.currentUser.getCardsShortInfo();
-    // Verify if add method was successful
-    if (!result) {
-      // TODO: Handle error fail to save card
-    }
     // Update methods screen state and pop view
     locator<MethodsScreenState>().updateState();
     Navigator.pop(context);
