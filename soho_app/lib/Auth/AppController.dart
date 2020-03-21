@@ -69,8 +69,7 @@ class AppController {
       switch (facebookLoginResult.status) {
         case FacebookLoginStatus.error:
           print("Error");
-          // TODO: Handle error
-          errorString = "Error con Facebook Login";
+          errorString = "Error al iniciar sesión con Facebook.";
           break;
 
         case FacebookLoginStatus.cancelledByUser:
@@ -107,8 +106,7 @@ class AppController {
               await saveUserToDatabase(user);
             });
           }).catchError((error) {
-            // TODO: Handle error
-            errorString = "Error al iniciar sesión con Facebook";
+            errorString = "Error al iniciar sesión con Facebook.";
           });
           break;
 
@@ -117,8 +115,7 @@ class AppController {
       }
 
     }).catchError((error) {
-      // TODO: Handle error
-      errorString = "Error con Facebook Login request";
+      errorString = "Error al iniciar sesión con Facebook.";
       return errorString;
     });
     return errorString;
@@ -150,9 +147,7 @@ class AppController {
           await saveUserToDatabase(user);
 
         }).catchError((fireBaseSignInError) {
-          // TODO: Handle error
-          print("Sign in Firebase error: ${fireBaseSignInError.toString()}");
-          errorString = "Error al iniciar sesión con Firebase";
+          errorString = "Error al iniciar sesión con Google.";
         });
 
       }).catchError((authenticationError) {
@@ -344,8 +339,7 @@ class AppController {
         }
       }
     }).catchError((error) {
-      // TODO: Handle error
-      print("Erro while getting featured product image: ${error.toString()}");
+      Application.featuredProduct = "";
     });
   }
 
@@ -432,9 +426,7 @@ class AppController {
 
       }
     }).catchError((error) {
-      //TODO: handle error
-      print("Error from updating kitchen orders database ${error.toString()}");
-      errorString = "Error al obtener órdenes de cocina de la base de datos";
+      errorString = "Error al obtener órdenes de cocina de la base de datos.";
     });
     return errorString;
   }
@@ -452,8 +444,8 @@ class AppController {
         }
       }
     }).catchError((error) {
-      //TODO: handle error
       print("Error from database ${error.toString()}");
+      result = List<SohoOrderQR>();
     });
 
     return result;

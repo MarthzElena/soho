@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
@@ -78,17 +79,13 @@ class NoUserMenuWidget extends StatelessWidget {
                           locator<HomePageState>().updateSpinner(show: true);
                           await authController.initiateFacebookLogin().then((error) async {
                             if (error.isNotEmpty) {
-                              await showDialog(
-                                  context: context,
-                                  child: SimpleDialog(
-                                    title: Text(error),
-                                    children: <Widget>[
-                                      SimpleDialogOption(
-                                        child: Text("OK"),
-                                        onPressed: () => Navigator.pop(context),
-                                      ),
-                                    ],
-                                  ),
+                              Fluttertoast.showToast(
+                                  msg: error,
+                                  toastLength: Toast.LENGTH_LONG,
+                                  timeInSecForIos: 4,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Color(0x99E51F4F),
+                                  textColor: Colors.white
                               );
                             } else {
                               locator<HomePageState>().updateSpinner(show: false);

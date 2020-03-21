@@ -69,7 +69,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     if (Application.currentUser != null) {
       var orders = selectedTab == 0 ? Application.currentUser.pastOrders : Application.currentUser.ongoingOrders;
       if (orders != null) {
-        for (var order in orders) {
+        for (var order in orders.reversed) {
           var itemsList = List<OrderSelectedProduct>();
           for (var product in order.selectedProducts) {
             var orderItem = OrderSelectedProduct(product.name, product.productID, product.categoryID, product.categoryName);
@@ -610,19 +610,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           toastLength: Toast.LENGTH_SHORT,
                           timeInSecForIos: 2,
                           gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.black38,
+                          backgroundColor: Color(0xCCB9E1D8),
                           textColor: Colors.white
                         );
 
                       } on MailerException catch(e) {
-                        print("Error with email: ${e.message}");
-                        // TODO: Show error!
                         Fluttertoast.showToast(
                             msg: "Error al enviar email.",
                             toastLength: Toast.LENGTH_LONG,
                             timeInSecForIos: 4,
                             gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Colors.redAccent,
+                            backgroundColor: Color(0x99E51F4F),
                             textColor: Colors.white
                         );
                         Navigator.pop(context);
@@ -630,7 +628,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     } else {
                       // TODO: Show error!
                     }
-
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,

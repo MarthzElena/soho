@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/States/HomePageState.dart';
@@ -28,8 +29,15 @@ class LoginState extends Model {
       if (Application.currentUser != null) {
         Navigator.pushNamed(context, Routes.homePage);
       } else {
-        // TODO: Show some error
-        errorValue = error.isEmpty ? "Error con Facebook Login" : error;
+        errorValue = error.isEmpty ? "Error al iniciar sesión con Facebook." : error;
+        Fluttertoast.showToast(
+            msg: errorValue,
+            toastLength: Toast.LENGTH_LONG,
+            timeInSecForIos: 4,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0x99E51F4F),
+            textColor: Colors.white
+        );
       }
     });
     return errorValue;

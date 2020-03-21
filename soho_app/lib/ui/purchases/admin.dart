@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soho_app/Auth/AppController.dart';
@@ -95,8 +96,19 @@ class _AdminScreenState extends State<AdminScreen> {
                       future: locator<AppController>().getKitchenOrders(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData && snapshot.data != null) {
+                          List<SohoOrderQR> result = snapshot.data;
+                          if (result.isEmpty) {
+                            Fluttertoast.showToast(
+                                msg: "La lista de órdenes de cocina está vacía.",
+                                toastLength: Toast.LENGTH_LONG,
+                                timeInSecForIos: 4,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Color(0x99E51F4F),
+                                textColor: Colors.white
+                            );
+                          }
                           return ListView(
-                            children: _getPendingOrdersList(snapshot.data),
+                            children: _getPendingOrdersList(result),
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                           );
@@ -216,17 +228,13 @@ class _AdminScreenState extends State<AdminScreen> {
                   // Send to kitchen
                   await locator<AppController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate).then((error) async {
                     if (error.isNotEmpty) {
-                      await showDialog(
-                        context: context,
-                        child: SimpleDialog(
-                          title: Text(error),
-                          children: <Widget>[
-                            SimpleDialogOption(
-                              child: Text("OK"),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                          ],
-                        ),
+                      Fluttertoast.showToast(
+                          msg: error,
+                          toastLength: Toast.LENGTH_LONG,
+                          timeInSecForIos: 4,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Color(0x99E51F4F),
+                          textColor: Colors.white
                       );
                     }
                   });

@@ -90,14 +90,16 @@ class SohoUserObject {
         for (var item in response.data) {
           var month = item.expMonth < 10 ? "0${item.expMonth}" : item.expMonth.toString();
           var year = item.expYear.toString().substring(2);
-          CardInfoReduced info = CardInfoReduced(
-            last4: item.last4,
-            cardName: item.name,
-            expiration: "$month / $year",
-            cardType: item.brand.contains("MasterCard") ? CardType.masterCard : CardType.visa, //TODO: Handle card type error (!= VISA || MasterCard)
-            cardId: item.id,
-          );
-          cardsReduced.add(info);
+          if (item.brand.contains("MasterCard") || item.brand.contains("Visa")) {
+            CardInfoReduced info = CardInfoReduced(
+              last4: item.last4,
+              cardName: item.name,
+              expiration: "$month / $year",
+              cardType: item.brand.contains("MasterCard") ? CardType.masterCard : CardType.visa,
+              cardId: item.id,
+            );
+            cardsReduced.add(info);
+          }
         }
         if (cardsReduced.isEmpty) {
           selectedPaymentMethod = "";

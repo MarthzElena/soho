@@ -67,7 +67,7 @@ class SearchState extends Model{
               toastLength: Toast.LENGTH_LONG,
               timeInSecForIos: 4,
               gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.black38,
+              backgroundColor: Color(0x99E51F4F),
               textColor: Colors.white
           );
         }
