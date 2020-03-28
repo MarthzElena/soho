@@ -71,7 +71,7 @@ class AddMethodState extends Model {
         cardToken = token;
 
         // Only continue if card is from valid brand
-        if (cardToken.card.brand.contains("MasterCard") || cardToken.card.brand.contains("Visa") || cardToken.card.brand.contains("American Express")) {
+        if (cardToken.card.brand.contains("Mastercard") || cardToken.card.brand.contains("Visa") || cardToken.card.brand.contains("American Express")) {
           // Check if customer is new
         if (Application.currentUser.stripeId.isEmpty) {
           // Create new customer

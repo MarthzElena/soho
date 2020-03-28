@@ -34,6 +34,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
   int selectedTab = 0;
   String barcode = "";
+  Widget scannedOrder;
 
   @override
   void initState() {
@@ -177,12 +178,14 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   Widget _codeScannedWidget() {
+    // Convert barcode to order
+    var sohoOrder = SohoOrderQR.fromJson(json.decode(barcode));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SizedBox(height: 32.0),
         Text(
-          'Usa la cámara del dispositivo para escanear el código QR en la App del cliente.',
+          'Usa la cámara del dispositivo para escanear el código QR en la App del cliente, después verifica que el pedido sea correcto y envía la orden a cocina.',
           style: interLightStyle(
             fSize: 14.0,
             color: Color(0xff292929),
@@ -210,43 +213,115 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
           ),
         ),
-        SizedBox(height: 32.0),
+        SizedBox(height: 20.0),
+        Text(
+          'Datos de la orden',
+          style: interBoldStyle(
+            fSize: 16.0,
+            color: Color(0xff5A6265),
+          ),
+        ),
+        SizedBox(height: 8.0),
+        Text(
+          sohoOrder.order.getCompletedDateWithTime(),
+          style: interLightStyle(
+            fSize: 14.0,
+            color: Color(0xff5A6265),
+          ),
+        ),
+        SizedBox(height: 8.0),
+        Text(
+          "Orden para ${sohoOrder.userName}",
+          style: interLightStyle(
+            fSize: 14.0,
+            color: Color(0xff5A6265),
+          ),
+        ),
+        SizedBox(height: 8.0),
+        Text(
+          "Notas:",
+          style: interBoldStyle(
+            fSize: 14.0,
+            color: Color(0xff5A6265),
+          ),
+        ),
+        SizedBox(height: 8.0),
+        Text(
+          sohoOrder.order.notes,
+          style: interLightStyle(
+            fSize: 14.0,
+            color: Color(0xff5A6265),
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Divider(
+          height: 1.0,
+          color: Color(0xffE5E4E5),
+        ),
+        SizedBox(height: 16.0),
+        Column(
+          children: _getProductsList(sohoOrder.order.selectedProducts),
+        ),
+        SizedBox(height: 16.0),
+        Divider(
+          height: 1.0,
+          color: Color(0xffE5E4E5),
+        ),
+        SizedBox(height: 24.0),
+        Center(
+          child: Text(
+            'Total: MX\$${sohoOrder.order.orderTotal + sohoOrder.order.tip}0',
+            style: interMediumStyle(fSize: 16.0),
+          ),
+        ),
+        SizedBox(height: 24.0),
         GestureDetector(
           onTap: () async {
-            // Convert barcode to order
-            var sohoOrder = SohoOrderQR.fromJson(json.decode(barcode));
-            // First check that order hasn't been exchanged
-            var userForOrder = await locator<AppController>().getUser(forId: sohoOrder.userId, updateCurrentUser: false);
-            if (userForOrder != null) {
-              var orderValid = false;
-              for (var order in userForOrder.ongoingOrders) {
-                if (order.id == sohoOrder.order.id) {
-                  // Found ongoing order
-                  orderValid = true;
-                  // Convert to dictionary
-                  var orderDict = sohoOrder.getJson();
-                  // Send to kitchen
-                  await locator<AppController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate).then((error) async {
-                    if (error.isNotEmpty) {
-                      Fluttertoast.showToast(
-                          msg: error,
-                          toastLength: Toast.LENGTH_LONG,
-                          timeInSecForIos: 4,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Color(0x99E51F4F),
-                          textColor: Colors.white
-                      );
-                    }
-                  });
-                  setState(() {
-                    barcode = "";
-                  });
-                  break;
+            try {
+              // Convert barcode to order
+              var sohoOrder = SohoOrderQR.fromJson(json.decode(barcode));
+              // First check that order hasn't been exchanged
+              var userForOrder = await locator<AppController>().getUser(forId: sohoOrder.userId, updateCurrentUser: false);
+              if (userForOrder != null) {
+                var orderValid = false;
+                for (var order in userForOrder.ongoingOrders) {
+                  if (order.id == sohoOrder.order.id) {
+                    // Found ongoing order
+                    orderValid = true;
+                    // Convert to dictionary
+                    var orderDict = sohoOrder.getJson();
+                    // Send to kitchen
+                    await locator<AppController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate).then((error) async {
+                      if (error.isNotEmpty) {
+                        Fluttertoast.showToast(
+                            msg: error,
+                            toastLength: Toast.LENGTH_LONG,
+                            timeInSecForIos: 4,
+                            gravity: ToastGravity.BOTTOM,
+                            backgroundColor: Color(0x99E51F4F),
+                            textColor: Colors.white
+                        );
+                      }
+                    });
+                    setState(() {
+                      barcode = "";
+                    });
+                    break;
+                  }
                 }
-              }
-              if (!orderValid) {
+                if (!orderValid) {
+                  Fluttertoast.showToast(
+                      msg: "ORDEN INVALIDA: Fecha es mayor a 7 días.",
+                      toastLength: Toast.LENGTH_LONG,
+                      timeInSecForIos: 4,
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Color(0x99E51F4F),
+                      textColor: Colors.white
+                  );
+                }
+              } else {
                 Fluttertoast.showToast(
-                    msg: "ORDEN INVALIDA: Fecha es mayor a 7 días.",
+                    msg: "ORDEN INVALIDA: No existe el usuario.",
                     toastLength: Toast.LENGTH_LONG,
                     timeInSecForIos: 4,
                     gravity: ToastGravity.BOTTOM,
@@ -254,9 +329,9 @@ class _AdminScreenState extends State<AdminScreen> {
                     textColor: Colors.white
                 );
               }
-            } else {
+            } catch (error) {
               Fluttertoast.showToast(
-                  msg: "ORDEN INVALIDA: No existe el usuario.",
+                  msg: "Error al escanear el código, vuelve a intentarlo.",
                   toastLength: Toast.LENGTH_LONG,
                   timeInSecForIos: 4,
                   gravity: ToastGravity.BOTTOM,
@@ -264,9 +339,6 @@ class _AdminScreenState extends State<AdminScreen> {
                   textColor: Colors.white
               );
             }
-
-
-
           },
           child: Container(
             width: double.infinity,
@@ -286,6 +358,7 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
           ),
         ),
+        SizedBox(height: 30.0)
       ],
     );
   }
