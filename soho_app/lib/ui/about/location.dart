@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_product.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LocationScreen extends StatelessWidget {
   @override
@@ -139,7 +141,21 @@ class LocationScreen extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: GestureDetector(
-                        onTap: null,
+                        onTap: () async {
+                          final sohoLocation = "https://goo.gl/maps/9TezLUL4XyVFsv3w9";
+                          if (await canLaunch(sohoLocation)) {
+                            await launch(sohoLocation);
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: "Busca SOHO en tu aplicación de mapas favorita.",
+                                toastLength: Toast.LENGTH_LONG,
+                                timeInSecForIos: 4,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Color(0x99E51F4F),
+                                textColor: Colors.white
+                            );
+                          }
+                        },
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(32.0, 0, 32.0, 40.0),
                           child: Container(
