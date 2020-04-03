@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_product.dart';
@@ -61,11 +62,14 @@ class LocationScreen extends StatelessWidget {
                             style: interThinStyle(fSize: 32.0),
                           ),
                           SizedBox(height: 4.0),
-                          Text(
-                            'Laboris adipisicing magna\nconsequat excepteur\nconsectetur eu.',
-                            style: interLightStyle(
-                              fSize: 14.0,
-                              color: Color(0xff292929),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            child: Text(
+                              '¡Ven! Te estamos esperando para ofrecerte una experiencia única.',
+                              style: interLightStyle(
+                                fSize: 14.0,
+                                color: Color(0xff292929),
+                              ),
                             ),
                           ),
                         ],
@@ -116,7 +120,7 @@ class LocationScreen extends StatelessWidget {
                             Image(image: locationMail),
                             SizedBox(width: 20.0),
                             Text(
-                              'info@sohomx.com',
+                              Constants.SOHO_SUPPORT_EMAIL,
                               style: interLightStyle(
                                 fSize: 14.0,
                                 color: Color(0xffE51F4F),

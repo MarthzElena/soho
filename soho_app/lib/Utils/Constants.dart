@@ -26,4 +26,7 @@ class Constants {
 
   /// UI Constants
   static const APP_BAR_HEIGHT = 54.0;
+
+  /// SOHO Email
+  static const SOHO_SUPPORT_EMAIL = "sohocoffeetea@gmail.com";
 }

@@ -115,11 +115,14 @@ class _MethodsScreen extends State<MethodsScreen> {
                                       style: interThinStyle(fSize: 32.0),
                                     ),
                                     SizedBox(height: 4.0),
-                                    Text(
-                                      'Laboris adipisicing magna\nconsequat excepteur\nconsectetur eu.', //TODO: Change this!
-                                      style: interLightStyle(
-                                        fSize: 14.0,
-                                        color: Color(0xff292929),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width * 0.6,
+                                      child: Text(
+                                        'Administra tus métodos de pago de forma rápida y sencilla.', //TODO: Change this!
+                                        style: interLightStyle(
+                                          fSize: 14.0,
+                                          color: Color(0xff292929),
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -164,9 +167,22 @@ class _MethodsScreen extends State<MethodsScreen> {
     var result = List<Widget>();
     if (Application.currentUser != null) {
       for (var card in Application.currentUser.cardsReduced) {
+        var cardIcon = Image(image: visaCard);
+        // Set card icon
+        switch (card.cardType) {
+          case CardType.visa:
+            cardIcon = Image(image: visaCard);
+            break;
+          case CardType.masterCard:
+            cardIcon = Image(image: masterCard);
+            break;
+          case CardType.amex:
+            cardIcon = Image(image: amexCard);
+            break;
+        }
         var cardDetails = Row(
           children: <Widget>[
-            Image(image: card.cardType == CardType.masterCard ? masterCard : visaCard),
+            cardIcon,
             SizedBox(width: 20.0),
             Text(
               '****  ****  **** ',

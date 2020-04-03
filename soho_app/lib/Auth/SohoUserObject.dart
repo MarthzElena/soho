@@ -11,7 +11,8 @@ import 'package:uuid/uuid.dart';
 
 enum CardType {
   visa,
-  masterCard
+  masterCard,
+  amex
 }
 
 class CardInfoReduced {
@@ -91,12 +92,17 @@ class SohoUserObject {
           var month = item.expMonth < 10 ? "0${item.expMonth}" : item.expMonth.toString();
           var year = item.expYear.toString().substring(2);
           if (item.brand.contains("MasterCard") || item.brand.contains("Visa") || item.brand.contains("American Express")) {
-            // TODO: Add American Express icon
+            var cardType = CardType.visa;
+            if (item.brand.contains("MasterCard")) {
+              cardType = CardType.masterCard;
+            } else if (item.brand.contains("American Express")) {
+              cardType = CardType.amex;
+            }
             CardInfoReduced info = CardInfoReduced(
               last4: item.last4,
               cardName: item.name,
               expiration: "$month / $year",
-              cardType: item.brand.contains("MasterCard") ? CardType.masterCard : CardType.visa,
+              cardType: cardType,
               cardId: item.id,
             );
             cardsReduced.add(info);

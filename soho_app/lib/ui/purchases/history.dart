@@ -9,6 +9,7 @@ import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Application.dart';
+import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/items/item_detail.dart';
@@ -594,7 +595,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       final smtpServer = gmail(username, pwd);
                       final message = Message();
                       message.from = Address(loggedUserEmail, loggedUserName);
-                      message.recipients.add('sohocoffeetea@gmail.com');
+                      message.recipients.add(Constants.SOHO_SUPPORT_EMAIL);
                       message.subject = "Mensaje de soporte de $loggedUserName [$loggedUserEmail]";
                       message.text = emailBody;
                       message.envelopeFrom = loggedUserEmail;
