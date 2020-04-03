@@ -19,7 +19,7 @@ class Constants {
   /// Firebase Database keys
   static const DATABASE_KEY_USERS = "usuarios";
   static const DATABASE_KEY_KITCHEN_ORDERS = "ordenes_cocina";
-  static const DATABASE_KEY_FEATURED_PRODUCT = "foto_destacada";
+  static const DATABASE_KEY_FEATURED_IMAGES = "fotos_destacadas";
 
   /// Category Items
   static const PARAM_CATEGORY_NAME = "DIC_KEY_CATEGORY_NAME";

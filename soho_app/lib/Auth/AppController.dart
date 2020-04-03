@@ -320,27 +320,48 @@ class AppController {
   }
 
   Future<void> getFeaturedImageFromStorage() async {
-    // First get the reference URL
-    var featuredPhotoRef = dataBaseRootRef.child(Constants.DATABASE_KEY_FEATURED_PRODUCT);
-    // Get URL from database
-    await featuredPhotoRef.once().then((item) async {
-      if (item.value != null) {
-        var photoUrl = item.value.toString();
-        if (photoUrl != null && photoUrl.isNotEmpty) {
-          // Get storage reference
-          await firebaseStorage.getReferenceFromUrl(photoUrl).then((storageReference) async {
-            if (storageReference != null) {
-              final String photoUrl = await storageReference.getDownloadURL();
-              // Save image to Application
-              if (photoUrl != null && photoUrl.isNotEmpty) {
-                Application.featuredProduct = photoUrl;
-              }
-            }
-          });
+    Timer.periodic(Duration(seconds: 5), (timer) async {
+      var featuredPhotosArray = dataBaseRootRef.child(Constants.DATABASE_KEY_FEATURED_IMAGES);
+      // Get photos array
+      await featuredPhotosArray.once().then((array) async {
+        if (array.value != null) {
+          LinkedHashMap linkedMap = array.value;
+          if (linkedMap != null) {
+           var max = linkedMap.entries.length;
+           if (max > 0) {
+             var index = Random().nextInt(max);
+             var photoUrl = linkedMap.entries.elementAt(index).value.toString();
+             if (photoUrl != null && photoUrl.isNotEmpty) {
+               // Get storage reference
+               await firebaseStorage.getReferenceFromUrl(photoUrl).then((storageReference) async {
+                 if (storageReference != null) {
+                   final String photoUrl = await storageReference.getDownloadURL();
+                   // Save image to Application
+                   if (photoUrl != null && photoUrl.isNotEmpty) {
+                     Application.featuredProduct = photoUrl;
+                     locator<HomePageState>().updateState();
+                   } else {
+                     Application.featuredProduct = "";
+                   }
+                 }
+               }).catchError((_) {
+                 Application.featuredProduct = "";
+               });
+             } else {
+               Application.featuredProduct = "";
+             }
+           } else {
+             Application.featuredProduct = "";
+           }
+          } else {
+            Application.featuredProduct = "";
+          }
+        } else {
+          Application.featuredProduct = "";
         }
-      }
-    }).catchError((error) {
-      Application.featuredProduct = "";
+      }).catchError((error) {
+        Application.featuredProduct = "";
+      });
     });
   }
 
