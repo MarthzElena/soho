@@ -5,6 +5,10 @@ import 'package:soho_app/Utils/Application.dart';
 import '../SohoMenu/ProductItems/ProductItemObject.dart';
 
 class ProductItemState extends Model {
+  // Black Tea category constants
+  final String BLACK_TEA_MILK = "Leche";
+  final String BLACK_TEA_GARNISH = "Garnish";
+  // Bottom text
   static const String ADD_ITEM_TEXT = "Agregar 1 a la orden";
   static const String GO_TO_CHECKOUT_TEXT = "Ver carrito";
   static const String COMPLETE_ORDER = "Realizar pedido ahora";
@@ -13,7 +17,7 @@ class ProductItemState extends Model {
   Map<String, List<VariationItemObject>> selectedVariations = {};
   double selectedItemPrice = 0.0;
 
-  bool isRequiredVariationAdded = false;
+  bool shouldShowBottomForProductDetail = false;
 
   // Settings for Add To Cart button
   String addToCartText = "";
@@ -28,6 +32,8 @@ class ProductItemState extends Model {
     initAvailableVariations(fromProduct.productVariations);
     // Clear selected variations
     selectedVariations.clear();
+    // Should show bottom
+    shouldShowBottomForProductDetail = !fromProduct.isVariationRequired();
     // Set bottom
     setBottomState(ProductItemState.ADD_ITEM_TEXT);
   }
@@ -63,10 +69,6 @@ class ProductItemState extends Model {
     }
 
     notifyListeners();
-  }
-
-  bool shouldShowBottomForProductDetail(bool shouldShowBottom) {
-    return shouldShowBottom;
   }
 
   void initAvailableVariations(List<VariationTypeObject> allVariations) {
@@ -124,6 +126,7 @@ class ProductItemState extends Model {
       // Clear the list
       selectedVariations[fromType].clear();
     }
+
     // Add the new item
     selectedVariations[fromType].add(item);
     // Update the price
@@ -131,7 +134,10 @@ class ProductItemState extends Model {
     // Update the price on button
     addToCartPrice = "\$${selectedItemPrice.toString()}0";
 
-    isRequiredVariationAdded = true;
+    // If all variations are added then show bottom
+    if (availableVariations.length == selectedVariations.length) {
+      shouldShowBottomForProductDetail = true;
+    }
 
     notifyListeners();
   }

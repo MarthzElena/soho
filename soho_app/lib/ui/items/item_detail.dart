@@ -48,7 +48,7 @@ class _ProductDetailState extends State<ProductDetail> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: ProductDetailAppBar(),
-              bottomNavigationBar: _productItemModel.shouldShowBottomForProductDetail(!product.isVariationRequired())
+              bottomNavigationBar: _productItemModel.shouldShowBottomForProductDetail
                   ? BottomBar(buttonState: ProductItemState.ADD_ITEM_TEXT)
                   : SizedBox.shrink(),
               body: GestureDetector(
@@ -83,7 +83,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                   color: Colors.grey,
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
-                                // TODO: Add child with image
+                                child: Image(image: NetworkImage(product.imageUrl)),
                               ),
                               SizedBox(height: 24.0),
                               Text(
@@ -147,7 +147,6 @@ class _ProductDetailState extends State<ProductDetail> {
 
       Map<VariationItemObject, bool> current = _productItemModel.availableVariations[variationType];
       for (var variationElement in current.keys) {
-        var value = current[variationElement];
         Widget elementRow = getVariations(variationElement, variationType);
         list.add(elementRow);
       }

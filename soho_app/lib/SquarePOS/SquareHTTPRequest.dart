@@ -170,6 +170,10 @@ class SquareHTTPRequest {
             // Item is variation
             var variationName = variationNameArray[0];
             var variationType = variationNameArray[1];
+            if (variationNameArray[1].startsWith(" ")) {
+              // Remove empty space
+              variationType = variationNameArray[1].substring(1);
+            }
             // Get variation price
             var priceMoney = variationData["price_money"];
             var priceValue = priceMoney["amount"];
@@ -232,6 +236,10 @@ class SquareHTTPRequest {
             // Item is variation
             var variationName = variationNameArray[0];
             var variationType = variationNameArray[1];
+            if (variationNameArray[1].startsWith(" ")) {
+              // Remove empty space
+              variationType = variationNameArray[1].substring(1);
+            }
             // Get variation price
             var priceMoney = variationData["price_money"];
             var priceValue = priceMoney["amount"];

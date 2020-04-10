@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 
 class ProductItemObject {
+  // Black tea category Cosntants
+  final String BLACK_TEA_CATEGORY = "Te Negro";
+  final String BLACK_TEA_CATEGORY_ACCENT = "Té Negro";
+  // Key Strings
   static String keyName = "name";
   static String keyCategory = "category";
   static String keySubcategory = "subcategory";
@@ -61,7 +65,13 @@ class ProductItemObject {
     if (nameArray.length == 2) {
       // Product has subcategory
       this.name = nameArray[0];
-      this.subcategory = nameArray[1];
+      if (nameArray[1].startsWith(" ")) {
+        // Remove empty space
+        var subCategory = nameArray[1].substring(1);
+        this.subcategory = subCategory;
+      } else {
+        this.subcategory = nameArray[1];
+      }
     } else {
       // Product has no category or value is wrong
       // Use name AS IS and leave subcategory empty
@@ -69,9 +79,16 @@ class ProductItemObject {
     }
   }
 
-  // TODO: Validate this with final variations (Currently all variations are optional)
+  bool isBlackTeaCategory() {
+    return (subcategory.toLowerCase() == BLACK_TEA_CATEGORY_ACCENT.toLowerCase() || subcategory.toLowerCase() == BLACK_TEA_CATEGORY.toLowerCase());
+  }
+
   bool isVariationRequired() {
-    return false;
+    if (isBlackTeaCategory()) {
+      return true;
+    } else {
+      return productVariations.isNotEmpty;
+    }
   }
 
   Future<void> addProductVariation(VariationItemObject variation, String variationType) async {
