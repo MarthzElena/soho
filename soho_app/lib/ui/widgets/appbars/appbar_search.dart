@@ -10,7 +10,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
 
     return Container(
-      color: Color(0xffF3F1F2),
+      color: Colors.white,
       height: preferredSize.height,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
