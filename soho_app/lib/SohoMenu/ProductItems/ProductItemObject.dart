@@ -85,7 +85,7 @@ class ProductItemObject {
 
   bool isVariationRequired() {
     if (isBlackTeaCategory()) {
-      return true;
+      return false;
     } else {
       return productVariations.isNotEmpty;
     }

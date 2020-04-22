@@ -1,13 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 import 'package:soho_app/Utils/Application.dart';
+import 'package:soho_app/Utils/Fonts.dart';
 
 import '../SohoMenu/ProductItems/ProductItemObject.dart';
 
 class ProductItemState extends Model {
   // Black Tea category constants
-  final String BLACK_TEA_MILK = "Leche";
-  final String BLACK_TEA_GARNISH = "Garnish";
+  final String BLACK_TEA_MILK = "leche";
+  final String BLACK_TEA_GARNISH = "garnish";
+  final String BLACK_TEA_ENDULZANTE = "endulzante";
   // Bottom text
   static const String ADD_ITEM_TEXT = "Agregar 1 a la orden";
   static const String GO_TO_CHECKOUT_TEXT = "Ver carrito";
@@ -83,6 +86,104 @@ class ProductItemState extends Model {
     notifyListeners();
   }
 
+  Widget getBlackTeaVariations(VariationItemObject selectedVariation, String fromType) {
+    var isGarnishSelected = false;
+    var isMilkSelected = false;
+    var garnishType = BLACK_TEA_GARNISH;
+    var milkType = BLACK_TEA_MILK;
+    var sugarType = BLACK_TEA_ENDULZANTE;
+    for (var variationType in selectedVariations.keys) {
+      if (variationType.toLowerCase() == BLACK_TEA_MILK.toLowerCase()) {
+        isMilkSelected = (selectedVariations[variationType] != null && selectedVariations[variationType].isNotEmpty) ? true : false;
+        milkType = variationType;
+      } else if (variationType.toLowerCase() == BLACK_TEA_GARNISH.toLowerCase()) {
+        isGarnishSelected = (selectedVariations[variationType] != null && selectedVariations[variationType].isNotEmpty) ? true : false;
+        garnishType = variationType;
+      } else if (variationType.toLowerCase() == BLACK_TEA_ENDULZANTE) {
+        sugarType = variationType;
+      }
+    }
+
+    if (fromType.toLowerCase() == BLACK_TEA_MILK.toLowerCase() && !selectedVariation.name.toLowerCase().contains("sin")) { // LECHE
+      return Row(
+        children: <Widget>[
+          Theme(
+            data: ThemeData(
+              unselectedWidgetColor: Color(0xffE4E4E4),
+            ),
+            child: Radio(
+                value: selectedVariation,
+                groupValue: isGarnishSelected ? null : getSelectedVariation(fromType),
+                onChanged: (VariationItemObject selectedItem) {
+                  addVariation(selectedVariation, fromType);
+                  // Remove garnish variation
+                  if (selectedVariations[garnishType] != null && selectedVariations[garnishType].isNotEmpty) {
+                    removeVariation(selectedVariations[garnishType].first, garnishType);
+                  }
+                }),
+          ),
+          Text(
+            selectedVariation.name,
+            style: avenirHeavyStyle(fSize: 16.0),
+          ),
+        ],
+      );
+    } else if (fromType.toLowerCase() == BLACK_TEA_GARNISH.toLowerCase() && !selectedVariation.name.toLowerCase().contains("sin")) { // GARNISH
+
+      return Row(
+        children: <Widget>[
+          Theme(
+            data: ThemeData(
+              unselectedWidgetColor: Color(0xffE4E4E4),
+            ),
+            child: Radio(
+                value: selectedVariation,
+                groupValue: isMilkSelected ? null : getSelectedVariation(fromType),
+                onChanged: (VariationItemObject selectedItem) {
+                  addVariation(selectedVariation, fromType);
+                  // Remove milk AND sugar variation
+                  if (selectedVariations[milkType] != null && selectedVariations[milkType].isNotEmpty) {
+                    removeVariation(selectedVariations[milkType].first, milkType);
+                  }
+                  if (selectedVariations[sugarType] != null && selectedVariations[sugarType].isNotEmpty) {
+                    removeVariation(selectedVariations[sugarType].first, sugarType);
+                  }
+                }),
+          ),
+          Text(
+            selectedVariation.name,
+            style: avenirHeavyStyle(fSize: 16.0),
+          ),
+        ],
+      );
+    } else if (fromType.toLowerCase() == BLACK_TEA_ENDULZANTE.toLowerCase() && !selectedVariation.name.toLowerCase().contains("sin")) { //ENDULZANTE
+      return Row(
+        children: <Widget>[
+          Theme(
+            data: ThemeData(
+              unselectedWidgetColor: Color(0xffE4E4E4),
+            ),
+            child: Radio(
+                value: selectedVariation,
+                groupValue: isGarnishSelected ? null : getSelectedVariation(fromType),
+                onChanged: (VariationItemObject selectedItem) {
+                    addVariation(selectedVariation, fromType);
+                    // Remove garnish variation
+                    if (selectedVariations[garnishType] != null && selectedVariations[garnishType].isNotEmpty) {
+                      removeVariation(selectedVariations[garnishType].first, garnishType);
+                    }
+                }),
+          ),
+          Text(
+            selectedVariation.name,
+            style: avenirHeavyStyle(fSize: 16.0),
+          ),
+        ],
+      );
+    }
+    return SizedBox.shrink();
+  }
+
   void updateCheckboxValue(String forType, VariationItemObject forItem, bool value) {
     var variation = availableVariations[forType];
     variation[forItem] = value;
@@ -144,7 +245,7 @@ class ProductItemState extends Model {
 
   VariationItemObject getSelectedVariation(String fromType) {
     if (selectedVariations[fromType] != null) {
-      return selectedVariations[fromType].first;
+      return selectedVariations[fromType].isNotEmpty ? selectedVariations[fromType].first : null;
     } else {
       return null;
     }

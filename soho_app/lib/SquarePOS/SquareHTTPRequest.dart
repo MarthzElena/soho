@@ -34,6 +34,10 @@ class SquareHTTPRequest {
     HttpHeaders.acceptEncodingHeader : "gzip, deflate"
   };
 
+  bool isItemPhoto(String value) {
+    return (value.toLowerCase().contains("foto"));
+  }
+
   /// Returns a list with the CategoryObject items to populate the Category carousel in HomePageWidget
   Future<List<CategoryObject>> getSquareCategories() async {
     // Init empty list to save the categories
@@ -76,7 +80,7 @@ class SquareHTTPRequest {
       for (var categoryItem in categorySearchArrayResult) {
         var itemData = categoryItem["item_data"];
         var itemName = itemData["name"].toString();
-        if (itemName.compareTo("foto") == 0) {
+        if (isItemPhoto(itemName)) {
           var imageURL = itemData["image_url"].toString();
           // TODO: image URL is breaking the route with parameter!!
           //categoryObject.imageUrl = imageURL;
@@ -145,7 +149,7 @@ class SquareHTTPRequest {
       // Create ProductItemObject
       var productItemObject = ProductItemObject(nameAndSubCategory: productName, categoryName: categoryName);
       // Ignore "foto" items
-      if (productName.compareTo("foto") != 0) {
+      if (!isItemPhoto(productName)) {
         // Add missing details to ProductItemObject
         productItemObject.description = itemData["description"] == null ? "" : itemData["description"];
         productItemObject.imageUrl = itemData["image_url"] == null ? "" : itemData["image_url"].toString();
@@ -163,7 +167,7 @@ class SquareHTTPRequest {
             var priceMoney = variationData["price_money"];
             var priceValue = priceMoney["amount"];
             // Remove decimal 0's (bad square parsing)
-            priceValue = priceValue/100;
+            priceValue = priceValue / 100.0;
             // Save price
             productItemObject.price = priceValue;
           } else if (variationNameArray.length == 2){
@@ -176,9 +180,12 @@ class SquareHTTPRequest {
             }
             // Get variation price
             var priceMoney = variationData["price_money"];
-            var priceValue = priceMoney["amount"];
-            // Remove decimal 0's (bad square parsing)
-            priceValue = priceValue/100;
+            var priceValue = 0.0;
+            if (priceMoney != null) {
+              var priceValue = (priceMoney["amount"]) * 1.0;
+              // Remove decimal 0's (bad square parsing)
+              priceValue = priceValue / 100.0;
+            }
             // Create VariationItemObject
             var variationItem = VariationItemObject(variationName, variationId, priceValue);
             // Only add variation to product if Inventory is available
@@ -211,7 +218,7 @@ class SquareHTTPRequest {
       // Create ProductItemObject
       var productItemObject = ProductItemObject(nameAndSubCategory: productName, categoryName: categoryName);
       // Ignore "foto" items
-      if (productName.compareTo("foto") != 0) {
+      if (!isItemPhoto(productName)) {
         // Add missing details to ProductItemObject
         productItemObject.description = itemData["description"] == null ? "" : itemData["description"];
         productItemObject.imageUrl = itemData["image_url"] == null ? "" : itemData["image_url"].toString();
@@ -229,7 +236,7 @@ class SquareHTTPRequest {
             var priceMoney = variationData["price_money"];
             var priceValue = priceMoney["amount"];
             // Remove decimal 0's (bad square parsing)
-            priceValue = priceValue/100;
+            priceValue = priceValue / 100.0;
             // Save price
             productItemObject.price = priceValue;
           } else if (variationNameArray.length == 2){
@@ -242,9 +249,12 @@ class SquareHTTPRequest {
             }
             // Get variation price
             var priceMoney = variationData["price_money"];
-            var priceValue = priceMoney["amount"];
-            // Remove decimal 0's (bad square parsing)
-            priceValue = priceValue/100;
+            var priceValue = 0.0;
+            if (priceMoney != null) {
+              priceValue = (priceMoney["amount"]) * 1.0;
+              // Remove decimal 0's (bad square parsing)
+              priceValue = priceValue / 100;
+            }
             // Create VariationItemObject
             var variationItem = VariationItemObject(variationName, variationId, priceValue);
             // Only add variation to product if Inventory is available
@@ -253,6 +263,11 @@ class SquareHTTPRequest {
               await productItemObject.addProductVariation(updatedVariation, variationType);
             }
           }
+        }
+        // Add "none" option
+        for (var variationType in productItemObject.productVariations) {
+          var noneVariation = VariationItemObject("Sin ${variationType.variationTypeName}", "", 0.0);
+          variationType.variations.insert(variationType.variations.length, noneVariation);
         }
         // Add product to categoryDetails
         var updatedProduct = await _isProductAvailable(product: productItemObject);

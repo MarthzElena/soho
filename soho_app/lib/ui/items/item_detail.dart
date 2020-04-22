@@ -147,12 +147,43 @@ class _ProductDetailState extends State<ProductDetail> {
 
       Map<VariationItemObject, bool> current = _productItemModel.availableVariations[variationType];
       for (var variationElement in current.keys) {
-        Widget elementRow = getVariations(variationElement, variationType);
+        var value = current[variationElement];
+        var blackTeaVariation = _productItemModel.getBlackTeaVariations(variationElement, variationType);
+        Widget elementRow = product.isBlackTeaCategory()
+            ? blackTeaVariation != null ? blackTeaVariation : SizedBox.shrink()
+            : getVariations(variationElement, variationType);
         list.add(elementRow);
       }
     }
 
     return list;
+  }
+
+  Widget getOptionalVariations(
+      bool value, String variationType, VariationItemObject variationElement) {
+
+    var widget = Row(
+      children: <Widget>[
+        Theme(
+          data: ThemeData(
+            unselectedWidgetColor: Color(0xffE4E4E4),
+          ),
+          child: Checkbox(
+            value: value,
+            materialTapTargetSize: MaterialTapTargetSize.padded,
+            onChanged: (value) {
+              _productItemModel.updateCheckboxValue(variationType, variationElement, value);
+            },
+          ),
+        ),
+        SizedBox(width: 16.0),
+        Text(
+          variationElement.name,
+          style: avenirHeavyStyle(fSize: 16.0),
+        )
+      ],
+    );
+    return widget;
   }
 
   Widget getVariations(VariationItemObject selectedVariation, String fromType) {
