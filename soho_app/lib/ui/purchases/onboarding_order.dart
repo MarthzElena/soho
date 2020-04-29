@@ -89,16 +89,16 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                                 children: <Widget>[
                                   Text(
                                     'TU',
-                                    style: interThinStyle(fSize: 32.0),
+                                    style: thinStyle(fSize: 32.0),
                                   ),
                                   Text(
                                     'ORDEN',
-                                    style: interThinStyle(fSize: 32.0),
+                                    style: thinStyle(fSize: 32.0),
                                   ),
                                   SizedBox(height: 4.0),
                                   Text(
                                     '¡Ya estamos casi listos\npara empezar a preparar\ntu comida!',
-                                    style: interLightStyle(
+                                    style: lightStyle(
                                       fSize: 14.0,
                                       color: Color(0xff292929),
                                     ),
@@ -115,7 +115,7 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                               children: <Widget>[
                                 Text(
                                   'Ordenaste',
-                                  style: interLightStyle(
+                                  style: lightStyle(
                                     fSize: 14.0,
                                     color: Color(0xff789090),
                                   ),
@@ -133,11 +133,11 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                                   children: <Widget>[
                                     Text(
                                       "Café de bienvenida",
-                                      style: interBoldStyle(fSize: 14.0),
+                                      style: boldStyle(fSize: 14.0),
                                     ),
                                     Text(
                                       "GRATIS",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 18.0),
                                     ),
                                   ]
                                 ),
@@ -148,7 +148,7 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         model.selectedMilk,
-                                        style: interLightStyle(
+                                        style: lightStyle(
                                           fSize: 14.0,
                                           color: Color(0xff789090),
                                         ),
@@ -162,7 +162,7 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         model.selectedSugar,
-                                        style: interLightStyle(
+                                        style: lightStyle(
                                           fSize: 14.0,
                                           color: Color(0xff789090),
                                         ),
@@ -181,15 +181,15 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                                   children: <Widget>[
                                     Text(
                                       'Subtotal',
-                                      style: interMediumStyle(
+                                      style: regularStyle(
                                         fSize: 14.0,
                                         color: Color(0xff5A6265),
                                       ),
                                     ),
                                     Text(
                                       '\$0.00',
-                                      style: interMediumStyle(
-                                        fSize: 14.0,
+                                      style: regularStyle(
+                                        fSize: 16.0,
                                         color: Color(0xff5A6265),
                                       ),
                                     ),
@@ -202,15 +202,15 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                                   children: <Widget>[
                                     Text(
                                       'Propina',
-                                      style: interMediumStyle(
+                                      style: regularStyle(
                                         fSize: 14.0,
                                         color: Color(0xff5A6265),
                                       ),
                                     ),
                                     Text(
                                         '\$0.00',
-                                      style: interMediumStyle(
-                                        fSize: 14.0,
+                                      style: regularStyle(
+                                        fSize: 16.0,
                                         color: Color(0xff5A6265),
                                       ),
                                     ),
@@ -223,11 +223,11 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                                   children: <Widget>[
                                     Text(
                                       'Total',
-                                      style: interMediumStyle(),
+                                      style: regularStyle(fSize: 16.0),
                                     ),
                                     Text(
                                       '\$0.00',
-                                      style: interMediumStyle(fSize: 18.0),
+                                      style: regularStyle(fSize: 18.0),
                                     ),
                                   ],
                                 ),
@@ -243,7 +243,7 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                                   children: <Widget>[
                                     Text(
                                       'No tienes métodos de pago',
-                                      style: interStyle(
+                                      style: regularStyle(
                                         fSize: 14.0,
                                         color: Color(0xff5A6265),
                                       ),
@@ -254,7 +254,7 @@ class _OnboardingOrderScreen extends State<OnboardingOrderScreen> {
                                       },
                                       child: Text(
                                         'Agregar',
-                                        style: interStyle(
+                                        style: regularStyle(
                                           fSize: 14.0,
                                           color: Color(0xffE51F4F),
                                           decoration: TextDecoration.underline,

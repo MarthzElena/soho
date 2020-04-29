@@ -47,16 +47,16 @@ class SmallItem extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       category,
-                      style: interMediumStyle(fSize: 12.0),
+                      style: regularStyle(fSize: 12.0),
                     ),
                     Text(
                       item,
-                      style: interMediumStyle(fSize: 16.0),
+                      style: regularStyle(fSize: 16.0),
                     ),
                     SizedBox(height: 8.0),
                     Text(
                       'Ordenado: $date',
-                      style: interMediumStyle(fSize: 10.0),
+                      style: regularStyle(fSize: 10.0),
                     ),
                   ],
                 ),

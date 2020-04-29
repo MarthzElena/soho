@@ -62,7 +62,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             SizedBox(height: 32.0),
                             Text(
                               'Información personal',
-                              style: interBoldStyle(),
+                              style: boldStyle(),
                             ),
                             SizedBox(height: 24.0),
                             Container(
@@ -82,7 +82,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                   child: Text(
                                                     'Usar la cámara',
                                                     textAlign: TextAlign.center,
-                                                    style: interStyle(
+                                                    style: regularStyle(
                                                         fSize: 16.0, color: Color(0xff5A6265)),
                                                   )),
                                               CupertinoActionSheetAction(
@@ -91,7 +91,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                   child: Text(
                                                     'Elegir de mi galería',
                                                     textAlign: TextAlign.center,
-                                                    style: interStyle(
+                                                    style: regularStyle(
                                                         fSize: 16.0, color: Color(0xff5A6265)),
                                                   ))
                                             ],
@@ -116,7 +116,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                       child: Text(
                                                         'Usar la cámara',
                                                         textAlign: TextAlign.center,
-                                                        style: interStyle(
+                                                        style: regularStyle(
                                                             fSize: 16.0, color: Color(0xff5A6265)),
                                                       ),
                                                     ),
@@ -132,7 +132,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                                       child: Text(
                                                         'Elegir de mi galería',
                                                         textAlign: TextAlign.center,
-                                                        style: interStyle(
+                                                        style: regularStyle(
                                                             fSize: 16.0, color: Color(0xff5A6265)),
                                                       ),
                                                     ),
@@ -205,7 +205,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             SizedBox(height: 16.0),
                             Text(
                               'Nombre de usuario',
-                              style: interStyle(
+                              style: regularStyle(
                                 fSize: 14.0,
                                 color: Color(0xff565758),
                               ),
@@ -216,13 +216,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 model.updatedName = value;
                               },
                               textAlignVertical: TextAlignVertical.center,
-                              style: interLightStyle(
+                              style: lightStyle(
                                 fSize: 14.0,
                               ),
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(10.0),
                                 hintText: widget.name,
-                                hintStyle: interLightStyle(
+                                hintStyle: lightStyle(
                                   fSize: 14.0,
                                   color: Color(0xffC4C4C4),
                                 ),
@@ -250,7 +250,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             SizedBox(height: 32.0),
                             Text(
                               'Número de celular',
-                              style: interStyle(
+                              style: regularStyle(
                                 fSize: 14.0,
                                 color: Color(0xff565758),
                               ),
@@ -262,13 +262,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 model.updatedPhone = value;
                               },
                               textAlignVertical: TextAlignVertical.center,
-                              style: interLightStyle(
+                              style: lightStyle(
                                 fSize: 14.0,
                               ),
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(10.0),
                                 hintText: widget.phone,
-                                hintStyle: interLightStyle(
+                                hintStyle: lightStyle(
                                   fSize: 14.0,
                                   color: Color(0xffC4C4C4),
                                 ),
@@ -296,7 +296,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             SizedBox(height: 32.0),
                             Text(
                               'Correo electrónico',
-                              style: interStyle(
+                              style: regularStyle(
                                 fSize: 14.0,
                                 color: Color(0xff565758),
                               ),
@@ -307,13 +307,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 model.updatedEmail = value;
                               },
                               textAlignVertical: TextAlignVertical.center,
-                              style: interLightStyle(
+                              style: lightStyle(
                                 fSize: 14.0,
                               ),
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(10.0),
                                 hintText: widget.email,
-                                hintStyle: interLightStyle(
+                                hintStyle: lightStyle(
                                   fSize: 14.0,
                                   color: Color(0xffC4C4C4),
                                 ),

@@ -79,7 +79,7 @@ class _OnboardingBottom extends State<OnboardingBottom> {
                   width: double.infinity,
                   child: Text(
                     widget.instruction,
-                    style: interStyle(
+                    style: regularStyle(
                       fSize: 14.0,
                       color: Color(0xff292929),
                     ),
@@ -102,7 +102,7 @@ class _OnboardingBottom extends State<OnboardingBottom> {
                       children: <Widget>[
                         Text(
                           widget.buttonText1,
-                          style: interBoldStyle(fSize: 14.0, color: Colors.white),
+                          style: boldStyle(fSize: 14.0, color: Colors.white),
                         ),
                         Text(
                           widget.buttonText2,
@@ -113,7 +113,7 @@ class _OnboardingBottom extends State<OnboardingBottom> {
                     Center(
                       child: Text(
                         widget.buttonText1,
-                        style: interBoldStyle(fSize: 14.0, color: Colors.white),
+                        style: boldStyle(fSize: 14.0, color: Colors.white),
                       ),
                     ),
                   ),

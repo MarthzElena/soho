@@ -1,12 +1,10 @@
-import 'dart:convert';
 import 'dart:core';
-import 'package:flutter/material.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 
 class ProductItemObject {
-  // Black tea category Cosntants
-  final String BLACK_TEA_CATEGORY = "Te Negro";
-  final String BLACK_TEA_CATEGORY_ACCENT = "Té Negro";
+  // Black tea category Constants
+  static const String BLACK_TEA_CATEGORY = "Te Negro";
+  static const String BLACK_TEA_CATEGORY_ACCENT = "Té Negro";
   // Key Strings
   static String keyName = "name";
   static String keyCategory = "category";
@@ -18,15 +16,6 @@ class ProductItemObject {
   static String keyVariations = "variations";
   static String keyLocationId = "locationId";
   static String keyFromState = "fromState";
-
-  // Constants for Category names
-  final String _categoryCoffee = "coffee";
-  final String _categoryTea = "tea";
-  final String _categoryDesayunos = "desayunos";
-  final String _categoryComidasCenas = "comidas y cenas";
-  final String _categoryAltaReposteria = "alta repostería";
-  final String _categoryBebidasCocteles = "bebidas y cócteles";
-  final String _categoryOtros = "otros";
 
   /// String for product name on Square
   String name = "";

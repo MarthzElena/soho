@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: EdgeInsets.only(left: 20.0),
                               child: Text(
                                 'Pedido recientemente',
-                                style: interBoldStyle(fSize: 16.0),
+                                style: boldStyle(fSize: 16.0),
                               ),
                             ),
                             SizedBox(height: 16.0),
@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Center(
                                 child: Text(
                                   'Todavía no has realizado ninguna orden.',
-                                  style: interLightStyle(fSize: 12.0),
+                                  style: lightStyle(fSize: 12.0),
                                 ),
                               ),
                             ) :

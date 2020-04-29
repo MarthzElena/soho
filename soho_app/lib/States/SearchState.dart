@@ -50,7 +50,7 @@ class SearchState extends Model{
                   Container(
                     child: Text(
                       "Escribe el nombre de un platillo o bebida.",
-                      style: interLightStyle(
+                      style: lightStyle(
                         fSize: 14.0,
                         color: Color(0xff789090),
                       ),
@@ -90,7 +90,7 @@ class SearchState extends Model{
       padding: const EdgeInsets.only(left: 14.0, top: 40.0, bottom: 16.0),
       child: Text(
         "- Resultados de la búsqueda",
-        style: interLightStyle(
+        style: lightStyle(
           fSize: 14.0,
           color: Color(0xff789090),
         ),
@@ -125,12 +125,12 @@ class SearchState extends Model{
                   children: <Widget>[
                     Text(
                       product.name,
-                      style: interBoldStyle(fSize: 16.0),
+                      style: boldStyle(fSize: 16.0),
                     ),
                     SizedBox(height: 4.0),
                     Text(
                       product.description,
-                      style: interLightStyle(
+                      style: lightStyle(
                         fSize: 12.0,
                         color: Color(0xff5A6265),
                       ),
@@ -138,7 +138,7 @@ class SearchState extends Model{
                     SizedBox(height: 8.0),
                     Text(
                       "\$${product.price}0",
-                      style: interMediumStyle(fSize: 16.0),
+                      style: regularStyle(fSize: 16.0),
                     )
                   ],
                 ),
@@ -170,7 +170,7 @@ class SearchState extends Model{
       padding: const EdgeInsets.only(left: 14.0, top: 40.0, bottom: 16.0),
       child: Text(
         "- Resultados de la búsqueda",
-        style: interLightStyle(
+        style: lightStyle(
           fSize: 14.0,
           color: Color(0xff789090),
         ),
@@ -220,12 +220,12 @@ class SearchState extends Model{
                   SizedBox(height: 10.0),
                   Text(
                     product.name,
-                    style: interBoldStyle(fSize: 16.0),
+                    style: boldStyle(fSize: 16.0),
                   ),
                   SizedBox(height: 4.0),
                   Text(
                     product.description,
-                    style: interLightStyle(
+                    style: lightStyle(
                       fSize: 12.0,
                       color: Color(0xff5A6265),
                     ),
@@ -233,7 +233,7 @@ class SearchState extends Model{
                   SizedBox(height: 8.0),
                   Text(
                     "\$${product.price}0",
-                    style: interMediumStyle(fSize: 16.0),
+                    style: regularStyle(fSize: 16.0),
                   )
                 ]
               ),

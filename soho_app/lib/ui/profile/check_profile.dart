@@ -73,7 +73,7 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
                           SizedBox(height: 32.0),
                           Text(
                             'Información personal',
-                            style: interBoldStyle(),
+                            style: boldStyle(),
                           ),
                           SizedBox(height: 24.0),
                           Container(
@@ -120,7 +120,7 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
                           SizedBox(height: 16.0),
                           Text(
                             'Nombre de usuario',
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
                               color: Color(0xff565758),
                             ),
@@ -128,7 +128,7 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
                           SizedBox(height: 8.0),
                           Text(
                             model.name,
-                            style: interLightStyle(
+                            style: lightStyle(
                               fSize: 14.0,
                               color: Color(0xffC4C4C4),
                             ),
@@ -136,7 +136,7 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
                           SizedBox(height: 32.0),
                           Text(
                             'Número de celular',
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
                               color: Color(0xff565758),
                             ),
@@ -144,7 +144,7 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
                           SizedBox(height: 8.0),
                           Text(
                             model.phone,
-                            style: interLightStyle(
+                            style: lightStyle(
                               fSize: 14.0,
                               color: Color(0xffC4C4C4),
                             ),
@@ -152,7 +152,7 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
                           SizedBox(height: 32.0),
                           Text(
                             'Correo electrónico',
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
                               color: Color(0xff565758),
                             ),
@@ -160,7 +160,7 @@ class _CheckProfileScreenState extends State<CheckProfileScreen> {
                           SizedBox(height: 8.0),
                           Text(
                             model.email,
-                            style: interLightStyle(
+                            style: lightStyle(
                               fSize: 14.0,
                               color: Color(0xffC4C4C4),
                             ),

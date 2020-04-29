@@ -55,7 +55,7 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                       SizedBox(width: 10.0),
                       AutoSizeText(
                         cardType,
-                        style: interLightStyle(fSize: 18.0),
+                        style: lightStyle(fSize: 18.0),
                         maxLines: 1,
                         maxFontSize: 18.0,
                       ),
@@ -78,7 +78,7 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     child: Text(
                                       'Editar método de pago',
                                       textAlign: TextAlign.center,
-                                      style: interStyle(
+                                      style: regularStyle(
                                         fSize: 16.0, color: Color(0xff5A6265)),
                                     )
                                   ),
@@ -100,7 +100,7 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     child: Text(
                                       'Borrar método de pago',
                                       textAlign: TextAlign.center,
-                                      style: interStyle(
+                                      style: regularStyle(
                                         fSize: 16.0, color: Color(0xff5A6265)),
                                     )
                                   ),
@@ -129,7 +129,7 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                                           child: Text(
                                           'Editar método de pago',
                                           textAlign: TextAlign.center,
-                                          style: interStyle(
+                                          style: regularStyle(
                                             fSize: 16.0, color: Color(0xff5A6265)),
                                           ),
                                         ),
@@ -157,7 +157,7 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                                           child: Text(
                                           'Borrar método de pago',
                                           textAlign: TextAlign.center,
-                                          style: interStyle(
+                                          style: regularStyle(
                                             fSize: 16.0, color: Color(0xff5A6265)),
                                           ),
                                         ),

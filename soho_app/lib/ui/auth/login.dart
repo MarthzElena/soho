@@ -78,12 +78,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 SizedBox(height: 18.0),
                                 Text(
                                   'INICIAR',
-                                  style: interThinStyle(fSize: 32.0),
+                                  style: thinStyle(fSize: 32.0),
                                 ),
                                 SizedBox(height: 4.0),
                                 Text(
                                   'SESIÓN',
-                                  style: interThinStyle(fSize: 32.0),
+                                  style: thinStyle(fSize: 32.0),
                                 ),
                               ],
                             ),
@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: <Widget>[
                               Text(
                                 'Número de teléfono',
-                                style: interStyle(
+                                style: regularStyle(
                                   fSize: 14.0,
                                   color: Color(0xff565758),
                                 ),
@@ -113,13 +113,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   },
                                   keyboardType: TextInputType.phone,
                                   textAlignVertical: TextAlignVertical.center,
-                                  style: interLightStyle(
+                                  style: lightStyle(
                                     fSize: 14.0,
                                   ),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.all(10.0),
                                     hintText: '( +521 )  -  ( 33-33-33-33-33 )',
-                                    hintStyle: interLightStyle(
+                                    hintStyle: lightStyle(
                                       fSize: 14.0,
                                       color: Color(0xffC4C4C4),
                                     ),
@@ -158,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: Center(
                                     child: Text(
                                       'Recibir código',
-                                      style: interBoldStyle(
+                                      style: boldStyle(
                                         fSize: 14.0,
                                         color: Colors.white,
                                       ),
@@ -170,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Center(
                                 child: Text(
                                   'O también puedes entrar usando:',
-                                  style: interStyle(
+                                  style: regularStyle(
                                     fSize: 14.0,
                                     color: Color(0xff565758),
                                   ),
@@ -210,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         child: Center(
                                           child: Text(
                                             'Facebook',
-                                            style: interBoldStyle(
+                                            style: boldStyle(
                                               fSize: 14.0,
                                               color: Colors.white,
                                             ),
@@ -245,35 +245,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                         child: Center(
                                           child: Text(
                                             'Gmail',
-                                            style: interBoldStyle(
+                                            style: boldStyle(
                                               fSize: 14.0,
                                               color: Colors.white,
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 24.0),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      '¿No tienes cuenta?',
-                                      style: interStyle(fSize: 14.0),
-                                    ),
-                                    SizedBox(width: 12.0),
-                                    Text(
-                                      'Crear Cuenta',
-                                      style: interMediumStyle(
-                                        fSize: 14.0,
-                                        color: Color(0xffE51F4F),
-                                        decoration: TextDecoration.underline,
                                       ),
                                     ),
                                   ],

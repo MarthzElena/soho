@@ -58,7 +58,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                               }
                             },
                             textAlignVertical: TextAlignVertical.center,
-                            style: interLightStyle(
+                            style: lightStyle(
                               fSize: 14.0,
                             ),
                             decoration: InputDecoration(
@@ -66,7 +66,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                               fillColor: Color(0xFFC4C4C4),
                               contentPadding: EdgeInsets.all(10.0),
                               hintText: 'Té, pastel, café...',
-                              hintStyle: interLightStyle(
+                              hintStyle: lightStyle(
                                 fSize: 14.0,
                                 color: Color(0xff5A6265),
                               ),

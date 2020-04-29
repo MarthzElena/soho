@@ -210,19 +210,19 @@ class LoginState extends Model {
         return AlertDialog(
           title: Text(
             'CÓDIGO DE ACCESO',
-            style: interThinStyle(fSize: 24.0),
+            style: thinStyle(fSize: 24.0),
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 Text(
                   'Ingresa el código de acceso',
-                  style: interBoldStyle(fSize: 14.0),
+                  style: boldStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 8.0),
                 Text(
                   'Enviamos un mensaje de texto con un código de 6 digitos a tu número celular.',
-                  style: interLightStyle(fSize: 14.0),
+                  style: lightStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 24.0),
                 Container(
@@ -235,14 +235,14 @@ class LoginState extends Model {
                     textAlignVertical: TextAlignVertical.center,
                     textAlign: TextAlign.center,
                     maxLength: 6,
-                    style: interLightStyle(
+                    style: lightStyle(
                       fSize: 14.0,
                     ),
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(10.0),
                       hintText: '- - - - - -',
                       counterText: "",
-                      hintStyle: interLightStyle(
+                      hintStyle: lightStyle(
                         fSize: 14.0,
                         color: Color(0xffC4C4C4),
                       ),
@@ -271,7 +271,7 @@ class LoginState extends Model {
                 SizedBox(height: 24.0),
                 Text(
                   '¿No recibiste el código?',
-                  style: interLightStyle(
+                  style: lightStyle(
                     fSize: 14.0,
                     color: Color(0xff789090),
                   ),
@@ -279,7 +279,7 @@ class LoginState extends Model {
                 SizedBox(height: 10.0),
                 Text(
                   'Reenviar código de acceso',
-                  style: interStyle(
+                  style: regularStyle(
                     fSize: 14.0,
                     color: Color(0xffE51F4F),
                     decoration: TextDecoration.underline,
@@ -300,7 +300,7 @@ class LoginState extends Model {
                     child: Center(
                       child: Text(
                         'Iniciar sesión',
-                        style: interBoldStyle(
+                        style: boldStyle(
                           fSize: 14.0,
                           color: Colors.white,
                         ),

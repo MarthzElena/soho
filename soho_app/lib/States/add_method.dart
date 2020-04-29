@@ -170,12 +170,12 @@ class AddMethodState extends Model {
               children: <Widget>[
                 Text(
                   '¿No sabes que es el código CVV?',
-                  style: interBoldStyle(fSize: 14.0),
+                  style: boldStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 8.0),
                 Text(
                   'El código CVV son los tres números que se encuentran al reverso de tu tarjeta.',
-                  style: interLightStyle(fSize: 14.0),
+                  style: lightStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 20.0),
                 Image(

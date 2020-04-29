@@ -76,12 +76,12 @@ class _OnboardingThanksState extends State<StatefulWidget> {
                               children: <Widget>[
                                 Text(
                                   '¡BIENVENIDO\nA SOHO!',
-                                  style: interThinStyle(fSize: 32.0),
+                                  style: thinStyle(fSize: 32.0),
                                 ),
                                 SizedBox(height: 4.0),
                                 Text(
                                   'Escanea este código en\ntu sucursal de Soho\nfavorita. ',
-                                  style: interLightStyle(
+                                  style: lightStyle(
                                     fSize: 14.0,
                                     color: Color(0xff292929),
                                   ),
@@ -117,7 +117,7 @@ class _OnboardingThanksState extends State<StatefulWidget> {
                           padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                           child: Text(
                             "Tu pedido está listo, escanea este código en el lector de la sucursal de Soho o si aún no quieres cambiarlo, puedes guardarlo en tus pedidos para después.",
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
                               color: Color(0xff292929),
                             ),
@@ -140,7 +140,7 @@ class _OnboardingThanksState extends State<StatefulWidget> {
                               child: Center(
                                 child: Text(
                                   'Guardar en mis pedidos',
-                                  style: interBoldStyle(
+                                  style: boldStyle(
                                     fSize: 14.0,
                                     color: Colors.white,
                                   ),

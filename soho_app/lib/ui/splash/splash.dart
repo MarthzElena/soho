@@ -36,7 +36,9 @@ class _SplashScreenState extends State<SplashScreen> {
             }
 
             // Check if is first time
-            String firstTimeSaved = await locator<FlutterSecureStorage>().read(key: Constants.KEY_FIRST_TIME);
+            String firstTimeSaved = await locator<FlutterSecureStorage>().read(key: Constants.KEY_FIRST_TIME).catchError((error) {
+              // TODO: Implement error!!
+            });
             var firstTime = firstTimeSaved == null ? true : firstTimeSaved;
             if (Application.currentUser != null) {
               firstTime = Application.currentUser.isFirstTime;

@@ -40,12 +40,12 @@ class NoUserMenuWidget extends StatelessWidget {
                       SizedBox(height: 23.0),
                       Text(
                         'Inicia sesión ahora',
-                        style: interBoldStyle(fSize: 16.0),
+                        style: boldStyle(fSize: 16.0),
                       ),
                       SizedBox(height: 4.0),
                       Text(
                         'Inicia sesión ahora para que puedas disfrutar de todo lo que SOHO tiene para tí.',
-                        style: interLightStyle(fSize: 12.0),
+                        style: lightStyle(fSize: 12.0),
                       ),
                       SizedBox(height: 16.0),
                       GestureDetector(
@@ -64,7 +64,7 @@ class NoUserMenuWidget extends StatelessWidget {
                           child: Center(
                             child: Text(
                               'Iniciar sesión',
-                              style: interBoldStyle(
+                              style: boldStyle(
                                 fSize: 14.0,
                                 color: Colors.white,
                               ),
@@ -109,7 +109,7 @@ class NoUserMenuWidget extends StatelessWidget {
                           child: Center(
                             child: Text(
                               'Entrar con Facebook',
-                              style: interBoldStyle(
+                              style: boldStyle(
                                 fSize: 14.0,
                                 color: Colors.white,
                               ),
@@ -161,7 +161,7 @@ class NoUserMenuWidget extends StatelessWidget {
                           child: Center(
                             child: Text(
                               'Entrar con Gmail',
-                              style: interBoldStyle(
+                              style: boldStyle(
                                 fSize: 14.0,
                                 color: Colors.white,
                               ),
@@ -173,17 +173,18 @@ class NoUserMenuWidget extends StatelessWidget {
                       Center(
                         child: Text(
                           '¿No tienes cuenta?',
-                          style: interLightStyle(fSize: 14.0),
+                          style: lightStyle(fSize: 14.0),
                         ),
                       ),
                       SizedBox(height: 16.0),
                       Center(
                         child: Text(
                           'Crea una cuenta aquí',
-                          style: interMediumStyle(
+                          style: regularStyle(
                             fSize: 14.0,
                             decoration: TextDecoration.underline,
                             color: Color(0xffE51F4F),
+                            fWeight: FontWeight.w300,
                           ),
                         ),
                       ),
@@ -215,9 +216,10 @@ class NoUserMenuWidget extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
                           'Acerca de Soho',
-                          style: interMediumStyle(
+                          style: regularStyle(
                             fSize: 14.0,
                             color: Color(0xffE4E4E4),
+                            fWeight: FontWeight.w600,
                           ),
                         ),
                       )
@@ -247,10 +249,11 @@ class NoUserMenuWidget extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 13.0),
                         child: Text(
-                          'Ubicaciones',
-                          style: interMediumStyle(
+                          'Ubicación',
+                          style: regularStyle(
                             fSize: 14.0,
                             color: Color(0xffE4E4E4),
+                            fWeight: FontWeight.w600,
                           ),
                         ),
                       )

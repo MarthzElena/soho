@@ -112,14 +112,14 @@ class _MethodsScreen extends State<MethodsScreen> {
                                   children: <Widget>[
                                     Text(
                                       'MÉTODOS\nDE PAGO',
-                                      style: interThinStyle(fSize: 32.0),
+                                      style: thinStyle(fSize: 32.0),
                                     ),
                                     SizedBox(height: 4.0),
                                     Container(
                                       width: MediaQuery.of(context).size.width * 0.6,
                                       child: Text(
                                         'Administra tus métodos de pago de forma rápida y sencilla.', //TODO: Change this!
-                                        style: interLightStyle(
+                                        style: lightStyle(
                                           fSize: 14.0,
                                           color: Color(0xff292929),
                                         ),
@@ -155,7 +155,7 @@ class _MethodsScreen extends State<MethodsScreen> {
           SizedBox(height: 24.0),
           Text(
             'No tienes métodos de pago registrados.',
-            style: interBoldStyle(fSize: 16.0),
+            style: boldStyle(fSize: 16.0),
           ),
           SizedBox(height: 32.0),
         ]
@@ -186,14 +186,14 @@ class _MethodsScreen extends State<MethodsScreen> {
             SizedBox(width: 20.0),
             Text(
               '****  ****  **** ',
-              style: interMediumStyle(
+              style: regularStyle(
                 fSize: 14.0,
                 color: Color(0xff5A6265),
               ),
             ),
             Text(
               card.last4,
-              style: interMediumStyle(
+              style: regularStyle(
                 fSize: 14.0,
                 color: Color(0xff5A6265),
               ),
@@ -257,7 +257,7 @@ class _MethodsScreen extends State<MethodsScreen> {
           SizedBox(height: 24.0),
           Text(
             'Métodos de pago registrados',
-            style: interBoldStyle(fSize: 16.0),
+            style: boldStyle(fSize: 16.0),
           ),
           SizedBox(height: 32.0),
           Divider(

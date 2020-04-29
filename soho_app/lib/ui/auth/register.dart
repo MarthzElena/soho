@@ -74,12 +74,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   children: <Widget>[
                                     Text(
                                       'COMPLETA',
-                                      style: interThinStyle(fSize: 32.0),
+                                      style: thinStyle(fSize: 32.0),
                                     ),
                                     SizedBox(height: 4.0),
                                     Text(
                                       'TU CUENTA',
-                                      style: interThinStyle(fSize: 32.0),
+                                      style: thinStyle(fSize: 32.0),
                                     ),
                                   ],
                                 ),
@@ -94,7 +94,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   SizedBox(height: 8.0),
                                   Text(
                                     'Nombre',
-                                    style: interStyle(
+                                    style: regularStyle(
                                       fSize: 14.0,
                                       color: Color(0xff565758),
                                     ),
@@ -108,13 +108,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         model.nameInput = value;
                                       },
                                       textAlignVertical: TextAlignVertical.center,
-                                      style: interLightStyle(
+                                      style: lightStyle(
                                         fSize: 14.0,
                                       ),
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.all(10.0),
                                         hintText: 'Tu nombre',
-                                        hintStyle: interLightStyle(
+                                        hintStyle: lightStyle(
                                           fSize: 14.0,
                                           color: Color(0xffC4C4C4),
                                         ),
@@ -143,7 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   SizedBox(height: 24.0),
                                   Text(
                                     'Apellido',
-                                    style: interStyle(
+                                    style: regularStyle(
                                       fSize: 14.0,
                                       color: Color(0xff565758),
                                     ),
@@ -157,13 +157,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         model.lastNameInput = value;
                                       },
                                       textAlignVertical: TextAlignVertical.center,
-                                      style: interLightStyle(
+                                      style: lightStyle(
                                         fSize: 14.0,
                                       ),
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.all(10.0),
                                         hintText: 'Escribe aquí tu apellido',
-                                        hintStyle: interLightStyle(
+                                        hintStyle: lightStyle(
                                           fSize: 14.0,
                                           color: Color(0xffC4C4C4),
                                         ),
@@ -192,7 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   SizedBox(height: 24.0),
                                   Text(
                                     'Correo electrónico',
-                                    style: interStyle(
+                                    style: regularStyle(
                                       fSize: 14.0,
                                       color: Color(0xff565758),
                                     ),
@@ -209,13 +209,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       },
                                       keyboardType: TextInputType.emailAddress,
                                       textAlignVertical: TextAlignVertical.center,
-                                      style: interLightStyle(
+                                      style: lightStyle(
                                         fSize: 14.0,
                                       ),
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.all(10.0),
                                         hintText: 'disfruta@tucafe.com',
-                                        hintStyle: interLightStyle(
+                                        hintStyle: lightStyle(
                                           fSize: 14.0,
                                           color: Color(0xffC4C4C4),
                                         ),
@@ -256,7 +256,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       child: Center(
                                         child: Text(
                                           'Registrar cuenta',
-                                          style: interBoldStyle(
+                                          style: boldStyle(
                                             fSize: 14.0,
                                             color: Colors.white,
                                           ),

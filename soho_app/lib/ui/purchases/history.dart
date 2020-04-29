@@ -204,7 +204,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           child: Center(
             child: Text(
               'Todavía no has realizado ninguna orden.',
-              style: interLightStyle(fSize: 12.0),
+              style: lightStyle(fSize: 12.0),
             ),
           ),
         )
@@ -238,7 +238,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     children: <Widget>[
                       Text(
                         'Orden completa',
-                        style: interBoldStyle(
+                        style: boldStyle(
                           fSize: 14.0,
                           color: Color(0xff5A6265),
                         ),
@@ -246,7 +246,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       SizedBox(height: 8.0),
                       Text(
                         element.date,
-                        style: interLightStyle(
+                        style: lightStyle(
                           fSize: 14.0,
                           color: Color(0xff5A6265),
                         ),
@@ -273,7 +273,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Center(
                 child: Text(
                   'Total: MX${element.price}',
-                  style: interMediumStyle(fSize: 16.0),
+                  style: regularStyle(fSize: 16.0),
                 ),
               ),
               SizedBox(height: 16.0),
@@ -291,7 +291,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   child: Center(
                     child: Text(
                       '¿Necesitas ayuda?',
-                      style: interBoldStyle(
+                      style: boldStyle(
                         fSize: 14.0,
                         color: Colors.white,
                       ),
@@ -333,7 +333,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     children: <Widget>[
                       Text(
                         'Quedan ${element.validDays} días para canjear el código QR',
-                        style: interBoldStyle(
+                        style: boldStyle(
                           fSize: 14.0,
                           color: Color(0xff5A6265),
                         ),
@@ -341,7 +341,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       SizedBox(height: 8.0),
                       Text(
                         element.date,
-                        style: interLightStyle(
+                        style: lightStyle(
                           fSize: 14.0,
                           color: Color(0xff5A6265),
                         ),
@@ -368,7 +368,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Center(
                 child: Text(
                   'Total: MX${element.price}',
-                  style: interMediumStyle(fSize: 16.0),
+                  style: regularStyle(fSize: 16.0, fWeight: FontWeight.w600),
                 ),
               ),
               SizedBox(height: 16.0),
@@ -394,7 +394,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         child: Center(
                           child: Text(
                             showCode ? 'Ocultar código' : 'Mostrar código',
-                            style: interBoldStyle(
+                            style: boldStyle(
                               fSize: 14.0,
                               color: Colors.white,
                             ),
@@ -416,7 +416,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         child: Center(
                           child: Text(
                             '¿Necesitas ayuda?',
-                            style: interBoldStyle(
+                            style: boldStyle(
                               fSize: 14.0,
                               color: Colors.white,
                             ),
@@ -506,14 +506,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
               child: Center(
                 child: Text(
                   '1',
-                  style: interMediumStyle(fSize: 14.0),
+                  style: regularStyle(fSize: 14.0),
                 ),
               ),
             ),
             SizedBox(width: 16.0),
             Text(
               product.name,
-              style: interMediumStyle(fSize: 14.0),
+              style: regularStyle(fSize: 14.0),
             ),
           ],
         ),
@@ -531,14 +531,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
         return AlertDialog(
           title: Text(
             "¿Necesitas ayuda?",
-            style: interThinStyle(fSize: 24.0),
+            style: thinStyle(fSize: 24.0),
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 Text(
                   'Envíanos un correo y nos pondremos en contacto contigo.',
-                  style: interBoldStyle(fSize: 14.0),
+                  style: boldStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 15.0),
                 TextField(
@@ -550,14 +550,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   maxLines: 15,
                   textAlignVertical: TextAlignVertical.center,
                   textAlign: TextAlign.start,
-                  style: interLightStyle(
+                  style: lightStyle(
                     fSize: 14.0,
                   ),
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(10.0),
                     hintText: 'Escribe aquí...',
                     counterText: "",
-                    hintStyle: interLightStyle(
+                    hintStyle: lightStyle(
                       fSize: 14.0,
                       color: Color(0xffC4C4C4),
                     ),
@@ -647,7 +647,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     child: Center(
                       child: Text(
                         'Enviar correo',
-                        style: interBoldStyle(
+                        style: boldStyle(
                           fSize: 14.0,
                           color: Colors.white,
                         ),

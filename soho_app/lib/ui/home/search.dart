@@ -76,7 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   CircularProgressIndicator() :
                                   Text(
                                     "Escribe el nombre de un platillo o bebida.",
-                                    style: interLightStyle(
+                                    style: lightStyle(
                                       fSize: 14.0,
                                       color: Color(0xff789090),
                                     ),

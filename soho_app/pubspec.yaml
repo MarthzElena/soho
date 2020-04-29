@@ -69,39 +69,33 @@ flutter:
     - assets/payments/
 
   fonts:
-    - family: InterUI
+    - family: LatoBlack
       fonts:
-        - asset: fonts/InterUI-Regular.ttf
-    - family: InterUIBlack
+        - asset: fonts/Lato-Black.ttf
+    - family: LatoBlackItalic
       fonts:
-        - asset: fonts/InterUI-Black.ttf
-    - family: InterUIBlackItalic
+        - asset: fonts/Lato-BlackItalic.ttf
+    - family: LatoBold
       fonts:
-        - asset: fonts/InterUI-BlackItalic.ttf
-    - family: InterUIBold
+        - asset: fonts/Lato-Bold.ttf
+    - family: LatoBoldItalic
       fonts:
-        - asset: fonts/InterUI-Bold.ttf
-    - family: InterUIBoldItalic
+        - asset: fonts/Lato-BoldItalic.ttf
+    - family: LatoItalic
       fonts:
-        - asset: fonts/InterUI-BoldItalic.ttf
-    - family: InterUIItalic
+        - asset: fonts/Lato-Italic.ttf
+    - family: LatoLight
       fonts:
-        - asset: fonts/InterUI-Italic.ttf
-    - family: InterUIMedium
+        - asset: fonts/Lato-Light.ttf
+    - family: LatoLightItalic
       fonts:
-        - asset: fonts/InterUI-Medium.ttf
-    - family: InterUIMediumItalic
+        - asset: fonts/Lato-LightItalic.ttf
+    - family: Lato
       fonts:
-        - asset: fonts/InterUI-MediumItalic.ttf
-    - family: InterUIThin
+        - asset: fonts/Lato-Regular.ttf
+    - family: LatoThin
       fonts:
-        - asset: fonts/InterUI-Thin-BETA.otf
-    - family: InterUIExtraLight
+        - asset: fonts/Lato-Thin.ttf
+    - family: LatoThinItalic
       fonts:
-        - asset: fonts/InterUI-ExtraLight-BETA.otf
-    - family: InterUILight
-      fonts:
-        - asset: fonts/InterUI-Light-BETA.otf
-    - family: AvenirHeavy
-      fonts:
-        - asset: fonts/Avenir-Heavy.ttf
+        - asset: fonts/Lato-ThinItalic.ttf

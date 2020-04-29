@@ -75,7 +75,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                     child: Center(
                       child: Text(
                         'Guardar',
-                        style: interBoldStyle(
+                        style: boldStyle(
                           fSize: 14.0,
                           color: Colors.white,
                         ),
@@ -115,7 +115,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                     SizedBox(height: 32.0),
                                     Text(
                                       'Nombre en la tarjeta',
-                                      style: interStyle(fSize: 14.0),
+                                      style: regularStyle(fSize: 14.0),
                                     ),
                                     SizedBox(height: 8.0),
                                     Container(
@@ -125,13 +125,13 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                         controller: model.nameController,
                                         onChanged: (value) {},
                                         textAlignVertical: TextAlignVertical.center,
-                                        style: interLightStyle(
+                                        style: lightStyle(
                                           fSize: 14.0,
                                         ),
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.all(10.0),
                                           hintText: 'ej. Horacio Solis',
-                                          hintStyle: interLightStyle(
+                                          hintStyle: lightStyle(
                                             fSize: 14.0,
                                             color: Color(0xffC4C4C4),
                                           ),
@@ -160,7 +160,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                     SizedBox(height: 40.0),
                                     Text(
                                       'Número de tarjeta',
-                                      style: interStyle(fSize: 14.0),
+                                      style: regularStyle(fSize: 14.0),
                                     ),
                                     SizedBox(height: 8.0),
                                     Container(
@@ -172,14 +172,14 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                         controller: model.numberController,
                                         onChanged: (value) {},
                                         textAlignVertical: TextAlignVertical.center,
-                                        style: interLightStyle(
+                                        style: lightStyle(
                                           fSize: 14.0,
                                         ),
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.all(10.0),
                                           hintText: '****  ****  ****  ****',
                                           counterText: "",
-                                          hintStyle: interLightStyle(
+                                          hintStyle: lightStyle(
                                             fSize: 14.0,
                                             color: Color(0xffC4C4C4),
                                           ),
@@ -216,7 +216,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                             children: <Widget>[
                                               Text(
                                                 'Fecha de Expiración',
-                                                style: interStyle(fSize: 14.0),
+                                                style: regularStyle(fSize: 14.0),
                                               ),
                                               SizedBox(height: 8.0),
                                               Container(
@@ -230,7 +230,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                                     contentPadding: EdgeInsets.all(10.0),
                                                     hintText: 'MM / AA',
                                                     counterText: "",
-                                                    hintStyle: interLightStyle(
+                                                    hintStyle: lightStyle(
                                                       fSize: 14.0,
                                                       color: Color(0xffC4C4C4),
                                                     ),
@@ -266,7 +266,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                             children: <Widget>[
                                               Text(
                                                 'CVV',
-                                                style: interStyle(fSize: 14.0),
+                                                style: regularStyle(fSize: 14.0),
                                               ),
                                               SizedBox(height: 8.0),
                                               Container(
@@ -277,7 +277,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                                   keyboardType: TextInputType.number,
                                                   controller: model.cvvController,
                                                   textAlignVertical: TextAlignVertical.center,
-                                                  style: interLightStyle(
+                                                  style: lightStyle(
                                                     fSize: 14.0,
                                                   ),
                                                   obscureText: true,
@@ -291,7 +291,7 @@ class _AddMethodScreenState extends State<AddMethodScreen> {
                                                     contentPadding: EdgeInsets.all(10.0),
                                                     hintText: '***',
                                                     counterText: "",
-                                                    hintStyle: interLightStyle(
+                                                    hintStyle: lightStyle(
                                                       fSize: 14.0,
                                                       color: Color(0xffC4C4C4),
                                                     ),

@@ -2,92 +2,78 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-TextStyle interStyle({
+TextStyle regularStyle({
   double fSize = 16.0,
   Color color = Colors.black,
   TextDecoration decoration = TextDecoration.none,
+  FontWeight fWeight = FontWeight.w500,
 }) =>
     TextStyle(
       color: color,
       fontSize: fSize,
-      fontFamily: 'InterUI',
+      fontFamily: 'Lato',
       decoration: decoration,
+      fontWeight: fWeight
     );
 
-TextStyle interThinStyle({double fSize = 16.0, Color color = Colors.black, spacing = 0.0}) =>
+TextStyle thinStyle({double fSize = 16.0, Color color = Colors.black, spacing = 0.0}) =>
     TextStyle(
       color: color,
       fontSize: fSize,
-      fontFamily: 'InterUIThin',
+      fontFamily: 'LatoThin',
       letterSpacing: spacing,
     );
 
-TextStyle interLightStyle({double fSize = 16.0, Color color = Colors.black, spacing = 0.0}) =>
+TextStyle thinItalicStyle({double fSize = 16.0, Color color = Colors.black, spacing = 0.0}) =>
     TextStyle(
       color: color,
       fontSize: fSize,
-      fontFamily: 'InterUILight',
+      fontFamily: 'LatoThinItalic',
       letterSpacing: spacing,
     );
 
-TextStyle interELStyle({double fSize = 16.0, Color color = Colors.black, spacing = 0.0}) =>
+TextStyle lightStyle({double fSize = 16.0, Color color = Colors.black, spacing = 0.0}) =>
     TextStyle(
       color: color,
       fontSize: fSize,
-      fontFamily: 'InterUIExtraLight',
+      fontFamily: 'LatoLight',
       letterSpacing: spacing,
     );
 
-TextStyle interBlackStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
-      color: color,
-      fontSize: fSize,
-      fontFamily: 'InterUIBlack',
-    );
-
-TextStyle interBlackIStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
-      color: color,
-      fontSize: fSize,
-      fontFamily: 'InterUIBlackItalic',
-    );
-
-TextStyle interBoldStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
-      color: color,
-      fontSize: fSize,
-      fontFamily: 'InterUIBold',
-    );
-
-TextStyle interBoldIStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
-      color: color,
-      fontSize: fSize,
-      fontFamily: 'InterUIBoldItalic',
-    );
-
-TextStyle interItalicStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
-      color: color,
-      fontSize: fSize,
-      fontFamily: 'InterUIItalic',
-    );
-
-TextStyle interMediumStyle({
-  double fSize = 16.0,
-  Color color = Colors.black,
-  TextDecoration decoration = TextDecoration.none,
-}) =>
+TextStyle lightItalicStyle({double fSize = 16.0, Color color = Colors.black, spacing = 0.0}) =>
     TextStyle(
       color: color,
       fontSize: fSize,
-      fontFamily: 'InterUIMedium',
-      decoration: decoration,
+      fontFamily: 'LatoLightItalic',
+      letterSpacing: spacing,
     );
 
-TextStyle interMediumIStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
+TextStyle blackStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
       color: color,
       fontSize: fSize,
-      fontFamily: 'InterUIMediumItalic',
+      fontFamily: 'LatoBlack',
     );
 
-TextStyle avenirHeavyStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
+TextStyle blackItalicStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
       color: color,
       fontSize: fSize,
-      fontFamily: 'AvenirHeavy',
+      fontFamily: 'LatoBlackItalic',
+    );
+
+TextStyle boldStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
+      color: color,
+      fontSize: fSize,
+      fontFamily: 'LatoBold',
+    );
+
+TextStyle boldItalicStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
+      color: color,
+      fontSize: fSize,
+      fontFamily: 'LatoBoldItalic',
+    );
+
+TextStyle italicStyle({double fSize = 16.0, Color color = Colors.black}) => TextStyle(
+      color: color,
+      fontSize: fSize,
+      fontFamily: 'LatoItalic',
     );

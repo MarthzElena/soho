@@ -98,12 +98,12 @@ class _CheckMethodsScreenState extends State<CheckMethodsScreen> {
                                     SizedBox(height: 32.0),
                                     Text(
                                       'Nombre en la tarjeta',
-                                      style: interStyle(fSize: 14.0),
+                                      style: regularStyle(fSize: 14.0),
                                     ),
                                     SizedBox(height: 8.0),
                                     Text(
                                       model.nameOnCard,
-                                      style: interLightStyle(
+                                      style: lightStyle(
                                         fSize: 14.0,
                                         color: Color(0xffC4C4C4),
                                       ),
@@ -111,12 +111,12 @@ class _CheckMethodsScreenState extends State<CheckMethodsScreen> {
                                     SizedBox(height: 40.0),
                                     Text(
                                       'Número de tarjeta',
-                                      style: interStyle(fSize: 14.0),
+                                      style: regularStyle(fSize: 14.0),
                                     ),
                                     SizedBox(height: 8.0),
                                     Text(
                                       "**** **** **** ${model.cardNumber}",
-                                      style: interLightStyle(
+                                      style: lightStyle(
                                         fSize: 14.0,
                                         color: Color(0xffC4C4C4),
                                       ),
@@ -132,12 +132,12 @@ class _CheckMethodsScreenState extends State<CheckMethodsScreen> {
                                             children: <Widget>[
                                               Text(
                                                 'Fecha de Expiración',
-                                                style: interStyle(fSize: 14.0),
+                                                style: regularStyle(fSize: 14.0),
                                               ),
                                               SizedBox(height: 8.0),
                                               Text(
                                                 model.cardDate,
-                                                style: interLightStyle(
+                                                style: lightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xffC4C4C4),
                                                 ),
@@ -152,12 +152,12 @@ class _CheckMethodsScreenState extends State<CheckMethodsScreen> {
                                             children: <Widget>[
                                               Text(
                                                 'CVV',
-                                                style: interStyle(fSize: 14.0),
+                                                style: regularStyle(fSize: 14.0),
                                               ),
                                               SizedBox(height: 8.0),
                                               Text(
                                                 "***",
-                                                style: interLightStyle(
+                                                style: lightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xffC4C4C4),
                                                 ),
@@ -213,12 +213,12 @@ class _CheckMethodsScreenState extends State<CheckMethodsScreen> {
               children: <Widget>[
                 Text(
                   '¿No sabes que es el código CVV?',
-                  style: interBoldStyle(fSize: 14.0),
+                  style: boldStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 8.0),
                 Text(
                   'El código CVV son los tres números que se encuentran al reverso de tu tarjeta.',
-                  style: interLightStyle(fSize: 14.0),
+                  style: lightStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 20.0),
                 Image(

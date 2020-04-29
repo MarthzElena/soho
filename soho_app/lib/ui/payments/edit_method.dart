@@ -84,7 +84,7 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                     SizedBox(height: 32.0),
                                     Text(
                                       'Nombre en la tarjeta',
-                                      style: interStyle(fSize: 14.0),
+                                      style: regularStyle(fSize: 14.0),
                                     ),
                                     SizedBox(height: 8.0),
                                     Container(
@@ -96,13 +96,13 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                           model.updatedName = value;
                                         },
                                         textAlignVertical: TextAlignVertical.center,
-                                        style: interLightStyle(
+                                        style: lightStyle(
                                           fSize: 14.0,
                                         ),
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.all(10.0),
                                           hintText: "ej. Horacio Solis",
-                                          hintStyle: interLightStyle(
+                                          hintStyle: lightStyle(
                                             fSize: 14.0,
                                             color: Color(0xffC4C4C4),
                                           ),
@@ -139,7 +139,7 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                             children: <Widget>[
                                               Text(
                                                 'Fecha de Expiración',
-                                                style: interStyle(fSize: 14.0),
+                                                style: regularStyle(fSize: 14.0),
                                               ),
                                               SizedBox(height: 8.0),
                                               Container(
@@ -174,7 +174,7 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                                     contentPadding: EdgeInsets.all(10.0),
                                                     hintText: 'MM / AA',
                                                     counterText: "",
-                                                    hintStyle: interLightStyle(
+                                                    hintStyle: lightStyle(
                                                       fSize: 14.0,
                                                       color: Color(0xffC4C4C4),
                                                     ),
@@ -210,12 +210,12 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                             children: <Widget>[
                                               Text(
                                                 'CVV',
-                                                style: interStyle(fSize: 14.0),
+                                                style: regularStyle(fSize: 14.0),
                                               ),
                                               SizedBox(height: 8.0),
                                               Text(
                                                 "***",
-                                                style: interLightStyle(
+                                                style: lightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xffC4C4C4),
                                                 ),
@@ -271,12 +271,12 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
               children: <Widget>[
                 Text(
                   '¿No sabes que es el código CVV?',
-                  style: interBoldStyle(fSize: 14.0),
+                  style: boldStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 8.0),
                 Text(
                   'El código CVV son los tres números que se encuentran al reverso de tu tarjeta.',
-                  style: interLightStyle(fSize: 14.0),
+                  style: lightStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 20.0),
                 Image(

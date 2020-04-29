@@ -124,7 +124,7 @@ class ProductItemState extends Model {
           ),
           Text(
             selectedVariation.name,
-            style: avenirHeavyStyle(fSize: 16.0),
+            style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
           ),
         ],
       );
@@ -152,7 +152,7 @@ class ProductItemState extends Model {
           ),
           Text(
             selectedVariation.name,
-            style: avenirHeavyStyle(fSize: 16.0),
+            style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
           ),
         ],
       );
@@ -176,7 +176,7 @@ class ProductItemState extends Model {
           ),
           Text(
             selectedVariation.name,
-            style: avenirHeavyStyle(fSize: 16.0),
+            style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
           ),
         ],
       );

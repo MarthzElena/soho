@@ -35,21 +35,22 @@ class FeaturedWidget extends StatelessWidget {
           children: <Widget>[
             Text(
               text1,
-              style: interBoldStyle(
+              style: boldStyle(
                 fSize: 17.0,
               ),
             ),
             Text(
               text2,
-              style: interELStyle(
-                fSize: 27.0,
-                spacing: 1.0,
+              style: regularStyle(
+                fSize: 29.0,
+                fWeight: FontWeight.w300,
               ),
             ),
             Text(
               text3,
-              style: interThinStyle(
+              style: regularStyle(
                 fSize: 51.0,
+                fWeight: FontWeight.w300,
               ),
             ),
           ],

@@ -88,12 +88,12 @@ class _ProductDetailState extends State<ProductDetail> {
                               SizedBox(height: 24.0),
                               Text(
                                 product.name,
-                                style: interBoldStyle(fSize: 20.0),
+                                style: boldStyle(fSize: 20.0),
                               ),
                               SizedBox(height: 8.0),
                               Text(
                                 product.description,
-                                style: interLightStyle(
+                                style: lightStyle(
                                   fSize: 14.0,
                                   color: Color(0xff5A6265),
                                 ),
@@ -101,7 +101,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               SizedBox(height: 16.0),
                               Text(
                                 "\$${product.price.toString()}0",
-                                style: interMediumStyle(fSize: 22.0),
+                                style: regularStyle(fSize: 22.0),
                               ),
                               ListView(
                                 shrinkWrap: true,
@@ -135,7 +135,7 @@ class _ProductDetailState extends State<ProductDetail> {
           SizedBox(height: 23.0),
           Text(
             '― ' + variationType,
-            style: interLightStyle(
+            style: lightStyle(
               fSize: 14.0,
               color: Color(0xff789090),
             ),
@@ -179,7 +179,7 @@ class _ProductDetailState extends State<ProductDetail> {
         SizedBox(width: 16.0),
         Text(
           variationElement.name,
-          style: avenirHeavyStyle(fSize: 16.0),
+          style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
         )
       ],
     );
@@ -202,7 +202,7 @@ class _ProductDetailState extends State<ProductDetail> {
         ),
         Text(
           selectedVariation.name,
-          style: avenirHeavyStyle(fSize: 16.0),
+          style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
         ),
       ],
     );

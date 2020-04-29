@@ -164,7 +164,7 @@ class _BottomBarState extends State<BottomBar> {
                         Center(
                           child: Text(
                             _productItemModel.addToCartText,
-                            style: interBoldStyle(fSize: 14.0, color: Colors.white),
+                            style: boldStyle(fSize: 14.0, color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
                         ) :
@@ -174,7 +174,7 @@ class _BottomBarState extends State<BottomBar> {
                           children: <Widget>[
                             Text(
                               _productItemModel.addToCartText,
-                              style: interBoldStyle(fSize: 14.0, color: Colors.white),
+                              style: boldStyle(fSize: 14.0, color: Colors.white),
                             ),
                             Text(
                               _productItemModel.addToCartPrice,

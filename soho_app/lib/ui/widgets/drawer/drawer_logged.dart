@@ -74,7 +74,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           children: <Widget>[
                             Text(
                               name.isNotEmpty ? name : 'Nombre',
-                              style: interBoldStyle(
+                              style: boldStyle(
                                 fSize: 16.0,
                                 color: Colors.white,
                               ),
@@ -85,14 +85,14 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               children: <Widget>[
                                 Text(
                                   'Última orden: ',
-                                  style: interStyle(
+                                  style: regularStyle(
                                     fSize: 12.0,
                                     color: Colors.white,
                                   ),
                                 ),
                                 Text(
                                   lastOrder,
-                                  style: interBoldStyle(
+                                  style: boldStyle(
                                     fSize: 12.0,
                                     color: Colors.white,
                                   ),
@@ -120,7 +120,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           SizedBox(width: 12.0),
                           Text(
                             'Mis órdenes',
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
                               color: Color(0xffE4E4E4),
                             ),
@@ -141,7 +141,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           SizedBox(width: 12.0),
                           Text(
                             'Acerca de Soho',
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
                               color: Color(0xffE4E4E4),
                             ),
@@ -162,7 +162,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           SizedBox(width: 12.0),
                           Text(
                             'Métodos de pago',
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
                               color: Color(0xffE4E4E4),
                             ),
@@ -183,7 +183,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           SizedBox(width: 12.0),
                           Text(
                             'Ubicación',
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
                               color: Color(0xffE4E4E4),
                             ),
@@ -221,9 +221,10 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               SizedBox(width: 12.0),
                               Text(
                                 'Administrador Soho',
-                                style: interMediumStyle(
+                                style: regularStyle(
                                   fSize: 14.0,
                                   color: Color(0xffE4E4E4),
+                                  fWeight: FontWeight.w600,
                                 ),
                               )
                             ],
@@ -241,9 +242,10 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               onTap: () => Navigator.pushNamed(context, Routes.viewProfile),
                               child: Text(
                                 'Configuración',
-                                style: interMediumStyle(
+                                style: regularStyle(
                                   fSize: 14.0,
                                   color: Color(0xffE4E4E4),
+                                  fWeight: FontWeight.w600,
                                 ),
                               ),
                             )
@@ -262,9 +264,10 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               },
                               child: Text(
                                 'Cerrar sesión',
-                                style: interMediumStyle(
+                                style: regularStyle(
                                   fSize: 14.0,
                                   color: Color(0xff866767),
+                                  fWeight: FontWeight.w600,
                                 ),
                               ),
                             ),

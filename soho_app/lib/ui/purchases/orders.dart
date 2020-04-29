@@ -101,16 +101,16 @@ class _OrderScreenState extends State<OrderScreen> {
                                   children: <Widget>[
                                     Text(
                                       'TU',
-                                      style: interThinStyle(fSize: 32.0),
+                                      style: thinStyle(fSize: 32.0),
                                     ),
                                     Text(
                                       'ORDEN',
-                                      style: interThinStyle(fSize: 32.0),
+                                      style: thinStyle(fSize: 32.0),
                                     ),
                                     SizedBox(height: 4.0),
                                     Text(
                                       '¡Ya estamos casi listos\npara empezar a preparar\ntu comida!',
-                                      style: interLightStyle(
+                                      style: lightStyle(
                                         fSize: 14.0,
                                         color: Color(0xff292929),
                                       ),
@@ -132,7 +132,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         'Ordenaste',
-                                        style: interLightStyle(
+                                        style: lightStyle(
                                           fSize: 14.0,
                                           color: Color(0xff789090),
                                         ),
@@ -145,7 +145,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         },
                                         child: Text(
                                           'Agregar algo más',
-                                          style: interStyle(
+                                          style: regularStyle(
                                             fSize: 14.0,
                                             color: Color(0xffE51F4F),
                                             decoration: TextDecoration.underline,
@@ -162,7 +162,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         },
                                         child: Text(
                                           'Limpiar carrito',
-                                          style: interStyle(
+                                          style: regularStyle(
                                             fSize: 14.0,
                                             color: Color(0xffE51F4F),
                                             decoration: TextDecoration.underline,
@@ -193,7 +193,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                             children: <Widget>[
                                               Text(
                                                 element.name,
-                                                style: interLightStyle(
+                                                style: lightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xff789090),
                                                 ),
@@ -208,7 +208,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                             children: <Widget>[
                                               Text(
                                                 element.name,
-                                                style: interBoldStyle(fSize: 14.0),
+                                                style: boldStyle(fSize: 14.0),
                                               ),
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -217,7 +217,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                                 children: <Widget>[
                                                   Text(
                                                     "\$${element.price}0",
-                                                    style: avenirHeavyStyle(fSize: 16.0),
+                                                    style: regularStyle(fSize: 16.0),
                                                   ),
                                                   SizedBox(width: 15.0),
                                                   GestureDetector(
@@ -236,7 +236,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   SizedBox(height: 32.0),
                                   Text(
                                     'Agregar una nota',
-                                    style: interStyle(fSize: 14.0),
+                                    style: regularStyle(fSize: 14.0),
                                   ),
                                   SizedBox(height: 8.0),
                                   Container(
@@ -250,13 +250,13 @@ class _OrderScreenState extends State<OrderScreen> {
                                         }
                                       },
                                       textAlignVertical: TextAlignVertical.center,
-                                      style: interLightStyle(
+                                      style: lightStyle(
                                         fSize: 14.0,
                                       ),
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.all(10.0),
                                         hintText: '¿Alérgicos a algun ingrediente? ¿Sin cebolla?',
-                                        hintStyle: interLightStyle(
+                                        hintStyle: lightStyle(
                                           fSize: 14.0,
                                           color: Color(0xffC4C4C4),
                                         ),
@@ -295,11 +295,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                       children: <Widget>[
                                         Text(
                                           '¿Tienes un ',
-                                          style: interStyle(fSize: 14.0),
+                                          style: regularStyle(fSize: 14.0),
                                         ),
                                         Text(
                                           'Código',
-                                          style: interStyle(
+                                          style: regularStyle(
                                             fSize: 14.0,
                                             color: Color(0xffE51F4F),
                                             decoration: TextDecoration.underline,
@@ -307,7 +307,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         ),
                                         Text(
                                           '?',
-                                          style: interStyle(fSize: 14.0),
+                                          style: regularStyle(fSize: 14.0),
                                         ),
                                       ],
                                     ),
@@ -320,7 +320,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       SizedBox(height: 24.0),
                                       Text(
                                         'Ingrese código',
-                                        style: interStyle(fSize: 14.0),
+                                        style: regularStyle(fSize: 14.0),
                                       ),
                                       SizedBox(height: 8.0),
                                       Row(
@@ -334,13 +334,13 @@ class _OrderScreenState extends State<OrderScreen> {
                                                 model.discountCode = value;
                                               },
                                               textAlignVertical: TextAlignVertical.center,
-                                              style: interLightStyle(
+                                              style: lightStyle(
                                                 fSize: 14.0,
                                               ),
                                               decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(10.0),
                                                 hintText: '--------------------',
-                                                hintStyle: interLightStyle(
+                                                hintStyle: lightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xffC4C4C4),
                                                 ),
@@ -397,7 +397,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                             },
                                             child: Text(
                                               'Aplicar',
-                                              style: interStyle(
+                                              style: regularStyle(
                                                 fSize: 14.0,
                                                 color: Color(0xffE51F4F),
                                                 decoration: TextDecoration.underline,
@@ -417,7 +417,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   SizedBox(height: 24.0),
                                   Text(
                                     'Deja una propina',
-                                    style: interLightStyle(
+                                    style: lightStyle(
                                       fSize: 14.0,
                                       color: Color(0xff789090),
                                     ),
@@ -432,9 +432,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                         },
                                         child: Chip(
                                           label: Text(' Otro '),
-                                          labelStyle: interMediumStyle(
+                                          labelStyle: regularStyle(
                                             fSize: 14.0,
                                             color: model.isTipOther() ? Colors.white : Color(0xff789090),
+                                            fWeight: FontWeight.w600,
                                           ),
                                           backgroundColor: model.isTipOther() ? Color(0xffF0AB31) : Colors.white,
                                           shape: StadiumBorder(
@@ -450,9 +451,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                         },
                                         child: Chip(
                                           label: Text('\$10.00'),
-                                          labelStyle: interMediumStyle(
+                                          labelStyle: regularStyle(
                                             fSize: 14.0,
                                             color: model.isTipTen() ? Colors.white : Color(0xff789090),
+                                            fWeight: FontWeight.w600,
                                           ),
                                           backgroundColor: model.isTipTen() ? Color(0xffF0AB31) : Colors.white,
                                           shape: StadiumBorder(
@@ -468,9 +470,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                         },
                                         child: Chip(
                                           label: Text('\$15.00'),
-                                          labelStyle: interMediumStyle(
+                                          labelStyle: regularStyle(
                                             fSize: 14.0,
                                             color: model.isTipFifteen() ? Colors.white : Color(0xff789090),
+                                            fWeight: FontWeight.w600,
                                           ),
                                           backgroundColor: model.isTipFifteen() ? Color(0xffF0AB31) : Colors.white,
                                           shape: StadiumBorder(
@@ -486,9 +489,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                         },
                                         child: Chip(
                                           label: Text('\$20.00'),
-                                          labelStyle: interMediumStyle(
+                                          labelStyle: regularStyle(
                                             fSize: 14.0,
                                             color: model.isTipTwenty() ? Colors.white : Color(0xff789090),
+                                            fWeight: FontWeight.w600,
                                           ),
                                           backgroundColor: model.isTipTwenty() ? Color(0xffF0AB31) : Colors.white,
                                           shape: StadiumBorder(
@@ -508,7 +512,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       SizedBox(height: 24.0),
                                       Text(
                                         'Ingrese cantidad personalizada',
-                                        style: interStyle(fSize: 14.0),
+                                        style: regularStyle(fSize: 14.0),
                                       ),
                                       SizedBox(height: 8.0),
                                       Container(
@@ -520,13 +524,13 @@ class _OrderScreenState extends State<OrderScreen> {
                                           },
                                           keyboardType: TextInputType.number,
                                           textAlignVertical: TextAlignVertical.center,
-                                          style: interLightStyle(
+                                          style: lightStyle(
                                             fSize: 14.0,
                                           ),
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.all(10.0),
                                             hintText: '\$0.00',
-                                            hintStyle: interLightStyle(
+                                            hintStyle: lightStyle(
                                               fSize: 14.0,
                                               color: Color(0xffC4C4C4),
                                             ),
@@ -566,15 +570,15 @@ class _OrderScreenState extends State<OrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         'Subtotal',
-                                        style: interMediumStyle(
+                                        style: regularStyle(
                                           fSize: 14.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
                                       Text(
                                         '\$${model.productsSubTotal.toString()}0',
-                                        style: interMediumStyle(
-                                          fSize: 14.0,
+                                        style: regularStyle(
+                                          fSize: 16.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
@@ -587,15 +591,15 @@ class _OrderScreenState extends State<OrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         'Propina',
-                                        style: interMediumStyle(
+                                        style: regularStyle(
                                           fSize: 14.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
                                       Text(
                                         '\$${model.currentTip}0',
-                                        style: interMediumStyle(
-                                          fSize: 14.0,
+                                        style: regularStyle(
+                                          fSize: 16.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
@@ -608,15 +612,15 @@ class _OrderScreenState extends State<OrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         'Descuento',
-                                        style: interMediumStyle(
+                                        style: regularStyle(
                                           fSize: 14.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
                                       Text(
                                         '-\$${model.discount}0',
-                                        style: interMediumStyle(
-                                          fSize: 14.0,
+                                        style: regularStyle(
+                                          fSize: 16.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
@@ -629,11 +633,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         'Total',
-                                        style: interMediumStyle(),
+                                        style: regularStyle(fSize: 16.0),
                                       ),
                                       Text(
                                         '\$${model.orderTotal + model.currentTip - model.discount}0',
-                                        style: interMediumStyle(fSize: 18.0),
+                                        style: regularStyle(fSize: 18.0),
                                       ),
                                     ],
                                   ),
@@ -670,7 +674,7 @@ class _OrderScreenState extends State<OrderScreen> {
       children: <Widget>[
         Text(
           'No tienes métodos de pago',
-          style: interStyle(
+          style: regularStyle(
             fSize: 14.0,
             color: Color(0xff5A6265),
           ),
@@ -681,7 +685,7 @@ class _OrderScreenState extends State<OrderScreen> {
           },
           child: Text(
             'Agregar',
-            style: interStyle(
+            style: regularStyle(
               fSize: 14.0,
               color: Color(0xffE51F4F),
               decoration: TextDecoration.underline,
@@ -706,7 +710,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   SizedBox(width: 12.0),
                   Text(
                     '****  ****  ****',
-                    style: interMediumStyle(
+                    style: regularStyle(
                       fSize: 14.0,
                       color: Color(0xff5A6265),
                     ),
@@ -714,7 +718,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   SizedBox(width: 12.0),
                   Text(
                     card.last4,
-                    style: interMediumStyle(
+                    style: regularStyle(
                       fSize: 14.0,
                       color: Color(0xff5A6265),
                     ),
@@ -727,7 +731,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 },
                 child: Text(
                   'Cambiar',
-                  style: interStyle(
+                  style: regularStyle(
                     fSize: 14.0,
                     color: Color(0xffE51F4F),
                     decoration: TextDecoration.underline,
