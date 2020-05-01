@@ -13,7 +13,7 @@ import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -26,7 +26,7 @@ class AppController {
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  final FacebookLogin facebookLogin = FacebookLogin();
+  final FacebookAuth facebookLogin = FacebookAuth.instance;
 
   // Returns a SohoAuthObject if there's a token saved
   Future<void> getSavedAuthObject() async{
@@ -64,61 +64,45 @@ class AppController {
 
   Future<String> initiateFacebookLogin() async {
     var errorString = "";
-    await facebookLogin.logInWithReadPermissions(['email']).then((facebookLoginResult) async {
-
-      var facebookToken = facebookLoginResult.accessToken.token;
-      switch (facebookLoginResult.status) {
-        case FacebookLoginStatus.error:
-          print("Error");
-          errorString = "Error al iniciar sesión con Facebook.";
-          break;
-
-        case FacebookLoginStatus.cancelledByUser:
-          print("CancelledByUser");
-          break;
-
-        case FacebookLoginStatus.loggedIn:
-          await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
-            var firebaseId = user.uid;
-            // Get user data
-            await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=$facebookToken').then((graphResponse) async {
-              var profile = json.decode(graphResponse.body);
-              var email = profile['email'].toString();
-              var username = profile['name'].toString();
-              var userId = firebaseId;
-              var photoUrl = "";
-              var picture = profile['picture'];
-              if (picture != null) {
-                var pictureData = picture['data'];
-                if (pictureData != null) {
-                  photoUrl = pictureData['url'];
-                }
-              }
-
+    await facebookLogin.login(permissions: ['email']).then((result) async {
+      if (result.status == 200) {
+        await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: result.accessToken.token)).then((user) async {
+          var firebaseId = user.uid;
+          // Get user data
+          await facebookLogin.getUserData(fields: "email, name, picture").then((userData) async {
+            if (userData != null) {
+              var email = userData["email"].toString();
+              var name = userData["name"].toString();
+              var pictureDict = userData["picture"];
+              var pictureData = pictureDict["data"];
+              var pictureURL = pictureData["url"].toString();
+              // Save user data to DB
               var user = SohoUserObject.createUserDictionary(
-                  username: username,
+                  username: name,
                   email: email,
-                  userId: userId,
-                  photoUrl: photoUrl,
+                  userId: firebaseId,
+                  photoUrl: pictureURL,
                   phoneNumber: "",
                   isAdmin: false,
                   firstTime: true
               );
               await saveUserToDatabase(user);
-            });
-          }).catchError((error) {
-            errorString = "Error al iniciar sesión con Facebook.";
+            } else {
+              errorString = "Error al iniciar sesión con Facebook.";
+            }
           });
-          break;
-
-        default:
-          break;
+        });
+      } else if (result.status == 403){
+        print("CancelledByUser");
+      } else {
+        print("Error");
+        errorString = "Error al iniciar sesión con Facebook.";
       }
-
     }).catchError((error) {
       errorString = "Error al iniciar sesión con Facebook.";
       return errorString;
     });
+
     return errorString;
   }
 

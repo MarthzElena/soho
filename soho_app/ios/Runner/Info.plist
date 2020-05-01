@@ -27,7 +27,6 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string></string>
 				<string>fb356784424958223</string>
 				<string>com.googleusercontent.apps.109154806584-asthbs4ead87mdi679tik352hq75h41b</string>
 			</array>
