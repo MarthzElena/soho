@@ -6,7 +6,7 @@ TextStyle regularStyle({
   double fSize = 16.0,
   Color color = Colors.black,
   TextDecoration decoration = TextDecoration.none,
-  FontWeight fWeight = FontWeight.w500,
+  FontWeight fWeight = FontWeight.normal,
 }) =>
     TextStyle(
       color: color,

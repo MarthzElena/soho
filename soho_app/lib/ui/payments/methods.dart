@@ -112,7 +112,7 @@ class _MethodsScreen extends State<MethodsScreen> {
                                   children: <Widget>[
                                     Text(
                                       'MÉTODOS\nDE PAGO',
-                                      style: thinStyle(fSize: 32.0),
+                                      style: lightStyle(fSize: 32.0),
                                     ),
                                     SizedBox(height: 4.0),
                                     Container(

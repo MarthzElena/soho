@@ -41,16 +41,14 @@ class FeaturedWidget extends StatelessWidget {
             ),
             Text(
               text2,
-              style: regularStyle(
+              style: lightStyle(
                 fSize: 29.0,
-                fWeight: FontWeight.w300,
               ),
             ),
             Text(
               text3,
-              style: regularStyle(
+              style: lightStyle(
                 fSize: 51.0,
-                fWeight: FontWeight.w300,
               ),
             ),
           ],

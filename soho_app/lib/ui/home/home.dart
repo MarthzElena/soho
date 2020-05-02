@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/Auth/AppController.dart';
+import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/States/ProductItemState.dart';
 import 'package:soho_app/Utils/Application.dart';
@@ -16,6 +19,7 @@ import 'package:soho_app/ui/widgets/layouts/carousel_small.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:soho_app/Utils/FBPush.dart';
 import 'package:soho_app/ui/widgets/layouts/spinner.dart';
+import 'package:connectivity/connectivity.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -24,6 +28,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   HomePageState _homePageState = locator<HomePageState>();
+  Map _source = {ConnectivityResult.none: false};
+  MyConnectivity _connectivity = MyConnectivity.instance;
 
   @override
   void initState() {
@@ -33,6 +39,36 @@ class _HomeScreenState extends State<HomeScreen> {
     final FirebaseMessaging _fireBaseMsg = FirebaseMessaging();
     _fireBaseMsg.requestNotificationPermissions();
     setupFireBase(_fireBaseMsg);
+
+    // Init connectivity listener
+    _connectivity.initMethod();
+    _connectivity.myStream.listen((source) async {
+      if (source != null) {
+        _source = source;
+        switch (_source.keys.toList()[0]) {
+          case ConnectivityResult.mobile:
+          case ConnectivityResult.wifi:
+            if (Application.sohoCategories.isEmpty) {
+              // Get categories
+              locator<SquareHTTPRequest>().getSquareCategories().then((categories) {
+                if (categories.isNotEmpty) {
+                  Application.sohoCategories = categories;
+                }
+              });
+            }
+
+            if (Application.featuredProduct.isEmpty) {
+              // Get featured products
+              await locator<AppController>().getFeaturedImageFromStorage();
+            }
+
+            // Get logged uer
+            await locator<AppController>().getSavedAuthObject();
+
+            _homePageState.updateState();
+        }
+      }
+    });
   }
 
   @override
@@ -76,13 +112,27 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(height: 35.0),
                             Application.featuredProduct.isEmpty ? FeaturedWidget() :
                             Container(
+                              height: 300.0,
                               width: double.infinity,
-                              child: Center(
-                                child: Image(image: NetworkImage(Application.featuredProduct)),
-                              ),
+                              child: Image(image: NetworkImage(Application.featuredProduct)),
                             ),
                             SizedBox(height: 35.0),
-                            LargeCarousel(list: Application.sohoCategories),
+                            Application.sohoCategories.isNotEmpty ?
+                            LargeCarousel(list: Application.sohoCategories) :
+                            Container(
+                              margin: EdgeInsets.only(left: 16.0, right: 16.0),
+                              height: 245.0,
+                              width: double.infinity,
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24.0),
+                                  child: Text(
+                                    'Debes tener conexión a internet para poder visualizar el menú de SOHO.',
+                                    style: lightStyle(fSize: 24.0),
+                                  ),
+                                ),
+                              ),
+                            ),
                             SizedBox(height: 35.0),
                             Container(
                               width: double.infinity,
@@ -125,4 +175,50 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _connectivity.disposeStream();
+    super.dispose();
+  }
+}
+
+class MyConnectivity {
+  MyConnectivity._internal();
+
+  static final MyConnectivity _instance = MyConnectivity._internal();
+
+  static MyConnectivity get instance => _instance;
+
+  Connectivity connectivity = Connectivity();
+
+  StreamController controller = StreamController.broadcast();
+
+  Stream get myStream => controller.stream;
+
+  void initMethod() async {
+    ConnectivityResult result = await connectivity.checkConnectivity();
+    _checkStatus(result);
+    connectivity.onConnectivityChanged.listen((result) {
+      _checkStatus(result);
+    });
+  }
+
+  void _checkStatus(ConnectivityResult result) async {
+    bool isOnline = false;
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        isOnline = true;
+      } else {
+        isOnline = false;
+      }
+    } on SocketException catch (_) {
+      print("SOCKET EXEPTION");
+      isOnline = false;
+    }
+    controller.sink.add({result: isOnline});
+  }
+
+  void disposeStream() => controller.close();
 }

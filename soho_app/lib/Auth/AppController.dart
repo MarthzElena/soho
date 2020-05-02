@@ -304,6 +304,7 @@ class AppController {
   }
 
   Future<void> getFeaturedImageFromStorage() async {
+    var photoIndex = 0;
     Timer.periodic(Duration(seconds: 5), (timer) async {
       var featuredPhotosArray = dataBaseRootRef.child(Constants.DATABASE_KEY_FEATURED_IMAGES);
       // Get photos array
@@ -313,8 +314,8 @@ class AppController {
           if (linkedMap != null) {
            var max = linkedMap.entries.length;
            if (max > 0) {
-             var index = Random().nextInt(max);
-             var photoUrl = linkedMap.entries.elementAt(index).value.toString();
+             var photoUrl = linkedMap.entries.elementAt(photoIndex).value.toString();
+             photoIndex = photoIndex + 1 == linkedMap.entries.length ? 0 : photoIndex + 1;
              if (photoUrl != null && photoUrl.isNotEmpty) {
                // Get storage reference
                await firebaseStorage.getReferenceFromUrl(photoUrl).then((storageReference) async {

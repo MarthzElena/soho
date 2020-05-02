@@ -93,7 +93,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               SizedBox(height: 8.0),
                               Text(
                                 product.description,
-                                style: lightStyle(
+                                style: regularStyle(
                                   fSize: 14.0,
                                   color: Color(0xff5A6265),
                                 ),

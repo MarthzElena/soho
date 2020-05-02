@@ -61,11 +61,11 @@ class _AboutScreenState extends State<AboutScreen> {
                         children: <Widget>[
                           Text(
                             'ACERCA',
-                            style: thinStyle(fSize: 32.0),
+                            style: lightStyle(fSize: 32.0),
                           ),
                           Text(
                             'DE SOHO',
-                            style: thinStyle(fSize: 32.0),
+                            style: lightStyle(fSize: 32.0),
                           ),
                           SizedBox(height: 4.0),
                           Text(

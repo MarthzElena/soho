@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:soho_app/Auth/AppController.dart';
+import 'package:soho_app/SohoMenu/CategoryObject.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
@@ -16,6 +19,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
   @override
   void initState() {
     super.initState();
@@ -37,14 +41,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
             // Check if is first time
             String firstTimeSaved = await locator<FlutterSecureStorage>().read(key: Constants.KEY_FIRST_TIME).catchError((error) {
-              // TODO: Implement error!!
+              // Since there's no first time saved, skip Onboarding
+              Navigator.of(context).pushReplacementNamed(Routes.homePage);
             });
             var firstTime = firstTimeSaved == null ? true : firstTimeSaved;
             if (Application.currentUser != null) {
               firstTime = Application.currentUser.isFirstTime;
 
               if (firstTime) {
-                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
               } else {
                 Navigator.of(context).pushReplacementNamed(Routes.homePage);
               }
@@ -52,10 +57,18 @@ class _SplashScreenState extends State<SplashScreen> {
               // If no user is logged in go directly to Home Page
               Navigator.of(context).pushReplacementNamed(Routes.homePage);
             }
+          } else {
+            Application.sohoCategories = List<CategoryObject>();
+            Navigator.of(context).pushReplacementNamed(Routes.homePage);
           }
+        }).catchError((_) {
+          Navigator.of(context).pushReplacementNamed(Routes.homePage);
         });
 
 
+      }).catchError((error) {
+        Application.sohoCategories = List<CategoryObject>();
+        Navigator.of(context).pushReplacementNamed(Routes.homePage);
       });
     });
   }
@@ -65,18 +78,8 @@ class _SplashScreenState extends State<SplashScreen> {
     return PreConfiguredLayout(
       buildWidget: Container(
         constraints: BoxConstraints.expand(),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Image(image: splashLogo),
-            SizedBox(height: 45.0),
-            Image(
-              image: splashScratch,
-              fit: BoxFit.fitWidth,
-            ),
-          ],
+        child: Center(
+          child: Image(image: splashLogo),
         ),
       ),
     );

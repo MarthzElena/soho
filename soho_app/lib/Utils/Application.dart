@@ -7,7 +7,7 @@ class Application {
   // Current logged in user
   static SohoUserObject currentUser;
 
-  static List<CategoryObject> sohoCategories;
+  static List<CategoryObject> sohoCategories = List<CategoryObject>();
 
   // Current order for user (items on shopping cart)
   // Once the order is completed, this value should be set to NULL

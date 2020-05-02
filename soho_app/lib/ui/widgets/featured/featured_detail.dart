@@ -35,9 +35,8 @@ class FeaturedDetailWidget extends StatelessWidget {
         children: <Widget>[
           AutoSizeText(
             text1,
-            style: regularStyle(
+            style: lightStyle(
               fSize: 32.0,
-              fWeight: FontWeight.w300,
             ),
             maxLines: 2,
             softWrap: true,
@@ -46,9 +45,8 @@ class FeaturedDetailWidget extends StatelessWidget {
           SizedBox(height: 8.0),
           AutoSizeText(
             text2,
-            style: regularStyle(
+            style: lightStyle(
               fSize: 16.0,
-              fWeight: FontWeight.w300,
             ),
             maxLines: 2,
             softWrap: true,

@@ -59,7 +59,7 @@ class LocationScreen extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             'UBICACIÓN',
-                            style: thinStyle(fSize: 32.0),
+                            style: lightStyle(fSize: 32.0),
                           ),
                           SizedBox(height: 4.0),
                           Container(
