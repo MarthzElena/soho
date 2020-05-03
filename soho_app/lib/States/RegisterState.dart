@@ -1,9 +1,11 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
 import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/States/HomePageState.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Locator.dart';
 
 class RegisterState extends Model {
@@ -24,6 +26,11 @@ class RegisterState extends Model {
     return false;
   }
 
+  void validateEmail() {
+    validEmail = EmailValidator.validate(emailInput);
+    notifyListeners();
+  }
+
   Future<void> createAccount(BuildContext context, String phone, String userID) async {
     if (validEmail & validateFieldsNotEmpty()) {
       // Create new dictionary with data
@@ -37,6 +44,8 @@ class RegisterState extends Model {
         firstTime: true
       );
       await locator<AppController>().updateUserInDatabase(updatedDict).then((_) {
+        // Make sure user is saved to state
+        Application.currentUser = SohoUserObject.fromJson(updatedDict);
         // Update drawer
         locator<HomePageState>().updateDrawer();
         Navigator.pop(context);

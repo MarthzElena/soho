@@ -108,8 +108,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 40.0,
                                 child: TextField(
                                   onChanged: (value) {
-                                    // TODO: Validate phone
-                                    model.phoneInput = value;
+                                    if (value.startsWith('+')) {
+                                      model.phoneInput = value;
+                                    } else {
+                                      model.phoneInput = "+" + value;
+                                    }
                                   },
                                   keyboardType: TextInputType.phone,
                                   textAlignVertical: TextAlignVertical.center,
@@ -119,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.all(10.0),
                                     hintText: '( +521 )  -  ( 33-33-33-33-33 )',
+                                    prefixText: '+',
                                     hintStyle: lightStyle(
                                       fSize: 14.0,
                                       color: Color(0xffC4C4C4),

@@ -15,12 +15,11 @@ import 'package:soho_app/ui/items/onboarding_item.dart';
 import '../Auth/SohoUserObject.dart';
 
 class LoginState extends Model {
-  // TODO: Validate phone and password
+  TextEditingController phoneInputController = TextEditingController();
   String phoneInput = "";
-  String passwordInput = "";
   String smsCode = "";
   String _phoneVerificationId = "";
-
+  String inputValidationMessage = "";
   AppController authController = locator<AppController>();
 
   Future<String> facebookLoginPressed(BuildContext context) async {
@@ -47,11 +46,8 @@ class LoginState extends Model {
     var errorString = "";
     await authController.initiateGoogleLogin().then((error) {
       if (Application.currentUser != null) {
-        // TODO: Do something with this user?
         Navigator.pushNamed(context, Routes.homePage);
       } else {
-        // TODO: Show some error
-        print("****** Google Login ERROR");
         errorString = error.isEmpty ? "Error con Google Login" : error;
       }
     });
@@ -60,19 +56,13 @@ class LoginState extends Model {
 
   Future<void> signInWithPhoneCredential(BuildContext context, AuthCredential credential) async {
     final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential).catchError((signInError) async {
-      print("SIGN IN ERROR: ${signInError.toString()}");
-      // TODO: HAndle error
-      await showDialog(
-        context: context,
-        child: SimpleDialog(
-          title: Text("Error con el número de télefono"),
-          children: <Widget>[
-            SimpleDialogOption(
-              child: Text("OK"),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ),
+      Fluttertoast.showToast(
+          msg: 'Error con el número de télefono',
+          toastLength: Toast.LENGTH_LONG,
+          timeInSecForIos: 5,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Color(0x99E51F4F),
+          textColor: Colors.white
       );
     });
     var appController = locator<AppController>();
@@ -97,9 +87,15 @@ class LoginState extends Model {
             Navigator.pop(context);
             Navigator.pop(context);
           });
-        }).catchError((tokenError) {
-          print("token ERROR: ${tokenError.toString()}");
-          // TODO: HAndle error
+        }).catchError((tokenError) async {
+          Fluttertoast.showToast(
+              msg: 'Error con usuario al iniciar sesión con teléfono',
+              toastLength: Toast.LENGTH_LONG,
+              timeInSecForIos: 5,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Color(0x99E51F4F),
+              textColor: Colors.white
+          );
         });
         // Go to register to get missing information
         Navigator.of(context).push(
@@ -118,18 +114,13 @@ class LoginState extends Model {
         });
       }
     } else {
-      print("*** ERROR with user");
-      await showDialog(
-        context: context,
-        child: SimpleDialog(
-          title: Text('Error con usuario al iniciar sesión con teléfono'),
-          children: <Widget>[
-            SimpleDialogOption(
-              child: Text("OK"),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ),
+      Fluttertoast.showToast(
+          msg: 'Error con usuario al iniciar sesión con teléfono',
+          toastLength: Toast.LENGTH_LONG,
+          timeInSecForIos: 5,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Color(0x99E51F4F),
+          textColor: Colors.white
       );
     }
   }
@@ -159,27 +150,19 @@ class LoginState extends Model {
             //Either sends an SMS with a 6 digit code to the phone number specified, or sign's the user in and [verificationCompleted] is called.
             this._phoneVerificationId = verId;
           },
-          codeSent:
-          smsOTPSent,
+          codeSent: smsOTPSent,
           timeout: const Duration(seconds: 20),
           verificationCompleted: (AuthCredential phoneAuthCredential) async {
-            print("**** Verificatioon COMPLETE! $phoneAuthCredential");
             await signInWithPhoneCredential(context, phoneAuthCredential);
           },
           verificationFailed: (AuthException exception) async {
-            // TODO: Handle error
-            print('Error with verification: ${exception.message}');
-            await showDialog(
-              context: context,
-              child: SimpleDialog(
-                title: Text('Error con verificación de teléfono'),
-                children: <Widget>[
-                  SimpleDialogOption(
-                    child: Text("OK"),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
+            Fluttertoast.showToast(
+                msg: 'Error con verificación de télefono. Asegurate de incluir el código de país perteneciente al número de teléfono.',
+                toastLength: Toast.LENGTH_LONG,
+                timeInSecForIos: 5,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Color(0x99E51F4F),
+                textColor: Colors.white
             );
           });
     } catch (e) {
@@ -191,13 +174,24 @@ class LoginState extends Model {
     print(error);
     switch (error.code) {
       case 'ERROR_INVALID_VERIFICATION_CODE':
-        print("*** INVALID CODE!!");
-        // TODO: HAndle Error
+        Fluttertoast.showToast(
+            msg: 'Código de verificación inválido',
+            toastLength: Toast.LENGTH_LONG,
+            timeInSecForIos: 5,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0x99E51F4F),
+            textColor: Colors.white
+        );
         break;
       default:
-        print("*** SOME ERROR!!");
-        // TODO: HAndle Error
-
+        Fluttertoast.showToast(
+            msg: 'Error al iniciar sesión con télefono',
+            toastLength: Toast.LENGTH_LONG,
+            timeInSecForIos: 5,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0x99E51F4F),
+            textColor: Colors.white
+        );
         break;
     }
   }

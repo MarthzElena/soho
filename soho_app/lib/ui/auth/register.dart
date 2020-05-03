@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/States/RegisterState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
@@ -74,12 +76,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   children: <Widget>[
                                     Text(
                                       'COMPLETA',
-                                      style: thinStyle(fSize: 32.0),
+                                      style: lightStyle(fSize: 32.0),
                                     ),
                                     SizedBox(height: 4.0),
                                     Text(
                                       'TU CUENTA',
-                                      style: thinStyle(fSize: 32.0),
+                                      style: lightStyle(fSize: 30.0),
                                     ),
                                   ],
                                 ),
@@ -203,9 +205,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     height: 40.0,
                                     child: TextField(
                                       onChanged: (value) {
-                                        // TODO: Validate email
                                         model.emailInput = value;
-
+                                        model.validateEmail();
                                       },
                                       keyboardType: TextInputType.emailAddress,
                                       textAlignVertical: TextAlignVertical.center,
@@ -241,10 +242,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                     ),
                                   ),
+                                  (model.validEmail) ? SizedBox.shrink() : SizedBox(height: 8.0),
+                                  (model.validEmail) ?
+                                  SizedBox.shrink() :
+                                  Text(
+                                    'Correo electrónico inválido.',
+                                    style: regularStyle(
+                                      fSize: 12.0,
+                                      color: Color(0xffE51F4F),
+                                    ),
+                                  ),
                                   SizedBox(height: 47.0),
                                   GestureDetector(
                                     onTap: () async {
-                                      await model.createAccount(context, widget.phone, widget.userId);
+                                      if (model.validEmail) {
+                                        await model.createAccount(context, widget.phone, widget.userId);
+                                        // Update drawer
+                                        locator<HomePageState>().updateDrawer();
+                                      } else {
+                                        Fluttertoast.showToast(
+                                            msg: 'Debes utilizar un correo electrónico válido.',
+                                            toastLength: Toast.LENGTH_LONG,
+                                            timeInSecForIos: 5,
+                                            gravity: ToastGravity.BOTTOM,
+                                            backgroundColor: Color(0x99E51F4F),
+                                            textColor: Colors.white
+                                        );
+                                      }
                                     },
                                     child: Container(
                                       width: double.infinity,

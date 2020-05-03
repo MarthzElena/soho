@@ -38,6 +38,8 @@ class ProductDetailAppBar extends StatelessWidget implements PreferredSizeWidget
                       ),
                     ),
                   ),
+                  isLogin ?
+                  SizedBox.shrink() :
                   Container(
                     width: 24.0,
                     child: FlatButton(
