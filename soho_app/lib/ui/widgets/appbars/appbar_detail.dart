@@ -51,9 +51,7 @@ class DetailAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 width: 45.0,
                                 height: 45.0,
                                 alignment: Alignment.center,
-                                child: Image(
-                                  image: detailMosaic,
-                                ),
+                                child: model.listDistribution,
                               ),
                             ),
                             SizedBox(width: 20.0),

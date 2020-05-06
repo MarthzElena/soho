@@ -41,7 +41,7 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Container(
-                        width: 22.0,
+                        width: 15.0,
                         child: FlatButton(
                           onPressed: () => Navigator.pop(context),
                           padding: EdgeInsets.all(0.0),
@@ -52,7 +52,7 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                           ),
                         ),
                       ),
-                      SizedBox(width: 10.0),
+                      SizedBox(width: 15.0),
                       AutoSizeText(
                         cardType,
                         style: lightStyle(fSize: 18.0),

@@ -204,7 +204,7 @@ class LoginState extends Model {
         return AlertDialog(
           title: Text(
             'CÓDIGO DE ACCESO',
-            style: thinStyle(fSize: 24.0),
+            style: regularStyle(fSize: 24.0),
           ),
           content: SingleChildScrollView(
             child: ListBody(

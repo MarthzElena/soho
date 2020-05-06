@@ -35,14 +35,17 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Container(
-                          width: 30.0,
-                          child: Image(
-                            image: searchIconDark,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: Container(
+                            width: 30.0,
+                            child: Image(
+                              image: searchIconDark,
+                            ),
                           ),
                         ),
                         Container(
-                          width: MediaQuery.of(context).size.width - 110,
+                          width: MediaQuery.of(context).size.width - 115,
                           child: TextField(
                             onChanged: (value) async {
                               var model = locator<SearchState>();

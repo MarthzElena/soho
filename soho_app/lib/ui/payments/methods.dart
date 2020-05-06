@@ -224,22 +224,25 @@ class _MethodsScreen extends State<MethodsScreen> {
               );
             }
           },
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 19.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  cardDetails,
-                  Image(image: paymentForward),
-                ],
-              ),
-              SizedBox(height: 19.0),
-              Divider(
-                height: 1.0,
-                color: Color(0xffE5E4E5),
-              )
-            ],
+          child: Container(
+            color: Colors.white,
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 19.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    cardDetails,
+                    Image(image: paymentForward),
+                  ],
+                ),
+                SizedBox(height: 19.0),
+                Divider(
+                  height: 1.0,
+                  color: Color(0xffE5E4E5),
+                )
+              ],
+            ),
           ),
         );
         result.add(cardRow);

@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: <Widget>[
                                 Image(
                                   image: splashLogo,
-                                  width: 96,
+                                  width: 130,
                                 ),
                                 SizedBox(height: 18.0),
                                 Text(

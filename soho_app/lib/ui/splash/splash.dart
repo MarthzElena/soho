@@ -77,6 +77,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return PreConfiguredLayout(
       buildWidget: Container(
+        color: Color(0xffEBE7E4),
         constraints: BoxConstraints.expand(),
         child: Center(
           child: Image(image: splashLogo),

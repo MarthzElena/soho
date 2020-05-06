@@ -17,7 +17,6 @@ AssetImage detailMosaic = AssetImage('assets/category_detail/grid_view.png');
 
 /* Product Detail Assets */
 AssetImage productShare = AssetImage('assets/category_detail/share.png');
-AssetImage productBottom = AssetImage('assets/category_detail/bottom.png');
 
 /* Menu Assets */
 AssetImage menuCross = AssetImage('assets/menu/cross.png');

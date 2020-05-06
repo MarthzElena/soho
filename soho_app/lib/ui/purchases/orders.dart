@@ -437,10 +437,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                             color: model.isTipOther() ? Colors.white : Color(0xff789090),
                                             fWeight: FontWeight.w600,
                                           ),
-                                          backgroundColor: model.isTipOther() ? Color(0xffF0AB31) : Colors.white,
+                                          backgroundColor: model.isTipOther() ? Color(0xff789090) : Colors.white,
                                           shape: StadiumBorder(
                                             side: BorderSide(
-                                              color: model.isTipOther() ? Color(0xffF0AB31) : Color(0xff789090),
+                                              color: model.isTipOther() ? Color(0xff789090) : Color(0xff789090),
                                             ),
                                           ),
                                         ),
@@ -456,10 +456,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                             color: model.isTipTen() ? Colors.white : Color(0xff789090),
                                             fWeight: FontWeight.w600,
                                           ),
-                                          backgroundColor: model.isTipTen() ? Color(0xffF0AB31) : Colors.white,
+                                          backgroundColor: model.isTipTen() ? Color(0xff789090) : Colors.white,
                                           shape: StadiumBorder(
                                             side: BorderSide(
-                                              color: model.isTipTen() ? Color(0xffF0AB31) : Color(0xff789090),
+                                              color: model.isTipTen() ? Color(0xff789090) : Color(0xff789090),
                                             ),
                                           ),
                                         ),
@@ -475,10 +475,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                             color: model.isTipFifteen() ? Colors.white : Color(0xff789090),
                                             fWeight: FontWeight.w600,
                                           ),
-                                          backgroundColor: model.isTipFifteen() ? Color(0xffF0AB31) : Colors.white,
+                                          backgroundColor: model.isTipFifteen() ? Color(0xff789090) : Colors.white,
                                           shape: StadiumBorder(
                                             side: BorderSide(
-                                              color: model.isTipFifteen() ? Color(0xffF0AB31) : Color(0xff789090),
+                                              color: model.isTipFifteen() ? Color(0xff789090) : Color(0xff789090),
                                             ),
                                           ),
                                         ),
@@ -494,10 +494,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                             color: model.isTipTwenty() ? Colors.white : Color(0xff789090),
                                             fWeight: FontWeight.w600,
                                           ),
-                                          backgroundColor: model.isTipTwenty() ? Color(0xffF0AB31) : Colors.white,
+                                          backgroundColor: model.isTipTwenty() ? Color(0xff789090) : Colors.white,
                                           shape: StadiumBorder(
                                             side: BorderSide(
-                                              color: model.isTipTwenty() ? Color(0xffF0AB31) : Color(0xff789090),
+                                              color: model.isTipTwenty() ? Color(0xff789090) : Color(0xff789090),
                                             ),
                                           ),
                                         ),

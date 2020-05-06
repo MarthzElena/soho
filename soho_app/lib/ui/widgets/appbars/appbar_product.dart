@@ -25,7 +25,7 @@ class ProductDetailAppBar extends StatelessWidget implements PreferredSizeWidget
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Container(
-                    width: isLogin? 44.0 : 30.0,
+                    width: isLogin ? 44.0 : 45.0,
                     height: preferredSize.height - 40.0,
                     child: FlatButton(
                       onPressed: () {
@@ -33,15 +33,17 @@ class ProductDetailAppBar extends StatelessWidget implements PreferredSizeWidget
                         locator<ProductItemState>().setBottomState(ProductItemState.GO_TO_CHECKOUT_TEXT);
                       },
                       padding: EdgeInsets.only(right: 20.0),
-                      child: Image(
-                        image: isLogin ? menuCross : detailBack,
+                      child: Container(
+                        child: Image(
+                          image: isLogin ? menuCross : detailBack,
+                        ),
                       ),
                     ),
                   ),
                   isLogin ?
                   SizedBox.shrink() :
                   Container(
-                    width: 24.0,
+                    width: 45.0,
                     child: FlatButton(
                       onPressed: null,
                       padding: EdgeInsets.all(0.0),
