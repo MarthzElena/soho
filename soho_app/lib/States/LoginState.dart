@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:soho_app/ui/auth/register.dart';
 import 'package:soho_app/ui/items/onboarding_item.dart';
+import 'package:soho_app/ui/purchases/orders.dart';
 
 import '../Auth/SohoUserObject.dart';
 
@@ -21,12 +22,21 @@ class LoginState extends Model {
   String _phoneVerificationId = "";
   String inputValidationMessage = "";
   AppController authController = locator<AppController>();
+  bool isShoppingFlow = false;
 
-  Future<String> facebookLoginPressed(BuildContext context) async {
+  Future<void> facebookLoginPressed(BuildContext context) async {
     var errorValue = "";
     await authController.initiateFacebookLogin().then((error) {
       if (Application.currentUser != null) {
-        Navigator.pushNamed(context, Routes.homePage);
+        // Update home page state
+        locator<HomePageState>().updateDrawer();
+        if (isShoppingFlow) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => OrderScreen())
+          );
+        } else {
+          Navigator.pushNamed(context, Routes.homePage);
+        }
       } else {
         errorValue = error.isEmpty ? "Error al iniciar sesión con Facebook." : error;
         Fluttertoast.showToast(
@@ -39,19 +49,33 @@ class LoginState extends Model {
         );
       }
     });
-    return errorValue;
   }
 
-  Future<String> googleLoginPressed(BuildContext context) async {
+  Future<void> googleLoginPressed(BuildContext context) async {
     var errorString = "";
     await authController.initiateGoogleLogin().then((error) {
       if (Application.currentUser != null) {
-        Navigator.pushNamed(context, Routes.homePage);
+        // Update home page state
+        locator<HomePageState>().updateDrawer();
+        if (isShoppingFlow) {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => OrderScreen())
+          );
+        } else {
+          Navigator.pushNamed(context, Routes.homePage);
+        }
       } else {
         errorString = error.isEmpty ? "Error con Google Login" : error;
+        Fluttertoast.showToast(
+            msg: errorString,
+            toastLength: Toast.LENGTH_LONG,
+            timeInSecForIos: 4,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0x99E51F4F),
+            textColor: Colors.white
+        );
       }
     });
-    return errorString;
   }
 
   Future<void> signInWithPhoneCredential(BuildContext context, AuthCredential credential) async {
@@ -84,8 +108,15 @@ class LoginState extends Model {
           await appController.savePhoneCredentials().then((_) async {
             await appController.saveUserToDatabase(userDictionary);
             locator<HomePageState>().updateDrawer();
-            Navigator.pop(context);
-            Navigator.pop(context);
+            if (isShoppingFlow) {
+              Navigator.pop(context);
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => OrderScreen())
+              );
+            } else {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            }
           });
         }).catchError((tokenError) async {
           Fluttertoast.showToast(
@@ -102,16 +133,24 @@ class LoginState extends Model {
           MaterialPageRoute(builder: (context) => RegisterScreen(phoneInput, user.uid))
         );
       } else {
-        Navigator.pop(context);
-        Navigator.pop(context);
-        // Start session in app
-        await appController.startSessionFromUserId(user.uid).then((_) {
-          var user = Application.currentUser;
-          if (user != null && user.isFirstTime) {
-            // Go to onboarding
-            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
-          }
-        });
+        if (isShoppingFlow) {
+          Navigator.pop(context);
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => OrderScreen())
+          );
+        } else {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          // Start session in app
+          await appController.startSessionFromUserId(user.uid).then((_) {
+            var user = Application.currentUser;
+            if (user != null && user.isFirstTime) {
+              // Go to onboarding
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => OnboardingScreen()));
+            }
+          });
+        }
       }
     } else {
       Fluttertoast.showToast(

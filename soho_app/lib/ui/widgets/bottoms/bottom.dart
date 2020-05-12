@@ -70,7 +70,7 @@ class _BottomBarState extends State<BottomBar> {
                   } else {
                     // Go to login
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => LoginScreen())
+                      MaterialPageRoute(builder: (context) => LoginScreen(isShoppingFlow: true))
                     );
 
                   }

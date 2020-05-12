@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/States/LoginState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
@@ -11,6 +12,10 @@ import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_product.dart';
 
 class LoginScreen extends StatefulWidget {
+  final bool isShoppingFlow;
+
+  const LoginScreen({Key key, this.isShoppingFlow}) : super(key: key);
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -18,6 +23,12 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   LoginState _loginState = locator<LoginState>();
   String smsCode = "";
+
+  @override
+  void initState() {
+    _loginState.isShoppingFlow = widget.isShoppingFlow;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,21 +203,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   mainAxisSize: MainAxisSize.max,
                                   children: <Widget>[
                                     GestureDetector(
-                                      onTap: () {
-                                        model.facebookLoginPressed(context).then((error) async {
-                                          await showDialog(
-                                            context: context,
-                                            child: SimpleDialog(
-                                              title: Text(error),
-                                              children: <Widget>[
-                                                SimpleDialogOption(
-                                                  child: Text("OK"),
-                                                  onPressed: () => Navigator.pop(context),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        });
+                                      onTap: () async {
+                                        await model.facebookLoginPressed(context);
                                       },
                                       child: Container(
                                         width: MediaQuery.of(context).size.width / 2.5,
@@ -228,20 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                     GestureDetector(
                                       onTap: () async {
-                                        await model.googleLoginPressed(context).then((error) async {
-                                          await showDialog(
-                                            context: context,
-                                            child: SimpleDialog(
-                                              title: Text(error),
-                                              children: <Widget>[
-                                                SimpleDialogOption(
-                                                  child: Text("OK"),
-                                                  onPressed: () => Navigator.pop(context),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        });
+                                        await model.googleLoginPressed(context);
                                       },
                                       child: Container(
                                         width: MediaQuery.of(context).size.width / 2.5,

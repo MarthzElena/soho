@@ -51,7 +51,7 @@ class NoUserMenuWidget extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => LoginScreen())
+                              MaterialPageRoute(builder: (context) => LoginScreen(isShoppingFlow: false))
                           );
                         },
                         child: Container(
@@ -184,7 +184,7 @@ class NoUserMenuWidget extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => LoginScreen())
+                              MaterialPageRoute(builder: (context) => LoginScreen(isShoppingFlow: false))
                           );
                         },
                         child: Center(

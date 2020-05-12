@@ -55,7 +55,7 @@ class _OnboardingBottom extends State<OnboardingBottom> {
                 } else {
                   // Go to login
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => LoginScreen())
+                      MaterialPageRoute(builder: (context) => LoginScreen(isShoppingFlow: true))
                   );
                 }
                 break;
@@ -91,7 +91,7 @@ class _OnboardingBottom extends State<OnboardingBottom> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50.0),
-                    color: Color(0xffE51F4F),
+                    color: Color(0xffCCC5BA),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
