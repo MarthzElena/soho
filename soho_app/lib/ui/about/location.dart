@@ -166,7 +166,7 @@ class LocationScreen extends StatelessWidget {
                             width: double.infinity,
                             height: 50.0,
                             decoration: BoxDecoration(
-                              color: Color(0xffE51F4F),
+                              color: Color(0xffCCC5BA),
                               borderRadius: BorderRadius.circular(50.0),
                             ),
                             child: Center(

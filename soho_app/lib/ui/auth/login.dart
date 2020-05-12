@@ -156,15 +156,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                   width: double.infinity,
                                   height: 50.0,
                                   decoration: BoxDecoration(
-                                    color: Color(0xffF0AB31),
+                                    color: Colors.white,
                                     borderRadius: BorderRadius.circular(50.0),
+                                    border: Border.all(
+                                      color: Color(0xffCCC5BA),
+                                      width: 2
+                                    )
                                   ),
                                   child: Center(
                                     child: Text(
                                       'Recibir código',
                                       style: boldStyle(
                                         fSize: 14.0,
-                                        color: Colors.white,
+                                        color: Color(0xff604848),
                                       ),
                                     ),
                                   ),
@@ -208,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         width: MediaQuery.of(context).size.width / 2.5,
                                         height: 50.0,
                                         decoration: BoxDecoration(
-                                          color: Color(0xff3B5998),
+                                          color: Color(0xffCCC5BA),
                                           borderRadius: BorderRadius.circular(50.0),
                                         ),
                                         child: Center(
@@ -243,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         width: MediaQuery.of(context).size.width / 2.5,
                                         height: 50.0,
                                         decoration: BoxDecoration(
-                                          color: Color(0xffE51F4F),
+                                          color: Color(0xffCCC5BA),
                                           borderRadius: BorderRadius.circular(50.0),
                                         ),
                                         child: Center(

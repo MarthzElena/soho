@@ -31,7 +31,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
     return Drawer(
       child: Container(
         constraints: BoxConstraints.expand(),
-        decoration: BoxDecoration(color: Color.fromARGB(255, 96, 73, 73)),
+        decoration: BoxDecoration(color: Colors.white),
         child: Padding(
           padding: const EdgeInsets.only(top: 24, left: 30),
           child: Stack(
@@ -76,7 +76,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               name.isNotEmpty ? name : 'Nombre',
                               style: boldStyle(
                                 fSize: 16.0,
-                                color: Colors.white,
+                                color: Color(0xff604848),
                               ),
                             ),
                             SizedBox(height: 2.0),
@@ -87,14 +87,14 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                                   'Última orden: ',
                                   style: regularStyle(
                                     fSize: 12.0,
-                                    color: Colors.white,
+                                    color: Color(0xff604848),
                                   ),
                                 ),
                                 Text(
                                   lastOrder,
                                   style: boldStyle(
                                     fSize: 12.0,
-                                    color: Colors.white,
+                                    color: Color(0xff604848),
                                   ),
                                 )
                               ],
@@ -122,7 +122,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                             'Mis órdenes',
                             style: regularStyle(
                               fSize: 14.0,
-                              color: Color(0xffE4E4E4),
+                              color: Color(0xff604848),
                             ),
                           )
                         ],
@@ -143,7 +143,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                             'Acerca de Soho',
                             style: regularStyle(
                               fSize: 14.0,
-                              color: Color(0xffE4E4E4),
+                              color: Color(0xff604848),
                             ),
                           )
                         ],
@@ -164,7 +164,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                             'Métodos de pago',
                             style: regularStyle(
                               fSize: 14.0,
-                              color: Color(0xffE4E4E4),
+                              color: Color(0xff604848),
                             ),
                           )
                         ],
@@ -185,7 +185,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                             'Ubicación',
                             style: regularStyle(
                               fSize: 14.0,
-                              color: Color(0xffE4E4E4),
+                              color: Color(0xff604848),
                             ),
                           )
                         ],
@@ -223,7 +223,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                                 'Administrador Soho',
                                 style: regularStyle(
                                   fSize: 14.0,
-                                  color: Color(0xffE4E4E4),
+                                  color: Color(0xff604848),
                                   fWeight: FontWeight.w600,
                                 ),
                               )
@@ -244,7 +244,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                                 'Configuración',
                                 style: regularStyle(
                                   fSize: 14.0,
-                                  color: Color(0xffE4E4E4),
+                                  color: Color(0xff604848),
                                   fWeight: FontWeight.w600,
                                 ),
                               ),
@@ -266,7 +266,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                                 'Cerrar sesión',
                                 style: regularStyle(
                                   fSize: 14.0,
-                                  color: Color(0xff866767),
+                                  color: Color(0xffCCC5BA),
                                   fWeight: FontWeight.w600,
                                 ),
                               ),

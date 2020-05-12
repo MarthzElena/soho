@@ -167,9 +167,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
             width: MediaQuery.of(context).size.width,
             child: MaterialSegmentedControl(
               horizontalPadding: EdgeInsets.all(0),
-              borderColor: Color(0xffF0AB31),
+              borderColor: Color(0xff604848),
               unselectedColor: Colors.white,
-              selectedColor: Color(0xffF0AB31),
+              selectedColor: Color(0xff604848),
               children: controlWidgets,
               onSegmentChosen: (int value) {
                 setState(() {
@@ -285,7 +285,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   width: double.infinity,
                   height: 50.0,
                   decoration: BoxDecoration(
-                    color: Color(0xffF0AB31),
+                    color: Color(0xffCCC5BA),
                     borderRadius: BorderRadius.circular(50.0),
                   ),
                   child: Center(
@@ -388,7 +388,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         width: MediaQuery.of(context).size.width / 2.5,
                         height: 50.0,
                         decoration: BoxDecoration(
-                          color: Color(0xffE51F4F),
+                          color: Color(0xffCCC5BA),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         child: Center(
@@ -410,7 +410,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         width: MediaQuery.of(context).size.width / 2.5,
                         height: 50.0,
                         decoration: BoxDecoration(
-                          color: Color(0xffF0AB31),
+                          color: Color(0xffCCC5BA),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         child: Center(

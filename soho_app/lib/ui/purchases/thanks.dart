@@ -162,7 +162,7 @@ class _ThanksScreenState extends State<ThanksScreen> {
                                 width: double.infinity,
                                 height: 50.0,
                                 decoration: BoxDecoration(
-                                  color: Color(0xffE51F4F),
+                                  color: Color(0xffCCC5BA),
                                   borderRadius: BorderRadius.circular(50.0),
                                 ),
                                 child: Center(
@@ -207,15 +207,19 @@ class _ThanksScreenState extends State<ThanksScreen> {
                                         width: double.infinity,
                                         height: 50.0,
                                         decoration: BoxDecoration(
-                                          color: Color(0xffF0AB31),
+                                          color: Colors.white,
                                           borderRadius: BorderRadius.circular(50.0),
+                                          border: Border.all(
+                                            width: 2,
+                                            color: Color(0xffCCC5BA),
+                                          )
                                         ),
                                         child: Center(
                                           child: Text(
                                             'Enviar código QR',
                                             style: boldStyle(
                                               fSize: 14.0,
-                                              color: Colors.white,
+                                              color: Color(0xff604848),
                                             ),
                                           ),
                                         ),

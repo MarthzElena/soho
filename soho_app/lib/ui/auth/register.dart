@@ -274,15 +274,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       width: double.infinity,
                                       height: 50.0,
                                       decoration: BoxDecoration(
-                                        color: Color(0xffF0AB31),
-                                        borderRadius: BorderRadius.circular(50.0),
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(50.0),
+                                          border: Border.all(
+                                              color: Color(0xffCCC5BA),
+                                              width: 2
+                                          )
                                       ),
                                       child: Center(
                                         child: Text(
                                           'Registrar cuenta',
                                           style: boldStyle(
                                             fSize: 14.0,
-                                            color: Colors.white,
+                                            color: Color(0xff604848),
                                           ),
                                         ),
                                       ),

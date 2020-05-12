@@ -288,15 +288,19 @@ class LoginState extends Model {
                     width: MediaQuery.of(context).size.width,
                     height: 50.0,
                     decoration: BoxDecoration(
-                      color: Color(0xffF0AB31),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(50.0),
+                      border: Border.all(
+                          color: Color(0xffCCC5BA),
+                          width: 2
+                      )
                     ),
                     child: Center(
                       child: Text(
                         'Iniciar sesión',
                         style: boldStyle(
                           fSize: 14.0,
-                          color: Colors.white,
+                          color: Color(0xff604848)
                         ),
                       ),
                     ),

@@ -16,14 +16,14 @@ class NoUserMenuWidget extends StatelessWidget {
     return Drawer(
       child: Container(
         constraints: BoxConstraints.expand(),
-        decoration: BoxDecoration(color: Color.fromARGB(255, 96, 73, 73)),
+        decoration: BoxDecoration(color: Colors.white),
         child: Stack(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 45.0, left: 16.0, right: 16.0),
               child: Container(
                 decoration: BoxDecoration(
-                    color: Color.fromARGB(204, 243, 241, 242),
+                    color: Color(0xffebe7e4),
                     borderRadius: BorderRadius.all(Radius.circular(16.0))),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -45,7 +45,7 @@ class NoUserMenuWidget extends StatelessWidget {
                       SizedBox(height: 4.0),
                       Text(
                         'Inicia sesión ahora para que puedas disfrutar de todo lo que SOHO tiene para tí.',
-                        style: lightStyle(fSize: 12.0),
+                        style: regularStyle(fSize: 12.0),
                       ),
                       SizedBox(height: 16.0),
                       GestureDetector(
@@ -58,15 +58,19 @@ class NoUserMenuWidget extends StatelessWidget {
                           width: double.infinity,
                           height: 50.0,
                           decoration: BoxDecoration(
-                            color: Color(0xffF0AB31),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(50.0),
+                            border: Border.all(
+                              color: Color(0xffCCC5BA),
+                              width: 2
+                            ),
                           ),
                           child: Center(
                             child: Text(
                               'Iniciar sesión',
                               style: boldStyle(
                                 fSize: 14.0,
-                                color: Colors.white,
+                                color: Color(0xff604848),
                               ),
                             ),
                           ),
@@ -103,7 +107,7 @@ class NoUserMenuWidget extends StatelessWidget {
                           width: double.infinity,
                           height: 50.0,
                           decoration: BoxDecoration(
-                            color: Color(0xff3B5998),
+                            color: Color(0xffCCC5BA),
                             borderRadius: BorderRadius.circular(50.0),
                           ),
                           child: Center(
@@ -155,7 +159,7 @@ class NoUserMenuWidget extends StatelessWidget {
                           width: double.infinity,
                           height: 50.0,
                           decoration: BoxDecoration(
-                            color: Color(0xffE51F4F),
+                            color: Color(0xffCCC5BA),
                             borderRadius: BorderRadius.circular(50.0),
                           ),
                           child: Center(
@@ -183,7 +187,7 @@ class NoUserMenuWidget extends StatelessWidget {
                           style: regularStyle(
                             fSize: 14.0,
                             decoration: TextDecoration.underline,
-                            color: Color(0xffE51F4F),
+                            color: Color(0xff565758),
                             fWeight: FontWeight.w300,
                           ),
                         ),
@@ -218,7 +222,7 @@ class NoUserMenuWidget extends StatelessWidget {
                           'Acerca de Soho',
                           style: regularStyle(
                             fSize: 14.0,
-                            color: Color(0xffE4E4E4),
+                            color: Color(0xff604848),
                             fWeight: FontWeight.w600,
                           ),
                         ),
@@ -252,7 +256,7 @@ class NoUserMenuWidget extends StatelessWidget {
                           'Ubicación',
                           style: regularStyle(
                             fSize: 14.0,
-                            color: Color(0xffE4E4E4),
+                            color: Color(0xff604848),
                             fWeight: FontWeight.w600,
                           ),
                         ),
