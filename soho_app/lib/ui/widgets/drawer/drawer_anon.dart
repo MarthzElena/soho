@@ -181,14 +181,21 @@ class NoUserMenuWidget extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 16.0),
-                      Center(
-                        child: Text(
-                          'Crea una cuenta aquí',
-                          style: regularStyle(
-                            fSize: 14.0,
-                            decoration: TextDecoration.underline,
-                            color: Color(0xff565758),
-                            fWeight: FontWeight.w300,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => LoginScreen())
+                          );
+                        },
+                        child: Center(
+                          child: Text(
+                            'Crea una cuenta aquí',
+                            style: regularStyle(
+                              fSize: 14.0,
+                              decoration: TextDecoration.underline,
+                              color: Color(0xff565758),
+                              fWeight: FontWeight.w300,
+                            ),
                           ),
                         ),
                       ),
