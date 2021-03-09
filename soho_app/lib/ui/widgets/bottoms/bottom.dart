@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Models/requests/charge_customer.dart';
 import 'package:soho_app/Network/charge_customer/call.dart';
@@ -11,6 +12,7 @@ import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/auth/login.dart';
 import 'package:soho_app/ui/purchases/thanks.dart';
 
 class BottomBar extends StatefulWidget {
@@ -67,7 +69,10 @@ class _BottomBarState extends State<BottomBar> {
                     Navigator.pushNamed(context, Routes.orderDetail);
                   } else {
                     // Go to login
-                    Navigator.pushNamed(context, Routes.login);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => LoginScreen(isShoppingFlow: true))
+                    );
+
                   }
                   // Set bottom to complete order
                   _productItemModel.setBottomState(ProductItemState.COMPLETE_ORDER);
@@ -79,7 +84,7 @@ class _BottomBarState extends State<BottomBar> {
                     if (currentUser.selectedPaymentMethod.isNotEmpty) {
                       // Get all info needed for payment
                       var model = locator<OrderDetailState>();
-                      var amountTotal = model.orderSubtotal + model.currentTip;
+                      var amountTotal = model.orderTotal + model.currentTip;
                       var amountInt = amountTotal.round() * 100;
                       var amount = amountInt.toString(); // Amount needs to include decimal zeros without the point
                       var currency = 'MXN';
@@ -88,7 +93,8 @@ class _BottomBarState extends State<BottomBar> {
                       var customer = currentUser.stripeId;
                       var chargeRequest = ChargeCustomerRequest(amount: amount, currency: currency, description: description, source: source, customer: customer);
                       model.updateSpinner(show: true);
-                      await chargeCustomerCall(request: chargeRequest).then((response) async {
+                      // TODO: UNCOMMENT THIS TO ACTIVATE PAYMENTS!!
+//                      await chargeCustomerCall(request: chargeRequest).then((response) async {
                         await Application.currentUser.completeOrder(Application.currentOrder).then((codeData) {
                           model.updateSpinner(show: false);
                           // Reset current order
@@ -97,17 +103,30 @@ class _BottomBarState extends State<BottomBar> {
                               MaterialPageRoute(builder: (context) => ThanksScreen(codeData))
                           );
                         });
-                      }).catchError((error) {
-                        // TODO: Handle error with payment
-                        print("Error with chargeCustomerCall: ${error.toString()}");
-                      });
+//                      }).catchError((error) {
+//                        // TODO: Handle error with payment
+//                        print("Error with chargeCustomerCall: ${error.toString()}");
+//                      });
 
                     } else {
-                      // TODO: Show error on missing payment
+                      Fluttertoast.showToast(
+                          msg: "No hay método de pago.",
+                          toastLength: Toast.LENGTH_LONG,
+                          timeInSecForIos: 4,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Color(0x99E51F4F),
+                          textColor: Colors.white
+                      );
                     }
-
                   } else {
-                    // TODO: Go to home? Show error!
+                    Fluttertoast.showToast(
+                        msg: "No hay elementos en tu órden.",
+                        toastLength: Toast.LENGTH_LONG,
+                        timeInSecForIos: 4,
+                        gravity: ToastGravity.BOTTOM,
+                        backgroundColor: Color(0x99E51F4F),
+                        textColor: Colors.white
+                    );
                   }
 
                 } else {
@@ -137,7 +156,7 @@ class _BottomBarState extends State<BottomBar> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50.0),
-                        color: Color(0xffE51F4F),
+                        color: Color(0xffCCC5BA),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -145,7 +164,7 @@ class _BottomBarState extends State<BottomBar> {
                         Center(
                           child: Text(
                             _productItemModel.addToCartText,
-                            style: interBoldStyle(fSize: 14.0, color: Colors.white),
+                            style: boldStyle(fSize: 14.0, color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
                         ) :
@@ -155,7 +174,7 @@ class _BottomBarState extends State<BottomBar> {
                           children: <Widget>[
                             Text(
                               _productItemModel.addToCartText,
-                              style: interBoldStyle(fSize: 14.0, color: Colors.white),
+                              style: boldStyle(fSize: 14.0, color: Colors.white),
                             ),
                             Text(
                               _productItemModel.addToCartPrice,

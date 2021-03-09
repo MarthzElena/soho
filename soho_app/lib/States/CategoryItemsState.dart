@@ -2,7 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemObject.dart';
+import 'package:soho_app/States/SearchState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/items/item_detail.dart';
 
 class CategoryItemsState extends Model {
@@ -28,6 +30,7 @@ class CategoryItemsState extends Model {
       listDistribution = Image.asset('assets/category_detail/grid_view.png');
       widgetsList = _getProductWidgetList(_categoryItems, context);
     }
+    locator<SearchState>().updateDistribution(isDistributionList);
     notifyListeners();
   }
 
@@ -57,7 +60,7 @@ class CategoryItemsState extends Model {
         padding: const EdgeInsets.only(left: 14.0, top: 40.0, bottom: 16.0),
         child: Text(
           categoryText,
-          style: interLightStyle(
+          style: lightStyle(
             fSize: 14.0,
             color: Color(0xff789090),
           ),
@@ -104,12 +107,12 @@ class CategoryItemsState extends Model {
                       SizedBox(height: 10.0),
                       Text(
                         product.name,
-                        style: interBoldStyle(fSize: 16.0),
+                        style: boldStyle(fSize: 16.0),
                       ),
                       SizedBox(height: 4.0),
                       Text(
                         product.description,
-                        style: interLightStyle(
+                        style: lightStyle(
                           fSize: 12.0,
                           color: Color(0xff5A6265),
                         ),
@@ -117,7 +120,7 @@ class CategoryItemsState extends Model {
                       SizedBox(height: 8.0),
                       Text(
                         "\$${product.price}0",
-                        style: interMediumStyle(fSize: 16.0),
+                        style: regularStyle(fSize: 16.0),
                       )
                     ],
                   )),
@@ -141,7 +144,7 @@ class CategoryItemsState extends Model {
         padding: const EdgeInsets.only(left: 14.0, top: 40.0),
         child: Text(
           categoryText,
-          style: interLightStyle(
+          style: regularStyle(
             fSize: 14.0,
             color: Color(0xff789090),
           ),
@@ -167,27 +170,30 @@ class CategoryItemsState extends Model {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      product.name,
-                      style: interBoldStyle(fSize: 16.0),
-                    ),
-                    SizedBox(height: 4.0),
-                    Text(
-                      product.description,
-                      style: interLightStyle(
-                        fSize: 12.0,
-                        color: Color(0xff5A6265),
+                Container(
+                  width: MediaQuery.of(context).size.width - 95 - 34,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        product.name,
+                        style: boldStyle(fSize: 16.0),
                       ),
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(
-                      "\$${product.price}0",
-                      style: interMediumStyle(fSize: 16.0),
-                    )
-                  ],
+                      SizedBox(height: 4.0),
+                      Text(
+                        product.description,
+                        style: lightStyle(
+                          fSize: 12.0,
+                          color: Color(0xff5A6265),
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Text(
+                        "\$${product.price}0",
+                        style: regularStyle(fSize: 16.0),
+                      )
+                    ],
+                  ),
                 ),
                 Container(
                   height: 95,

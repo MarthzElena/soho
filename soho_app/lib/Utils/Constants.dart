@@ -6,6 +6,9 @@
 
 class Constants {
 
+  /// Errors
+  static const INVALID_DATE_ERROR = "Fecha de expiración inválida.";
+
   /// Secure Storage - Auth credentials
   static const KEY_AUTH_PROVIDER = "KEY_AUTH_PROVIDER";
   static const KEY_FIRST_TIME = "KEY_FIRST_TIME";
@@ -16,11 +19,14 @@ class Constants {
   /// Firebase Database keys
   static const DATABASE_KEY_USERS = "usuarios";
   static const DATABASE_KEY_KITCHEN_ORDERS = "ordenes_cocina";
-  static const DATABASE_KEY_FEATURED_PRODUCT = "foto_destacada";
+  static const DATABASE_KEY_FEATURED_IMAGES = "fotos_destacadas";
 
   /// Category Items
   static const PARAM_CATEGORY_NAME = "DIC_KEY_CATEGORY_NAME";
 
   /// UI Constants
   static const APP_BAR_HEIGHT = 54.0;
+
+  /// SOHO Email
+  static const SOHO_SUPPORT_EMAIL = "sohocoffeetea@gmail.com";
 }

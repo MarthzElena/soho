@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/States/HomePageState.dart';
@@ -10,45 +11,83 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:soho_app/ui/auth/register.dart';
 import 'package:soho_app/ui/items/onboarding_item.dart';
+import 'package:soho_app/ui/purchases/orders.dart';
 
 import '../Auth/SohoUserObject.dart';
 
 class LoginState extends Model {
-  // TODO: Validate phone and password
+  TextEditingController phoneInputController = TextEditingController();
   String phoneInput = "";
-  String passwordInput = "";
   String smsCode = "";
   String _phoneVerificationId = "";
-
+  String inputValidationMessage = "";
   AppController authController = locator<AppController>();
+  bool isShoppingFlow = false;
 
   Future<void> facebookLoginPressed(BuildContext context) async {
-    await authController.initiateFacebookLogin().then((_) {
+    var errorValue = "";
+    await authController.initiateFacebookLogin().then((error) {
       if (Application.currentUser != null) {
-        Navigator.pushNamed(context, Routes.homePage);
+        // Update home page state
+        locator<HomePageState>().updateDrawer();
+        if (isShoppingFlow) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => OrderScreen())
+          );
+        } else {
+          Navigator.pushNamed(context, Routes.homePage);
+        }
       } else {
-        // TODO: Show some error
-        print("****** FACEBOOK Login ERROR");
+        errorValue = error.isEmpty ? "Error al iniciar sesión con Facebook." : error;
+        Fluttertoast.showToast(
+            msg: errorValue,
+            toastLength: Toast.LENGTH_LONG,
+            timeInSecForIos: 4,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0x99E51F4F),
+            textColor: Colors.white
+        );
       }
     });
   }
 
   Future<void> googleLoginPressed(BuildContext context) async {
-    await authController.initiateGoogleLogin().then((_) {
+    var errorString = "";
+    await authController.initiateGoogleLogin().then((error) {
       if (Application.currentUser != null) {
-        // TODO: Do something with this user?
-        Navigator.pushNamed(context, Routes.homePage);
+        // Update home page state
+        locator<HomePageState>().updateDrawer();
+        if (isShoppingFlow) {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => OrderScreen())
+          );
+        } else {
+          Navigator.pushNamed(context, Routes.homePage);
+        }
       } else {
-        // TODO: Show some error
-        print("****** Google Login ERROR");
+        errorString = error.isEmpty ? "Error con Google Login" : error;
+        Fluttertoast.showToast(
+            msg: errorString,
+            toastLength: Toast.LENGTH_LONG,
+            timeInSecForIos: 4,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0x99E51F4F),
+            textColor: Colors.white
+        );
       }
     });
   }
 
   Future<void> signInWithPhoneCredential(BuildContext context, AuthCredential credential) async {
-    final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential).catchError((signInError) {
-      print("SIGN IN ERROR: ${signInError.toString()}");
-      // TODO: HAndle error
+    final FirebaseUser user = await FirebaseAuth.instance.signInWithCredential(credential).catchError((signInError) async {
+      Fluttertoast.showToast(
+          msg: 'Error con el número de télefono',
+          toastLength: Toast.LENGTH_LONG,
+          timeInSecForIos: 5,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Color(0x99E51F4F),
+          textColor: Colors.white
+      );
     });
     var appController = locator<AppController>();
     if (user != null) {
@@ -69,32 +108,59 @@ class LoginState extends Model {
           await appController.savePhoneCredentials().then((_) async {
             await appController.saveUserToDatabase(userDictionary);
             locator<HomePageState>().updateDrawer();
-            Navigator.pop(context);
-            Navigator.pop(context);
+            if (isShoppingFlow) {
+              Navigator.pop(context);
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => OrderScreen())
+              );
+            } else {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            }
           });
-        }).catchError((tokenError) {
-          print("token ERROR: ${tokenError.toString()}");
-          // TODO: HAndle error
+        }).catchError((tokenError) async {
+          Fluttertoast.showToast(
+              msg: 'Error con usuario al iniciar sesión con teléfono',
+              toastLength: Toast.LENGTH_LONG,
+              timeInSecForIos: 5,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Color(0x99E51F4F),
+              textColor: Colors.white
+          );
         });
         // Go to register to get missing information
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => RegisterScreen(phoneInput, user.uid))
         );
       } else {
-        Navigator.pop(context);
-        Navigator.pop(context);
-        // Start session in app
-        await appController.startSessionFromUserId(user.uid).then((_) {
-          var user = Application.currentUser;
-          if (user != null && user.isFirstTime) {
-            // Go to onboarding
-            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
-          }
-        });
+        if (isShoppingFlow) {
+          Navigator.pop(context);
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => OrderScreen())
+          );
+        } else {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          // Start session in app
+          await appController.startSessionFromUserId(user.uid).then((_) {
+            var user = Application.currentUser;
+            if (user != null && user.isFirstTime) {
+              // Go to onboarding
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => OnboardingScreen()));
+            }
+          });
+        }
       }
     } else {
-      print("*** ERROR with user");
-      // TODO: HAndle error
+      Fluttertoast.showToast(
+          msg: 'Error con usuario al iniciar sesión con teléfono',
+          toastLength: Toast.LENGTH_LONG,
+          timeInSecForIos: 5,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Color(0x99E51F4F),
+          textColor: Colors.white
+      );
     }
   }
 
@@ -123,16 +189,20 @@ class LoginState extends Model {
             //Either sends an SMS with a 6 digit code to the phone number specified, or sign's the user in and [verificationCompleted] is called.
             this._phoneVerificationId = verId;
           },
-          codeSent:
-          smsOTPSent,
+          codeSent: smsOTPSent,
           timeout: const Duration(seconds: 20),
           verificationCompleted: (AuthCredential phoneAuthCredential) async {
-            print("**** Verificatioon COMPLETE! $phoneAuthCredential");
             await signInWithPhoneCredential(context, phoneAuthCredential);
           },
-          verificationFailed: (AuthException exception) {
-            // TODO: Handle error
-            print('Error with verification: ${exception.message}');
+          verificationFailed: (AuthException exception) async {
+            Fluttertoast.showToast(
+                msg: 'Error con verificación de télefono. Asegurate de incluir el código de país perteneciente al número de teléfono.',
+                toastLength: Toast.LENGTH_LONG,
+                timeInSecForIos: 5,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Color(0x99E51F4F),
+                textColor: Colors.white
+            );
           });
     } catch (e) {
       handleError(e, context);
@@ -143,13 +213,24 @@ class LoginState extends Model {
     print(error);
     switch (error.code) {
       case 'ERROR_INVALID_VERIFICATION_CODE':
-        print("*** INVALID CODE!!");
-        // TODO: HAndle Error
+        Fluttertoast.showToast(
+            msg: 'Código de verificación inválido',
+            toastLength: Toast.LENGTH_LONG,
+            timeInSecForIos: 5,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0x99E51F4F),
+            textColor: Colors.white
+        );
         break;
       default:
-        print("*** SOME ERROR!!");
-        // TODO: HAndle Error
-
+        Fluttertoast.showToast(
+            msg: 'Error al iniciar sesión con télefono',
+            toastLength: Toast.LENGTH_LONG,
+            timeInSecForIos: 5,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Color(0x99E51F4F),
+            textColor: Colors.white
+        );
         break;
     }
   }
@@ -162,19 +243,19 @@ class LoginState extends Model {
         return AlertDialog(
           title: Text(
             'CÓDIGO DE ACCESO',
-            style: interThinStyle(fSize: 24.0),
+            style: regularStyle(fSize: 24.0),
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 Text(
                   'Ingresa el código de acceso',
-                  style: interBoldStyle(fSize: 14.0),
+                  style: boldStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 8.0),
                 Text(
                   'Enviamos un mensaje de texto con un código de 6 digitos a tu número celular.',
-                  style: interLightStyle(fSize: 14.0),
+                  style: lightStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 24.0),
                 Container(
@@ -187,14 +268,14 @@ class LoginState extends Model {
                     textAlignVertical: TextAlignVertical.center,
                     textAlign: TextAlign.center,
                     maxLength: 6,
-                    style: interLightStyle(
+                    style: lightStyle(
                       fSize: 14.0,
                     ),
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(10.0),
                       hintText: '- - - - - -',
                       counterText: "",
-                      hintStyle: interLightStyle(
+                      hintStyle: lightStyle(
                         fSize: 14.0,
                         color: Color(0xffC4C4C4),
                       ),
@@ -223,7 +304,7 @@ class LoginState extends Model {
                 SizedBox(height: 24.0),
                 Text(
                   '¿No recibiste el código?',
-                  style: interLightStyle(
+                  style: lightStyle(
                     fSize: 14.0,
                     color: Color(0xff789090),
                   ),
@@ -231,7 +312,7 @@ class LoginState extends Model {
                 SizedBox(height: 10.0),
                 Text(
                   'Reenviar código de acceso',
-                  style: interStyle(
+                  style: regularStyle(
                     fSize: 14.0,
                     color: Color(0xffE51F4F),
                     decoration: TextDecoration.underline,
@@ -246,15 +327,19 @@ class LoginState extends Model {
                     width: MediaQuery.of(context).size.width,
                     height: 50.0,
                     decoration: BoxDecoration(
-                      color: Color(0xffF0AB31),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(50.0),
+                      border: Border.all(
+                          color: Color(0xffCCC5BA),
+                          width: 2
+                      )
                     ),
                     child: Center(
                       child: Text(
                         'Iniciar sesión',
-                        style: interBoldStyle(
+                        style: boldStyle(
                           fSize: 14.0,
-                          color: Colors.white,
+                          color: Color(0xff604848)
                         ),
                       ),
                     ),

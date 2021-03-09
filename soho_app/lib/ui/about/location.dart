@@ -2,15 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_product.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LocationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: Scaffold(
         resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.white,
@@ -54,14 +59,17 @@ class LocationScreen extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             'UBICACIÓN',
-                            style: interThinStyle(fSize: 32.0),
+                            style: lightStyle(fSize: 32.0),
                           ),
                           SizedBox(height: 4.0),
-                          Text(
-                            'Laboris adipisicing magna\nconsequat excepteur\nconsectetur eu.',
-                            style: interLightStyle(
-                              fSize: 14.0,
-                              color: Color(0xff292929),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            child: Text(
+                              '¡Ven! Te estamos esperando para ofrecerte una experiencia única.',
+                              style: lightStyle(
+                                fSize: 14.0,
+                                color: Color(0xff292929),
+                              ),
                             ),
                           ),
                         ],
@@ -76,7 +84,7 @@ class LocationScreen extends StatelessWidget {
                         SizedBox(height: 24.0),
                         Text(
                           'Sucursal Libertad',
-                          style: interBoldStyle(fSize: 16.0),
+                          style: boldStyle(fSize: 16.0),
                         ),
                         SizedBox(height: 16.0),
                         Row(
@@ -85,7 +93,7 @@ class LocationScreen extends StatelessWidget {
                             SizedBox(width: 20.0),
                             Text(
                               'Av. Chapultepec 77,  Colonia Americana 44160  Guadalajara, MX',
-                              style: interLightStyle(
+                              style: lightStyle(
                                 fSize: 14.0,
                                 color: Color(0xff5A6265),
                               ),
@@ -99,7 +107,7 @@ class LocationScreen extends StatelessWidget {
                             SizedBox(width: 20.0),
                             Text(
                               '+52 1 (33) 1417 1084',
-                              style: interLightStyle(
+                              style: lightStyle(
                                 fSize: 14.0,
                                 color: Color(0xffE51F4F),
                               ),
@@ -112,8 +120,8 @@ class LocationScreen extends StatelessWidget {
                             Image(image: locationMail),
                             SizedBox(width: 20.0),
                             Text(
-                              'info@sohomx.com',
-                              style: interLightStyle(
+                              Constants.SOHO_SUPPORT_EMAIL,
+                              style: lightStyle(
                                 fSize: 14.0,
                                 color: Color(0xffE51F4F),
                               ),
@@ -137,20 +145,34 @@ class LocationScreen extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: GestureDetector(
-                        onTap: null,
+                        onTap: () async {
+                          final sohoLocation = "https://goo.gl/maps/9TezLUL4XyVFsv3w9";
+                          if (await canLaunch(sohoLocation)) {
+                            await launch(sohoLocation);
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: "Busca SOHO en tu aplicación de mapas favorita.",
+                                toastLength: Toast.LENGTH_LONG,
+                                timeInSecForIos: 4,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Color(0x99E51F4F),
+                                textColor: Colors.white
+                            );
+                          }
+                        },
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(32.0, 0, 32.0, 40.0),
                           child: Container(
                             width: double.infinity,
                             height: 50.0,
                             decoration: BoxDecoration(
-                              color: Color(0xffE51F4F),
+                              color: Color(0xffCCC5BA),
                               borderRadius: BorderRadius.circular(50.0),
                             ),
                             child: Center(
                               child: Text(
                                 'Obtener Indicaciones',
-                                style: interBoldStyle(
+                                style: boldStyle(
                                   fSize: 14.0,
                                   color: Colors.white,
                                 ),

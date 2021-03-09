@@ -1,9 +1,11 @@
-import 'dart:convert';
 import 'dart:core';
-import 'package:flutter/material.dart';
 import 'package:soho_app/SohoMenu/ProductItems/VariationItemObject.dart';
 
 class ProductItemObject {
+  // Black tea category Constants
+  static const String BLACK_TEA_CATEGORY = "Te Negro";
+  static const String BLACK_TEA_CATEGORY_ACCENT = "Té Negro";
+  // Key Strings
   static String keyName = "name";
   static String keyCategory = "category";
   static String keySubcategory = "subcategory";
@@ -14,15 +16,6 @@ class ProductItemObject {
   static String keyVariations = "variations";
   static String keyLocationId = "locationId";
   static String keyFromState = "fromState";
-
-  // Constants for Category names
-  final String _categoryCoffee = "coffee";
-  final String _categoryTea = "tea";
-  final String _categoryDesayunos = "desayunos";
-  final String _categoryComidasCenas = "comidas y cenas";
-  final String _categoryAltaReposteria = "alta repostería";
-  final String _categoryBebidasCocteles = "bebidas y cócteles";
-  final String _categoryOtros = "otros";
 
   /// String for product name on Square
   String name = "";
@@ -61,7 +54,13 @@ class ProductItemObject {
     if (nameArray.length == 2) {
       // Product has subcategory
       this.name = nameArray[0];
-      this.subcategory = nameArray[1];
+      if (nameArray[1].startsWith(" ")) {
+        // Remove empty space
+        var subCategory = nameArray[1].substring(1);
+        this.subcategory = subCategory;
+      } else {
+        this.subcategory = nameArray[1];
+      }
     } else {
       // Product has no category or value is wrong
       // Use name AS IS and leave subcategory empty
@@ -69,15 +68,15 @@ class ProductItemObject {
     }
   }
 
-  /// Defines whether the variation list for this object will be REQUIRED or OPTIONAL
-  /// TODO! Update this with FINAL values
-  bool isVariationsRequired() {
-    if (category.toLowerCase().startsWith(_categoryCoffee)) {
-      return false;
-    } else if (category.toLowerCase().startsWith(_categoryTea)) {
+  bool isBlackTeaCategory() {
+    return (subcategory.toLowerCase() == BLACK_TEA_CATEGORY_ACCENT.toLowerCase() || subcategory.toLowerCase() == BLACK_TEA_CATEGORY.toLowerCase());
+  }
+
+  bool isVariationRequired() {
+    if (isBlackTeaCategory()) {
       return false;
     } else {
-      return false;
+      return productVariations.isNotEmpty;
     }
   }
 

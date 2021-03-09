@@ -4,8 +4,6 @@ import 'package:soho_app/SohoMenu/CategoryItems/CategoryItemsWidget.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/ui/about/about.dart';
 import 'package:soho_app/ui/about/location.dart';
-import 'package:soho_app/ui/auth/login.dart';
-import 'package:soho_app/ui/auth/register.dart';
 import 'package:soho_app/ui/home/home.dart';
 import 'package:soho_app/ui/home/search.dart';
 import 'package:soho_app/ui/payments/methods.dart';
@@ -15,7 +13,6 @@ import 'package:soho_app/ui/purchases/orders.dart';
 
 class Routes {
   static String root = "/";
-  static String login = "Login";
   static String homePage = "HomePage";
   static String categoryDetail = "CategoryDetail/:category";
   static String orderDetail = "OrderDetail";
@@ -31,12 +28,6 @@ class Routes {
           CategoryItemsWidget(categoryObjectString: params['category'][0]));
 
   static void setUpRouter(Router router) {
-    // Auth Login
-    router.define(login,
-        handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
-      return LoginScreen();
-    }), transitionType: TransitionType.native);
-
     // Soho Home
     router.define(homePage,
         handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {

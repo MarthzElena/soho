@@ -31,7 +31,7 @@ class LoggedInUserMenuWidget extends StatelessWidget {
     return Drawer(
       child: Container(
         constraints: BoxConstraints.expand(),
-        decoration: BoxDecoration(color: Color.fromARGB(255, 96, 73, 73)),
+        decoration: BoxDecoration(color: Colors.white),
         child: Padding(
           padding: const EdgeInsets.only(top: 24, left: 30),
           child: Stack(
@@ -74,9 +74,9 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           children: <Widget>[
                             Text(
                               name.isNotEmpty ? name : 'Nombre',
-                              style: interBoldStyle(
+                              style: boldStyle(
                                 fSize: 16.0,
-                                color: Colors.white,
+                                color: Color(0xff604848),
                               ),
                             ),
                             SizedBox(height: 2.0),
@@ -85,16 +85,16 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               children: <Widget>[
                                 Text(
                                   'Última orden: ',
-                                  style: interStyle(
+                                  style: regularStyle(
                                     fSize: 12.0,
-                                    color: Colors.white,
+                                    color: Color(0xff604848),
                                   ),
                                 ),
                                 Text(
                                   lastOrder,
-                                  style: interBoldStyle(
+                                  style: boldStyle(
                                     fSize: 12.0,
-                                    color: Colors.white,
+                                    color: Color(0xff604848),
                                   ),
                                 )
                               ],
@@ -120,9 +120,9 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           SizedBox(width: 12.0),
                           Text(
                             'Mis órdenes',
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
-                              color: Color(0xffE4E4E4),
+                              color: Color(0xff604848),
                             ),
                           )
                         ],
@@ -141,9 +141,9 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           SizedBox(width: 12.0),
                           Text(
                             'Acerca de Soho',
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
-                              color: Color(0xffE4E4E4),
+                              color: Color(0xff604848),
                             ),
                           )
                         ],
@@ -162,9 +162,9 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           SizedBox(width: 12.0),
                           Text(
                             'Métodos de pago',
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
-                              color: Color(0xffE4E4E4),
+                              color: Color(0xff604848),
                             ),
                           )
                         ],
@@ -183,9 +183,9 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                           SizedBox(width: 12.0),
                           Text(
                             'Ubicación',
-                            style: interStyle(
+                            style: regularStyle(
                               fSize: 14.0,
-                              color: Color(0xffE4E4E4),
+                              color: Color(0xff604848),
                             ),
                           )
                         ],
@@ -221,9 +221,10 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               SizedBox(width: 12.0),
                               Text(
                                 'Administrador Soho',
-                                style: interMediumStyle(
+                                style: regularStyle(
                                   fSize: 14.0,
-                                  color: Color(0xffE4E4E4),
+                                  color: Color(0xff604848),
+                                  fWeight: FontWeight.w600,
                                 ),
                               )
                             ],
@@ -241,9 +242,10 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               onTap: () => Navigator.pushNamed(context, Routes.viewProfile),
                               child: Text(
                                 'Configuración',
-                                style: interMediumStyle(
+                                style: regularStyle(
                                   fSize: 14.0,
-                                  color: Color(0xffE4E4E4),
+                                  color: Color(0xff604848),
+                                  fWeight: FontWeight.w600,
                                 ),
                               ),
                             )
@@ -262,9 +264,10 @@ class LoggedInUserMenuWidget extends StatelessWidget {
                               },
                               child: Text(
                                 'Cerrar sesión',
-                                style: interMediumStyle(
+                                style: regularStyle(
                                   fSize: 14.0,
-                                  color: Color(0xff866767),
+                                  color: Color(0xffCCC5BA),
+                                  fWeight: FontWeight.w600,
                                 ),
                               ),
                             ),

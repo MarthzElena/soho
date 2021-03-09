@@ -4,12 +4,14 @@ import 'dart:io';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderQR.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
@@ -32,6 +34,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
   int selectedTab = 0;
   String barcode = "";
+  Widget scannedOrder;
 
   @override
   void initState() {
@@ -43,7 +46,9 @@ class _AdminScreenState extends State<AdminScreen> {
   Widget build(BuildContext context) {
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: Scaffold(
         resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.white,
@@ -74,9 +79,9 @@ class _AdminScreenState extends State<AdminScreen> {
                       width: MediaQuery.of(context).size.width,
                       child: MaterialSegmentedControl(
                         horizontalPadding: EdgeInsets.all(0),
-                        borderColor: Color(0xffF0AB31),
+                        borderColor: Color(0xff604848),
                         unselectedColor: Colors.white,
-                        selectedColor: Color(0xffF0AB31),
+                        selectedColor: Color(0xff604848),
                         children: controlWidgets,
                         onSegmentChosen: (int value) {
                           setState(() {
@@ -92,8 +97,19 @@ class _AdminScreenState extends State<AdminScreen> {
                       future: locator<AppController>().getKitchenOrders(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData && snapshot.data != null) {
+                          List<SohoOrderQR> result = snapshot.data;
+                          if (result.isEmpty) {
+                            Fluttertoast.showToast(
+                                msg: "La lista de órdenes de cocina está vacía.",
+                                toastLength: Toast.LENGTH_LONG,
+                                timeInSecForIos: 4,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Color(0x99E51F4F),
+                                textColor: Colors.white
+                            );
+                          }
                           return ListView(
-                            children: _getPendingOrdersList(snapshot.data),
+                            children: _getPendingOrdersList(result),
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                           );
@@ -129,7 +145,7 @@ class _AdminScreenState extends State<AdminScreen> {
         SizedBox(height: 32.0),
         Text(
           'Usa la cámara del dispositivo para escanear el código QR en la App del cliente.',
-          style: interLightStyle(
+          style: lightStyle(
             fSize: 14.0,
             color: Color(0xff292929),
           ),
@@ -143,13 +159,13 @@ class _AdminScreenState extends State<AdminScreen> {
             width: double.infinity,
             height: 50.0,
             decoration: BoxDecoration(
-              color: Color(0xffF0AB31),
+              color: Color(0xffCCC5BA),
               borderRadius: BorderRadius.circular(50.0),
             ),
             child: Center(
               child: Text(
                 'Escanear código QR',
-                style: interBoldStyle(
+                style: boldStyle(
                   fSize: 14.0,
                   color: Colors.white,
                 ),
@@ -162,13 +178,15 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   Widget _codeScannedWidget() {
+    // Convert barcode to order
+    var sohoOrder = SohoOrderQR.fromJson(json.decode(barcode));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SizedBox(height: 32.0),
         Text(
-          'Usa la cámara del dispositivo para escanear el código QR en la App del cliente.',
-          style: interLightStyle(
+          'Usa la cámara del dispositivo para escanear el código QR en la App del cliente, después verifica que el pedido sea correcto y envía la orden a cocina.',
+          style: lightStyle(
             fSize: 14.0,
             color: Color(0xff292929),
           ),
@@ -195,30 +213,144 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
           ),
         ),
-        SizedBox(height: 32.0),
+        SizedBox(height: 20.0),
+        Text(
+          'Datos de la orden',
+          style: boldStyle(
+            fSize: 16.0,
+            color: Color(0xff5A6265),
+          ),
+        ),
+        SizedBox(height: 8.0),
+        Text(
+          sohoOrder.order.getCompletedDateWithTime(),
+          style: lightStyle(
+            fSize: 14.0,
+            color: Color(0xff5A6265),
+          ),
+        ),
+        SizedBox(height: 8.0),
+        Text(
+          "Orden para ${sohoOrder.userName}",
+          style: lightStyle(
+            fSize: 14.0,
+            color: Color(0xff5A6265),
+          ),
+        ),
+        SizedBox(height: 8.0),
+        Text(
+          "Notas:",
+          style: boldStyle(
+            fSize: 14.0,
+            color: Color(0xff5A6265),
+          ),
+        ),
+        SizedBox(height: 8.0),
+        Text(
+          sohoOrder.order.notes,
+          style: lightStyle(
+            fSize: 14.0,
+            color: Color(0xff5A6265),
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Divider(
+          height: 1.0,
+          color: Color(0xffE5E4E5),
+        ),
+        SizedBox(height: 16.0),
+        Column(
+          children: _getProductsList(sohoOrder.order.selectedProducts),
+        ),
+        SizedBox(height: 16.0),
+        Divider(
+          height: 1.0,
+          color: Color(0xffE5E4E5),
+        ),
+        SizedBox(height: 24.0),
+        Center(
+          child: Text(
+            'Total: MX\$${sohoOrder.order.orderTotal + sohoOrder.order.tip}0',
+            style: regularStyle(fSize: 16.0, fWeight: FontWeight.w600),
+          ),
+        ),
+        SizedBox(height: 24.0),
         GestureDetector(
           onTap: () async {
-            // Convert barcode to order
-            var sohoOrder = SohoOrderQR.fromJson(json.decode(barcode));
-            // Convert to dictionary
-            var orderDict = sohoOrder.getJson();
-            // Send to kitchen
-            await locator<AppController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate);
-            setState(() {
-              barcode = "";
-            });
+            try {
+              // Convert barcode to order
+              var sohoOrder = SohoOrderQR.fromJson(json.decode(barcode));
+              // First check that order hasn't been exchanged
+              var userForOrder = await locator<AppController>().getUser(forId: sohoOrder.userId, updateCurrentUser: false);
+              if (userForOrder != null) {
+                var orderValid = false;
+                for (var order in userForOrder.ongoingOrders) {
+                  if (order.id == sohoOrder.order.id) {
+                    // Found ongoing order
+                    orderValid = true;
+                    // Convert to dictionary
+                    var orderDict = sohoOrder.getJson();
+                    // Send to kitchen
+                    await locator<AppController>().sendOrderToKitchen(orderDict, sohoOrder.order.completionDate).then((error) async {
+                      if (error.isNotEmpty) {
+                        Fluttertoast.showToast(
+                            msg: error,
+                            toastLength: Toast.LENGTH_LONG,
+                            timeInSecForIos: 4,
+                            gravity: ToastGravity.BOTTOM,
+                            backgroundColor: Color(0x99E51F4F),
+                            textColor: Colors.white
+                        );
+                      }
+                    });
+                    setState(() {
+                      barcode = "";
+                    });
+                    break;
+                  }
+                }
+                if (!orderValid) {
+                  Fluttertoast.showToast(
+                      msg: "ORDEN INVALIDA: Fecha es mayor a 7 días.",
+                      toastLength: Toast.LENGTH_LONG,
+                      timeInSecForIos: 4,
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Color(0x99E51F4F),
+                      textColor: Colors.white
+                  );
+                }
+              } else {
+                Fluttertoast.showToast(
+                    msg: "ORDEN INVALIDA: No existe el usuario.",
+                    toastLength: Toast.LENGTH_LONG,
+                    timeInSecForIos: 4,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Color(0x99E51F4F),
+                    textColor: Colors.white
+                );
+              }
+            } catch (error) {
+              Fluttertoast.showToast(
+                  msg: "Error al escanear el código, vuelve a intentarlo.",
+                  toastLength: Toast.LENGTH_LONG,
+                  timeInSecForIos: 4,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Color(0x99E51F4F),
+                  textColor: Colors.white
+              );
+            }
           },
           child: Container(
             width: double.infinity,
             height: 50.0,
             decoration: BoxDecoration(
-              color: Color(0xffE51F4F),
+              color: Color(0xffCCC5BA),
               borderRadius: BorderRadius.circular(50.0),
             ),
             child: Center(
               child: Text(
                 'Enviar a cocina',
-                style: interBoldStyle(
+                style: boldStyle(
                   fSize: 14.0,
                   color: Colors.white,
                 ),
@@ -226,6 +358,7 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
           ),
         ),
+        SizedBox(height: 30.0)
       ],
     );
   }
@@ -235,7 +368,7 @@ class _AdminScreenState extends State<AdminScreen> {
     results.add(SizedBox(height: 32.0));
     results.add(Text(
       'Revisa el listado de órdenes y cuando estén listas márcalas como completadas.',
-      style: interLightStyle(
+      style: lightStyle(
         fSize: 14.0,
         color: Color(0xff292929),
       ),
@@ -257,15 +390,15 @@ class _AdminScreenState extends State<AdminScreen> {
                   children: <Widget>[
                     Text(
                       'Datos de la orden',
-                      style: interBoldStyle(
-                        fSize: 14.0,
+                      style: boldStyle(
+                        fSize: 16.0,
                         color: Color(0xff5A6265),
                       ),
                     ),
                     SizedBox(height: 8.0),
                     Text(
                       order.order.getCompletedDateWithTime(),
-                      style: interLightStyle(
+                      style: lightStyle(
                         fSize: 14.0,
                         color: Color(0xff5A6265),
                       ),
@@ -273,7 +406,23 @@ class _AdminScreenState extends State<AdminScreen> {
                     SizedBox(height: 8.0),
                     Text(
                       "Orden para ${order.userName}",
-                      style: interLightStyle(
+                      style: lightStyle(
+                        fSize: 14.0,
+                        color: Color(0xff5A6265),
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      "Notas:",
+                      style: boldStyle(
+                        fSize: 14.0,
+                        color: Color(0xff5A6265),
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      order.order.notes,
+                      style: lightStyle(
                         fSize: 14.0,
                         color: Color(0xff5A6265),
                       ),
@@ -300,7 +449,7 @@ class _AdminScreenState extends State<AdminScreen> {
             Center(
               child: Text(
                 'Total: MX\$${order.order.orderTotal + order.order.tip}0',
-                style: interMediumStyle(fSize: 16.0),
+                style: regularStyle(fSize: 16.0, fWeight: FontWeight.w600),
               ),
             ),
             SizedBox(height: 24.0),
@@ -316,13 +465,13 @@ class _AdminScreenState extends State<AdminScreen> {
                   width: MediaQuery.of(context).size.width / 2.5,
                   height: 50.0,
                   decoration: BoxDecoration(
-                    color: Color(0xffE51F4F),
+                    color: Color(0xffCCC5BA),
                     borderRadius: BorderRadius.circular(50.0),
                   ),
                   child: Center(
                     child: Text(
                       "Orden completada",
-                      style: interBoldStyle(
+                      style: boldStyle(
                         fSize: 14.0,
                         color: Colors.white,
                       ),
@@ -381,15 +530,15 @@ class _AdminScreenState extends State<AdminScreen> {
             child: Center(
               child: Text(
                 '1',
-                style: interMediumStyle(fSize: 14.0),
+                style: regularStyle(fSize: 14.0),
               ),
             ),
           ),
           SizedBox(width: 16.0),
           Text(
             product.name,
-            style: interMediumStyle(fSize: 14.0),
-          ), // TODO: Add variations!!
+            style: regularStyle(fSize: 14.0),
+          ),
         ],
       ));
       for (var variation in product.productVariations) {
@@ -403,7 +552,7 @@ class _AdminScreenState extends State<AdminScreen> {
                   children: <Widget>[
                     Text(
                       item.name,
-                      style: interLightStyle(
+                      style: lightStyle(
                         fSize: 14.0,
                         color: Color(0xff789090),
                       ),

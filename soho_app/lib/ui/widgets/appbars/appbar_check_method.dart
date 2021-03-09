@@ -3,9 +3,13 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:soho_app/Network/delete_card/call.dart';
+import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Fonts.dart';
+import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/payments/add_method.dart';
+import 'package:soho_app/ui/payments/check_method.dart';
 import 'package:soho_app/ui/payments/edit_method.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 
@@ -37,7 +41,7 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Container(
-                        width: 22.0,
+                        width: 15.0,
                         child: FlatButton(
                           onPressed: () => Navigator.pop(context),
                           padding: EdgeInsets.all(0.0),
@@ -48,10 +52,10 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                           ),
                         ),
                       ),
-                      SizedBox(width: 10.0),
+                      SizedBox(width: 15.0),
                       AutoSizeText(
                         cardType,
-                        style: interLightStyle(fSize: 18.0),
+                        style: lightStyle(fSize: 18.0),
                         maxLines: 1,
                         maxFontSize: 18.0,
                       ),
@@ -74,18 +78,29 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     child: Text(
                                       'Editar método de pago',
                                       textAlign: TextAlign.center,
-                                      style: interStyle(
+                                      style: regularStyle(
                                         fSize: 16.0, color: Color(0xff5A6265)),
                                     )
                                   ),
                                   CupertinoActionSheetAction(
-                                    onPressed: () {
-                                      // TODO: Add delete card
+                                    onPressed: () async {
+                                      if (Application.currentUser != null) {
+                                        locator<CheckMethodsState>().updateSpinner(show: true);
+                                        var customerId = Application.currentUser.stripeId;
+                                        await deleteCardCall(customerId: customerId, cardId: selectedCardId).then((response) async {
+                                          if (response != null && response.deleted) {
+                                            await Application.currentUser.getCardsShortInfo();
+                                            locator<CheckMethodsState>().updateSpinner(show: false);
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          }
+                                        });
+                                      }
                                     },
                                     child: Text(
                                       'Borrar método de pago',
                                       textAlign: TextAlign.center,
-                                      style: interStyle(
+                                      style: regularStyle(
                                         fSize: 16.0, color: Color(0xff5A6265)),
                                     )
                                   ),
@@ -114,7 +129,7 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                                           child: Text(
                                           'Editar método de pago',
                                           textAlign: TextAlign.center,
-                                          style: interStyle(
+                                          style: regularStyle(
                                             fSize: 16.0, color: Color(0xff5A6265)),
                                           ),
                                         ),
@@ -122,8 +137,19 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     ),
                                     Divider(),
                                     GestureDetector(
-                                      onTap: () {
-                                        // TODO: Add delete card
+                                      onTap: () async {
+                                        if (Application.currentUser != null) {
+                                          locator<CheckMethodsState>().updateSpinner(show: true);
+                                          var customerId = Application.currentUser.stripeId;
+                                          await deleteCardCall(customerId: customerId, cardId: selectedCardId).then((response) async {
+                                            if (response != null && response.deleted) {
+                                              await Application.currentUser.getCardsShortInfo();
+                                              locator<CheckMethodsState>().updateSpinner(show: false);
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+                                            }
+                                          });
+                                        }
                                       },
                                       child: Container(
                                         height: 56,
@@ -131,7 +157,7 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                                           child: Text(
                                           'Borrar método de pago',
                                           textAlign: TextAlign.center,
-                                          style: interStyle(
+                                          style: regularStyle(
                                             fSize: 16.0, color: Color(0xff5A6265)),
                                           ),
                                         ),
@@ -166,10 +192,6 @@ class CheckMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
         context,
         MaterialPageRoute(builder: (context) => EditMethodsScreen(nameOnCard: name, cardNumber: number, date: date, cardStripeId: selectedCardId))
     );
-  }
-
-  Future<void> deleteCreditCard() async {
-
   }
 
   @override

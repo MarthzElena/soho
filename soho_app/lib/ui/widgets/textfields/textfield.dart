@@ -27,11 +27,11 @@ class _TextFieldSohoState extends State<TextFieldSoho> {
         textAlign: widget.isCode ? TextAlign.center : TextAlign.start,
         controller: widget.controller,
         keyboardType: TextInputType.number,
-        style: interBoldStyle(fSize: 14.0),
+        style: boldStyle(fSize: 14.0),
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(10.0),
           hintText: widget.isCode ? '-' : '¿Alérgicos a algun ingrediente? ¿Sin cebolla?',
-          hintStyle: interLightStyle(
+          hintStyle: lightStyle(
             fSize: 14.0,
             color: Color(0xffC4C4C4),
           ),

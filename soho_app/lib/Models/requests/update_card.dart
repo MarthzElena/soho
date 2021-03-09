@@ -23,6 +23,7 @@ Map updateCardRequestToMap(UpdateCardRequest data) {
       "name" : data.name,
     };
   }
+  return {};
 }
 
 class UpdateCardRequest {

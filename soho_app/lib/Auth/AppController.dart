@@ -1,17 +1,19 @@
 
+import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 import 'dart:math';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderQR.dart';
 import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -24,7 +26,7 @@ class AppController {
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   final DatabaseReference dataBaseRootRef = FirebaseDatabase.instance.reference().root();
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  final FacebookLogin facebookLogin = FacebookLogin();
+  final FacebookAuth facebookLogin = FacebookAuth.instance;
 
   // Returns a SohoAuthObject if there's a token saved
   Future<void> getSavedAuthObject() async{
@@ -60,65 +62,52 @@ class AppController {
     });
   }
 
-  Future<void> initiateFacebookLogin() async {
-    await facebookLogin.logInWithReadPermissions(['email']).then((facebookLoginResult) async {
-
-      var facebookToken = facebookLoginResult.accessToken.token;
-      switch (facebookLoginResult.status) {
-        case FacebookLoginStatus.error:
-          print("Error");
-          // TODO: Handle error
-          break;
-
-        case FacebookLoginStatus.cancelledByUser:
-          print("CancelledByUser");
-          break;
-
-        case FacebookLoginStatus.loggedIn:
-          await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: facebookToken)).then((user) async {
-            var firebaseId = user.uid;
-            // Get user data
-            await http.get('https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture&access_token=$facebookToken').then((graphResponse) async {
-              var profile = json.decode(graphResponse.body);
-              var email = profile['email'].toString();
-              var username = profile['name'].toString();
-              var userId = firebaseId;
-              var photoUrl = "";
-              var picture = profile['picture'];
-              if (picture != null) {
-                var pictureData = picture['data'];
-                if (pictureData != null) {
-                  photoUrl = pictureData['url'];
-                }
-              }
-
+  Future<String> initiateFacebookLogin() async {
+    var errorString = "";
+    await facebookLogin.login(permissions: ['email']).then((result) async {
+      if (result.status == 200) {
+        await firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(accessToken: result.accessToken.token)).then((user) async {
+          var firebaseId = user.uid;
+          // Get user data
+          await facebookLogin.getUserData(fields: "email, name, picture").then((userData) async {
+            if (userData != null) {
+              var email = userData["email"].toString();
+              var name = userData["name"].toString();
+              var pictureDict = userData["picture"];
+              var pictureData = pictureDict["data"];
+              var pictureURL = pictureData["url"].toString();
+              // Save user data to DB
               var user = SohoUserObject.createUserDictionary(
-                  username: username,
+                  username: name,
                   email: email,
-                  userId: userId,
-                  photoUrl: photoUrl,
+                  userId: firebaseId,
+                  photoUrl: pictureURL,
                   phoneNumber: "",
                   isAdmin: false,
                   firstTime: true
               );
               await saveUserToDatabase(user);
-            });
-          }).catchError((error) {
-            // TODO: Handle error
+            } else {
+              errorString = "Error al iniciar sesión con Facebook.";
+            }
           });
-          break;
-
-        default:
-          break;
+        });
+      } else if (result.status == 403){
+        print("CancelledByUser");
+      } else {
+        print("Error");
+        errorString = "Error al iniciar sesión con Facebook.";
       }
-
     }).catchError((error) {
-      // TODO: Handle error
-      return null;
+      errorString = "Error al iniciar sesión con Facebook.";
+      return errorString;
     });
+
+    return errorString;
   }
 
-  Future<void> initiateGoogleLogin() async {
+  Future<String> initiateGoogleLogin() async {
+    var errorString = "";
     await googleSignIn.signIn().then((googleSignInAccount) async {
 
       await googleSignInAccount.authentication.then((googleAuth) async {
@@ -143,17 +132,19 @@ class AppController {
           await saveUserToDatabase(user);
 
         }).catchError((fireBaseSignInError) {
-          // TODO: Handle error
-          print("Sign in Firebase error: ${fireBaseSignInError.toString()}");
+          errorString = "Error al iniciar sesión con Google.";
         });
 
       }).catchError((authenticationError) {
         print("Authentication error: ${authenticationError.toString()}");
+        errorString = "Error al validar usuario";
       });
 
     }).catchError((signInError) {
       print("Sign in error: ${signInError.toString()}");
+      errorString = "Error durante Login";
     });
+    return errorString;
 
   }
 
@@ -211,6 +202,8 @@ class AppController {
           var sohoUser = SohoUserObject.fromJson(user);
           // Save locally
           Application.currentUser = sohoUser;
+          // Update payments info
+          await Application.currentUser.getCardsShortInfo();
           // Update home page state
           locator<HomePageState>().updateDrawer();
         }
@@ -218,6 +211,45 @@ class AppController {
     }).catchError((databaseError) {
       print("Database fetch error: ${databaseError.toString()}");
     });
+  }
+
+  Future<SohoUserObject> getUser({String forId, bool updateCurrentUser}) async {
+    var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
+    var user = usersRef.child(forId);
+    SohoUserObject sohoUser;
+
+    await user.once().then((item) async {
+      if (item != null && item.value != null) {
+        LinkedHashMap linkedMap = item.value;
+        Map<String, dynamic> user = linkedMap.cast();
+        if (user != null) {
+          // Create local user
+          sohoUser = SohoUserObject.fromJson(user);
+          // Validate ongoing orders are still valid
+          List<SohoOrderObject> invalidOrder = List<SohoOrderObject>();
+          for (var order in sohoUser.ongoingOrders) {
+            var orderDate = order.completionDate;
+            if (!isQrCodeValid(orderDate)) {
+              sohoUser.pastOrders.add(order);
+              invalidOrder.add(order);
+            }
+          }
+          // Remove invalid orders
+          for (var oldOrder in invalidOrder) {
+            sohoUser.ongoingOrders.remove(oldOrder);
+          }
+          if (invalidOrder.isNotEmpty) {
+            await updateUserInDatabase(sohoUser.getJson());
+            if (updateCurrentUser) {
+              Application.currentUser = sohoUser;
+            }
+          }
+        }
+      }
+      return null;
+    });
+
+    return sohoUser;
   }
 
   Future<void> updateUserInDatabase(Map<String, dynamic> user) async {
@@ -230,7 +262,7 @@ class AppController {
 
   }
 
-  Future<bool> saveUserToDatabase(Map<String, dynamic> user) async {
+  Future<void> saveUserToDatabase(Map<String, dynamic> user) async {
     // Check if user already exists in DataBase, and save if not
     var usersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_USERS);
     var userId = user[SohoUserObject.keyUserId];
@@ -263,38 +295,58 @@ class AppController {
           if (userDict != null) {
             // Save locally
             Application.currentUser = SohoUserObject.fromJson(userDict);
+            // Update payments info
+            await Application.currentUser.getCardsShortInfo();
           }
         }
       }
-      return true;
     });
-
-    return true;
   }
 
   Future<void> getFeaturedImageFromStorage() async {
-    // First get the reference URL
-    var featuredPhotoRef = dataBaseRootRef.child(Constants.DATABASE_KEY_FEATURED_PRODUCT);
-    // Get URL from database
-    await featuredPhotoRef.once().then((item) async {
-      if (item.value != null) {
-        var photoUrl = item.value.toString();
-        if (photoUrl != null && photoUrl.isNotEmpty) {
-          // Get storage reference
-          await firebaseStorage.getReferenceFromUrl(photoUrl).then((storageReference) async {
-            if (storageReference != null) {
-              final String photoUrl = await storageReference.getDownloadURL();
-              // Save image to Application
-              if (photoUrl != null && photoUrl.isNotEmpty) {
-                Application.featuredProduct = photoUrl;
-              }
-            }
-          });
+    var photoIndex = 0;
+    Timer.periodic(Duration(seconds: 5), (timer) async {
+      var featuredPhotosArray = dataBaseRootRef.child(Constants.DATABASE_KEY_FEATURED_IMAGES);
+      // Get photos array
+      await featuredPhotosArray.once().then((array) async {
+        if (array.value != null) {
+          LinkedHashMap linkedMap = array.value;
+          if (linkedMap != null) {
+           var max = linkedMap.entries.length;
+           if (max > 0) {
+             var photoUrl = linkedMap.entries.elementAt(photoIndex).value.toString();
+             photoIndex = photoIndex + 1 == linkedMap.entries.length ? 0 : photoIndex + 1;
+             if (photoUrl != null && photoUrl.isNotEmpty) {
+               // Get storage reference
+               await firebaseStorage.getReferenceFromUrl(photoUrl).then((storageReference) async {
+                 if (storageReference != null) {
+                   final String photoUrl = await storageReference.getDownloadURL();
+                   // Save image to Application
+                   if (photoUrl != null && photoUrl.isNotEmpty) {
+                     Application.featuredProduct = photoUrl;
+                     locator<HomePageState>().updateState();
+                   } else {
+                     Application.featuredProduct = "";
+                   }
+                 }
+               }).catchError((_) {
+                 Application.featuredProduct = "";
+               });
+             } else {
+               Application.featuredProduct = "";
+             }
+           } else {
+             Application.featuredProduct = "";
+           }
+          } else {
+            Application.featuredProduct = "";
+          }
+        } else {
+          Application.featuredProduct = "";
         }
-      }
-    }).catchError((error) {
-      // TODO: Handle error
-      print("Erro while getting featured product image: ${error.toString()}");
+      }).catchError((error) {
+        Application.featuredProduct = "";
+      });
     });
   }
 
@@ -330,7 +382,8 @@ class AppController {
     });
   }
 
-  Future<void> sendOrderToKitchen(Map<String, dynamic> order, DateTime completionDate) async {
+  Future<String> sendOrderToKitchen(Map<String, dynamic> order, DateTime completionDate) async {
+    var errorString = "";
     var kitchenOrdersRef = dataBaseRootRef.child(Constants.DATABASE_KEY_KITCHEN_ORDERS);
 
     // Get user from DB
@@ -347,7 +400,6 @@ class AppController {
           for (var ongoing in ongoingOrders) {
             if (ongoing.completionDate == completionDate) {
               var completedOrder = orderUser.ongoingOrders.removeAt(index);
-              completedOrder.isQRCodeValid = false;
               orderUser.pastOrders.add(completedOrder);
               await updateUserInDatabase(orderUser.getJson());
               break;
@@ -381,10 +433,9 @@ class AppController {
 
       }
     }).catchError((error) {
-      //TODO: handle error
-      print("Error from updating kitchen orders database ${error.toString()}");
+      errorString = "Error al obtener órdenes de cocina de la base de datos.";
     });
-
+    return errorString;
   }
 
   Future<List<SohoOrderQR>> getKitchenOrders() async {
@@ -400,8 +451,8 @@ class AppController {
         }
       }
     }).catchError((error) {
-      //TODO: handle error
       print("Error from database ${error.toString()}");
+      result = List<SohoOrderQR>();
     });
 
     return result;
@@ -413,7 +464,7 @@ class AppController {
     final daysDifference = currentDate.difference(codeGenerated).inDays;
     final daysAbsolute = daysDifference.abs();
 
-    return daysAbsolute <= 8;
+    return daysAbsolute <= 7;
   }
 
 }

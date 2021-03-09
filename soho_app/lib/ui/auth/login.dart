@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/States/LoginState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
@@ -11,6 +12,10 @@ import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_product.dart';
 
 class LoginScreen extends StatefulWidget {
+  final bool isShoppingFlow;
+
+  const LoginScreen({Key key, this.isShoppingFlow}) : super(key: key);
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -20,10 +25,18 @@ class _LoginScreenState extends State<LoginScreen> {
   String smsCode = "";
 
   @override
+  void initState() {
+    _loginState.isShoppingFlow = widget.isShoppingFlow;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: ScopedModel<LoginState>(
         model: _loginState,
         child: ScopedModelDescendant<LoginState>(
@@ -71,17 +84,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: <Widget>[
                                 Image(
                                   image: splashLogo,
-                                  width: 96,
+                                  width: 130,
                                 ),
                                 SizedBox(height: 18.0),
                                 Text(
                                   'INICIAR',
-                                  style: interThinStyle(fSize: 32.0),
+                                  style: thinStyle(fSize: 32.0),
                                 ),
                                 SizedBox(height: 4.0),
                                 Text(
                                   'SESIÓN',
-                                  style: interThinStyle(fSize: 32.0),
+                                  style: thinStyle(fSize: 32.0),
                                 ),
                               ],
                             ),
@@ -95,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: <Widget>[
                               Text(
                                 'Número de teléfono',
-                                style: interStyle(
+                                style: regularStyle(
                                   fSize: 14.0,
                                   color: Color(0xff565758),
                                 ),
@@ -106,18 +119,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 40.0,
                                 child: TextField(
                                   onChanged: (value) {
-                                    // TODO: Validate phone
-                                    model.phoneInput = value;
+                                    if (value.startsWith('+')) {
+                                      model.phoneInput = value;
+                                    } else {
+                                      model.phoneInput = "+" + value;
+                                    }
                                   },
                                   keyboardType: TextInputType.phone,
                                   textAlignVertical: TextAlignVertical.center,
-                                  style: interLightStyle(
+                                  style: lightStyle(
                                     fSize: 14.0,
                                   ),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.all(10.0),
                                     hintText: '( +521 )  -  ( 33-33-33-33-33 )',
-                                    hintStyle: interLightStyle(
+                                    prefixText: '+',
+                                    hintStyle: lightStyle(
                                       fSize: 14.0,
                                       color: Color(0xffC4C4C4),
                                     ),
@@ -150,15 +167,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                   width: double.infinity,
                                   height: 50.0,
                                   decoration: BoxDecoration(
-                                    color: Color(0xffF0AB31),
+                                    color: Colors.white,
                                     borderRadius: BorderRadius.circular(50.0),
+                                    border: Border.all(
+                                      color: Color(0xffCCC5BA),
+                                      width: 2
+                                    )
                                   ),
                                   child: Center(
                                     child: Text(
                                       'Recibir código',
-                                      style: interBoldStyle(
+                                      style: boldStyle(
                                         fSize: 14.0,
-                                        color: Colors.white,
+                                        color: Color(0xff604848),
                                       ),
                                     ),
                                   ),
@@ -168,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Center(
                                 child: Text(
                                   'O también puedes entrar usando:',
-                                  style: interStyle(
+                                  style: regularStyle(
                                     fSize: 14.0,
                                     color: Color(0xff565758),
                                   ),
@@ -182,18 +203,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                   mainAxisSize: MainAxisSize.max,
                                   children: <Widget>[
                                     GestureDetector(
-                                      onTap: () => model.facebookLoginPressed(context),
+                                      onTap: () async {
+                                        await model.facebookLoginPressed(context);
+                                      },
                                       child: Container(
                                         width: MediaQuery.of(context).size.width / 2.5,
                                         height: 50.0,
                                         decoration: BoxDecoration(
-                                          color: Color(0xff3B5998),
+                                          color: Color(0xffCCC5BA),
                                           borderRadius: BorderRadius.circular(50.0),
                                         ),
                                         child: Center(
                                           child: Text(
                                             'Facebook',
-                                            style: interBoldStyle(
+                                            style: boldStyle(
                                               fSize: 14.0,
                                               color: Colors.white,
                                             ),
@@ -202,46 +225,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                                     GestureDetector(
-                                      onTap: () => model.googleLoginPressed(context),
+                                      onTap: () async {
+                                        await model.googleLoginPressed(context);
+                                      },
                                       child: Container(
                                         width: MediaQuery.of(context).size.width / 2.5,
                                         height: 50.0,
                                         decoration: BoxDecoration(
-                                          color: Color(0xffE51F4F),
+                                          color: Color(0xffCCC5BA),
                                           borderRadius: BorderRadius.circular(50.0),
                                         ),
                                         child: Center(
                                           child: Text(
                                             'Gmail',
-                                            style: interBoldStyle(
+                                            style: boldStyle(
                                               fSize: 14.0,
                                               color: Colors.white,
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 24.0),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      '¿No tienes cuenta?',
-                                      style: interStyle(fSize: 14.0),
-                                    ),
-                                    SizedBox(width: 12.0),
-                                    Text(
-                                      'Crear Cuenta',
-                                      style: interMediumStyle(
-                                        fSize: 14.0,
-                                        color: Color(0xffE51F4F),
-                                        decoration: TextDecoration.underline,
                                       ),
                                     ),
                                   ],

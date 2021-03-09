@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/States/HomePageState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
-import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/auth/login.dart';
 import 'package:soho_app/ui/items/onboarding_item.dart';
 
 class NoUserMenuWidget extends StatelessWidget {
@@ -15,14 +16,14 @@ class NoUserMenuWidget extends StatelessWidget {
     return Drawer(
       child: Container(
         constraints: BoxConstraints.expand(),
-        decoration: BoxDecoration(color: Color.fromARGB(255, 96, 73, 73)),
+        decoration: BoxDecoration(color: Colors.white),
         child: Stack(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 45.0, left: 16.0, right: 16.0),
               child: Container(
                 decoration: BoxDecoration(
-                    color: Color.fromARGB(204, 243, 241, 242),
+                    color: Color(0xffebe7e4),
                     borderRadius: BorderRadius.all(Radius.circular(16.0))),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -39,31 +40,37 @@ class NoUserMenuWidget extends StatelessWidget {
                       SizedBox(height: 23.0),
                       Text(
                         'Inicia sesión ahora',
-                        style: interBoldStyle(fSize: 16.0),
+                        style: boldStyle(fSize: 16.0),
                       ),
                       SizedBox(height: 4.0),
                       Text(
                         'Inicia sesión ahora para que puedas disfrutar de todo lo que SOHO tiene para tí.',
-                        style: interLightStyle(fSize: 12.0),
+                        style: regularStyle(fSize: 12.0),
                       ),
                       SizedBox(height: 16.0),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, Routes.login);
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => LoginScreen(isShoppingFlow: false))
+                          );
                         },
                         child: Container(
                           width: double.infinity,
                           height: 50.0,
                           decoration: BoxDecoration(
-                            color: Color(0xffF0AB31),
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(50.0),
+                            border: Border.all(
+                              color: Color(0xffCCC5BA),
+                              width: 2
+                            ),
                           ),
                           child: Center(
                             child: Text(
                               'Iniciar sesión',
-                              style: interBoldStyle(
+                              style: boldStyle(
                                 fSize: 14.0,
-                                color: Colors.white,
+                                color: Color(0xff604848),
                               ),
                             ),
                           ),
@@ -71,31 +78,42 @@ class NoUserMenuWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 16.0),
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           Navigator.pop(context);
                           locator<HomePageState>().updateSpinner(show: true);
-                          authController.initiateFacebookLogin().then((_) {
-                            locator<HomePageState>().updateSpinner(show: false);
-                            // Check first user
-                            var user = Application.currentUser;
-                            if (user != null && user.isFirstTime) {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+                          await authController.initiateFacebookLogin().then((error) async {
+                            if (error.isNotEmpty) {
+                              Fluttertoast.showToast(
+                                  msg: error,
+                                  toastLength: Toast.LENGTH_LONG,
+                                  timeInSecForIos: 4,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Color(0x99E51F4F),
+                                  textColor: Colors.white
+                              );
+                            } else {
+                              locator<HomePageState>().updateSpinner(show: false);
+                              // Check first user
+                              var user = Application.currentUser;
+                              if (user != null && user.isFirstTime) {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+                              }
+                              // Make sure drawer is updated
+                              locator<HomePageState>().updateDrawer();
                             }
-                            // Make sure drawer is updated
-                            locator<HomePageState>().updateDrawer();
                           });
                         },
                         child: Container(
                           width: double.infinity,
                           height: 50.0,
                           decoration: BoxDecoration(
-                            color: Color(0xff3B5998),
+                            color: Color(0xffCCC5BA),
                             borderRadius: BorderRadius.circular(50.0),
                           ),
                           child: Center(
                             child: Text(
                               'Entrar con Facebook',
-                              style: interBoldStyle(
+                              style: boldStyle(
                                 fSize: 14.0,
                                 color: Colors.white,
                               ),
@@ -105,31 +123,49 @@ class NoUserMenuWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 16.0),
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           Navigator.pop(context);
                           locator<HomePageState>().updateSpinner(show: true);
-                          authController.initiateGoogleLogin().then((_) {
-                            locator<HomePageState>().updateSpinner(show: false);
-                            // Check first user
-                            var user = Application.currentUser;
-                            if (user != null && user.isFirstTime) {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingScreen()));
+                          await authController.initiateGoogleLogin().then((error) async {
+                            if (error.isNotEmpty) {
+                              await showDialog(
+                                context: context,
+                                child: SimpleDialog(
+                                  title: Text(error),
+                                  children: <Widget>[
+                                    SimpleDialogOption(
+                                      child: Text("OK"),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              locator<HomePageState>().updateSpinner(
+                                  show: false);
+                              // Check first user
+                              var user = Application.currentUser;
+                              if (user != null && user.isFirstTime) {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        OnboardingScreen()));
+                              }
+                              // Make sure drawer is updated
+                              locator<HomePageState>().updateDrawer();
                             }
-                            // Make sure drawer is updated
-                            locator<HomePageState>().updateDrawer();
                           });
                         },
                         child: Container(
                           width: double.infinity,
                           height: 50.0,
                           decoration: BoxDecoration(
-                            color: Color(0xffE51F4F),
+                            color: Color(0xffCCC5BA),
                             borderRadius: BorderRadius.circular(50.0),
                           ),
                           child: Center(
                             child: Text(
                               'Entrar con Gmail',
-                              style: interBoldStyle(
+                              style: boldStyle(
                                 fSize: 14.0,
                                 color: Colors.white,
                               ),
@@ -141,17 +177,25 @@ class NoUserMenuWidget extends StatelessWidget {
                       Center(
                         child: Text(
                           '¿No tienes cuenta?',
-                          style: interLightStyle(fSize: 14.0),
+                          style: lightStyle(fSize: 14.0),
                         ),
                       ),
                       SizedBox(height: 16.0),
-                      Center(
-                        child: Text(
-                          'Crea una cuenta aquí',
-                          style: interMediumStyle(
-                            fSize: 14.0,
-                            decoration: TextDecoration.underline,
-                            color: Color(0xffE51F4F),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => LoginScreen(isShoppingFlow: false))
+                          );
+                        },
+                        child: Center(
+                          child: Text(
+                            'Crea una cuenta aquí',
+                            style: regularStyle(
+                              fSize: 14.0,
+                              decoration: TextDecoration.underline,
+                              color: Color(0xff565758),
+                              fWeight: FontWeight.w300,
+                            ),
                           ),
                         ),
                       ),
@@ -183,9 +227,10 @@ class NoUserMenuWidget extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
                           'Acerca de Soho',
-                          style: interMediumStyle(
+                          style: regularStyle(
                             fSize: 14.0,
-                            color: Color(0xffE4E4E4),
+                            color: Color(0xff604848),
+                            fWeight: FontWeight.w600,
                           ),
                         ),
                       )
@@ -215,10 +260,11 @@ class NoUserMenuWidget extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 13.0),
                         child: Text(
-                          'Ubicaciones',
-                          style: interMediumStyle(
+                          'Ubicación',
+                          style: regularStyle(
                             fSize: 14.0,
-                            color: Color(0xffE4E4E4),
+                            color: Color(0xff604848),
+                            fWeight: FontWeight.w600,
                           ),
                         ),
                       )

@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:intl/intl.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
+import 'package:uuid/uuid.dart';
 
 /// THIS OBJECT WILL BE SAVED ON DATABASE PER USER
 class SohoOrderObject {
@@ -13,6 +14,7 @@ class SohoOrderObject {
   static const String keyIsCompleted = "is_completed";
   static const String keyIsQRCodeValid = "is_qr_code_valid";
   static const String keyQRCodeData = "qr_code_reference";
+  static const String keyOrderId = "order_id";
 
   SohoOrderObject();
 
@@ -27,17 +29,10 @@ class SohoOrderObject {
   double tip = 0.0;
   String notes = "";
 
+  // Unique identifier for order
+  String id = "";
   // Reference in Firebase Storage to QR Code
   String qrCodeData = "";
-
-  // Used for specifying if the order has been completed.
-  // An order has been completed when the payment has been processed and accepted.
-  bool isOrderCompleted = false;
-
-  // Used for specifying if the QR Code for this order is valid.
-  // A QR code for an order is only valid if it hasn't been exchanged.
-  // The validity of a QR code only begins when the order is completed.
-  bool isQRCodeValid = false;
 
   // Date getters
   static DateTime setCompletionDateFromString(String date) {
@@ -69,9 +64,8 @@ class SohoOrderObject {
     dict[keyTip] = tip;
     dict[keyNotes] = notes;
     dict[keyOrderTotal] = orderTotal;
-    dict[keyIsCompleted] = isOrderCompleted;
-    dict[keyIsQRCodeValid] = isQRCodeValid;
     dict[keyQRCodeData] = qrCodeData;
+    dict[keyOrderId] = id;
     var dictProducts = [];
     for (var product in selectedProducts) {
       dictProducts.add(product.getJson());
@@ -85,9 +79,8 @@ class SohoOrderObject {
     tip = json[keyTip] + 0.0;
     notes = json[keyNotes];
     orderTotal = json[keyOrderTotal] + 0.0;
-    isOrderCompleted = json[keyIsCompleted];
-    isQRCodeValid = json[keyIsQRCodeValid];
     qrCodeData = json[keyQRCodeData];
+    id = json[keyOrderId] != null ? json[keyOrderId] : Uuid().v1();
     if (json[keySelectedProducts] != null) {
       var dictProducts = json[keySelectedProducts];
       for (var product in dictProducts) {

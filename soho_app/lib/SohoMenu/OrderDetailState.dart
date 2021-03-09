@@ -1,5 +1,12 @@
 import 'package:scoped_model/scoped_model.dart';
+import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/Utils/Application.dart';
+
+class OrderElement {
+  String name = "";
+  double price = 0.0;
+  OrderElement({this.name = "", this.price = 0.0});
+}
 
 class OrderDetailState extends Model {
 
@@ -13,11 +20,71 @@ class OrderDetailState extends Model {
   bool showSpinner = false;
 
   double currentTip = 0.0;
-  double orderSubtotal = 0.0;
+  double orderTotal = 0.0;
+  String notes = "";
 
   String discountCode = "";
   bool hasExchangedCode = false;
   double discount = 0.0;
+
+  List<OrderElement> orderItems = List<OrderElement>();
+  double productsSubTotal = 0.0;
+
+  void prepareOrderElements() {
+    // Clear elements
+    orderItems.clear();
+    orderTotal = 0.0;
+    productsSubTotal = 0.0;
+
+    if (Application.currentOrder != null) {
+      for (var product in Application.currentOrder.selectedProducts) {
+        var productElement = OrderElement(name: product.name, price: product.price);
+        orderItems.add(productElement);
+        // Add variations
+        for (var variationType in product.productVariations) {
+          for (var variation in variationType.variations) {
+            var itemVariation = OrderElement(name: variation.name);
+            orderItems.add(itemVariation);
+          }
+        }
+        // Add empty element for space between products
+        orderItems.add(OrderElement());
+        // Add price to subTotal
+        productsSubTotal += product.price;
+      }
+      // Update order subtotal in model
+      orderTotal = productsSubTotal;
+    } else {
+      orderItems.add(OrderElement(name: "No olvides agregar productos a tu pedido!"));
+    }
+    notifyListeners();
+  }
+
+  void deleteElement(OrderElement element) {
+    // Find element in order
+    SohoOrderItem productToDelete;
+    if (Application.currentOrder != null) {
+      for (var product in Application.currentOrder.selectedProducts) {
+        if (product.name == element.name) {
+          productToDelete = product;
+          break;
+        }
+      }
+      if (productToDelete != null) {
+        var removed = Application.currentOrder.selectedProducts.remove(productToDelete);
+        if (removed) {
+          if (Application.currentOrder.selectedProducts.isEmpty) {
+            // Clear current order since it has no elements
+            Application.currentOrder = null;
+            // Clear discount
+            clearDiscount();
+          }
+          prepareOrderElements();
+        }
+      }
+    }
+    notifyListeners();
+  }
 
   void updateSpinner({bool show}) {
     showSpinner = show;
@@ -55,27 +122,32 @@ class OrderDetailState extends Model {
     notifyListeners();
   }
 
-  void updateTip(double toValue) {
+  void updateTip(double toValue, {bool isCustomTip}) {
     currentTip = toValue;
-    showCustomTip = false;
+    showCustomTip = isCustomTip;
     if (Application.currentOrder != null) {
       Application.currentOrder.tip = toValue;
     }
     notifyListeners();
   }
 
-  void updateTotalPercentageDiscount(double productsTotal, int percentage) {
+  void clearDiscount () {
+    hasExchangedCode = false;
+    discount = 0.0;
+    discountCode = "";
+    notifyListeners();
+  }
+
+  void updateTotalPercentageDiscount(int percentage) {
     if (!hasExchangedCode) {
-      discount = productsTotal * (percentage/100);
-      orderSubtotal = productsTotal - discount;
+      discount = productsSubTotal * (percentage/100);
       hasExchangedCode = true;
       notifyListeners();
     }
   }
 
-  void updateTotalFixedDiscount(double productsTotal, double amount) {
+  void updateTotalFixedDiscount(double amount) {
     if (!hasExchangedCode) {
-      orderSubtotal = productsTotal - amount;
       hasExchangedCode = true;
       discount = amount;
       notifyListeners();

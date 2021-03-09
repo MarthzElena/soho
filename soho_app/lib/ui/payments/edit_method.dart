@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/States/EditCardState.dart';
 import 'package:soho_app/Utils/Fonts.dart';
@@ -41,7 +42,9 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: ScopedModel<EditCardState>(
         model: _model,
         child: ScopedModelDescendant<EditCardState>(
@@ -81,7 +84,7 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                     SizedBox(height: 32.0),
                                     Text(
                                       'Nombre en la tarjeta',
-                                      style: interStyle(fSize: 14.0),
+                                      style: regularStyle(fSize: 14.0),
                                     ),
                                     SizedBox(height: 8.0),
                                     Container(
@@ -93,13 +96,13 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                           model.updatedName = value;
                                         },
                                         textAlignVertical: TextAlignVertical.center,
-                                        style: interLightStyle(
+                                        style: lightStyle(
                                           fSize: 14.0,
                                         ),
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.all(10.0),
                                           hintText: "ej. Horacio Solis",
-                                          hintStyle: interLightStyle(
+                                          hintStyle: lightStyle(
                                             fSize: 14.0,
                                             color: Color(0xffC4C4C4),
                                           ),
@@ -136,7 +139,7 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                             children: <Widget>[
                                               Text(
                                                 'Fecha de Expiración',
-                                                style: interStyle(fSize: 14.0),
+                                                style: regularStyle(fSize: 14.0),
                                               ),
                                               SizedBox(height: 8.0),
                                               Container(
@@ -144,15 +147,22 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                                 height: 60.0,
                                                 child: TextField(
                                                   controller: model.expDateController,
-                                                  onChanged: (value) {
+                                                  onChanged: (value) async {
                                                     var dateArray = value.split('/');
-                                                    print(value);
+                                                    print("EDIT::: $value");
                                                     if (dateArray.length == 2) {
                                                       var newMonth = dateArray[0];
                                                       if (int.parse(newMonth) > 0 && int.parse(newMonth) < 13) {
                                                         model.updatedMonth = newMonth;
                                                       } else {
-                                                        // TODO: Show ui error
+                                                        Fluttertoast.showToast(
+                                                            msg: "La fecha de expiración es inválida.",
+                                                            toastLength: Toast.LENGTH_SHORT,
+                                                            timeInSecForIos: 4,
+                                                            gravity: ToastGravity.BOTTOM,
+                                                            backgroundColor: Color(0x99E51F4F),
+                                                            textColor: Colors.white
+                                                        );
                                                       }
 
                                                       model.updatedYear = dateArray[1];
@@ -164,7 +174,7 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                                     contentPadding: EdgeInsets.all(10.0),
                                                     hintText: 'MM / AA',
                                                     counterText: "",
-                                                    hintStyle: interLightStyle(
+                                                    hintStyle: lightStyle(
                                                       fSize: 14.0,
                                                       color: Color(0xffC4C4C4),
                                                     ),
@@ -200,12 +210,12 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                                             children: <Widget>[
                                               Text(
                                                 'CVV',
-                                                style: interStyle(fSize: 14.0),
+                                                style: regularStyle(fSize: 14.0),
                                               ),
                                               SizedBox(height: 8.0),
                                               Text(
                                                 "***",
-                                                style: interLightStyle(
+                                                style: lightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xffC4C4C4),
                                                 ),
@@ -223,7 +233,7 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
                           ),
                         ),
                       ),
-                      locator<EditCardState>().showSpinner ? SohoSpinner() : SizedBox.shrink(),
+                      model.showSpinner ? SohoSpinner() : SizedBox.shrink(),
                     ],
                   ),
                 ),
@@ -261,12 +271,12 @@ class _EditMethodsScreenState extends State<EditMethodsScreen> {
               children: <Widget>[
                 Text(
                   '¿No sabes que es el código CVV?',
-                  style: interBoldStyle(fSize: 14.0),
+                  style: boldStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 8.0),
                 Text(
                   'El código CVV son los tres números que se encuentran al reverso de tu tarjeta.',
-                  style: interLightStyle(fSize: 14.0),
+                  style: lightStyle(fSize: 14.0),
                 ),
                 SizedBox(height: 20.0),
                 Image(

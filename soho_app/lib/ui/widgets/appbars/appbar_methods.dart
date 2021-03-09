@@ -20,25 +20,30 @@ class PaymentMethodsAppBar extends StatelessWidget implements PreferredSizeWidge
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Container(
-                    width: 10.0,
+                    width: 15.0,
                     child: FlatButton(
                       onPressed: () => Navigator.pop(context),
                       padding: EdgeInsets.all(0.0),
                       child: Image(
                         image: detailBack,
+                        width: 22.0,
+                        height: 22.0,
                       ),
                     ),
                   ),
                   Container(
-                    width: 24.0,
-                    child: FlatButton(
-                      onPressed: () => Navigator.of(context).push(
+                    width: 30.0,
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => AddMethodScreen(),
                         ),
                       ),
-                      padding: EdgeInsets.all(0.0),
-                      child: Image(image: paymentAdd),
+                      child: Image(
+                        image: paymentAdd,
+                        width: 30.0,
+                        height: 30.0,
+                      ),
                     ),
                   ),
                 ],

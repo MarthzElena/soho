@@ -36,7 +36,7 @@ class AddMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                   SizedBox(width: 10.0),
                   AutoSizeText(
                     'INFORMACIÓN DE LA TARJETA',
-                    style: interLightStyle(fSize: 18.0),
+                    style: lightStyle(fSize: 18.0),
                     maxLines: 1,
                     maxFontSize: 18.0,
                   ),

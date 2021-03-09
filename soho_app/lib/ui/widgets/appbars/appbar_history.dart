@@ -38,7 +38,7 @@ class HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   Text(
                     titleText,
-                    style: interLightStyle(fSize: 18.0),
+                    style: lightStyle(fSize: 18.0),
                   ),
                 ],
               ),

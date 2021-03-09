@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Auth/SohoUserObject.dart';
 import 'package:soho_app/SohoMenu/OrderDetailState.dart';
@@ -25,50 +26,14 @@ class OrderScreen extends StatefulWidget {
   _OrderScreenState createState() => _OrderScreenState();
 }
 
-class OrderElement {
-  String name = "";
-  String price = "";
-  OrderElement({this.name = "", this.price = ""});
-}
-
 class _OrderScreenState extends State<OrderScreen> {
-  List<OrderElement> orderItems = List<OrderElement>();
   OrderDetailState _model = locator<OrderDetailState>();
-  double productsSubTotal = 0.0;
-
-  List<OrderElement> _prepareOrderElements() {
-    var list = List<OrderElement>();
-
-    if (Application.currentOrder != null) {
-      for (var product in Application.currentOrder.selectedProducts) {
-        var price = "\$${product.price}0";
-        var productElement = OrderElement(name: product.name, price: price);
-        list.add(productElement);
-        // Add variations
-        for (var variationType in product.productVariations) {
-          for (var variation in variationType.variations) {
-            var itemVariation = OrderElement(name: variation.name);
-            list.add(itemVariation);
-          }
-        }
-        // Add empty element for space between products
-        list.add(OrderElement());
-        // Add price to subTotal
-        productsSubTotal += product.price;
-      }
-      // Update order subtotal in model
-      _model.orderSubtotal = productsSubTotal;
-    } else {
-      list.add(OrderElement(name: "No olvides agregar productos a tu pedido!"));
-    }
-    return list;
-  }
 
   @override
   void initState() {
     super.initState();
 
-    orderItems = _prepareOrderElements();
+    _model.prepareOrderElements();
   }
 
   @override
@@ -80,7 +45,12 @@ class _OrderScreenState extends State<OrderScreen> {
     }
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        if (Platform.isAndroid) {
+          locator<ProductItemState>().setBottomState(ProductItemState.GO_TO_CHECKOUT_TEXT);
+        }
+        return Platform.isAndroid;
+      },
       child: ScopedModel<OrderDetailState>(
         model: _model,
         child: ScopedModelDescendant<OrderDetailState>(
@@ -131,16 +101,16 @@ class _OrderScreenState extends State<OrderScreen> {
                                   children: <Widget>[
                                     Text(
                                       'TU',
-                                      style: interThinStyle(fSize: 32.0),
+                                      style: thinStyle(fSize: 32.0),
                                     ),
                                     Text(
                                       'ORDEN',
-                                      style: interThinStyle(fSize: 32.0),
+                                      style: thinStyle(fSize: 32.0),
                                     ),
                                     SizedBox(height: 4.0),
                                     Text(
                                       '¡Ya estamos casi listos\npara empezar a preparar\ntu comida!',
-                                      style: interLightStyle(
+                                      style: lightStyle(
                                         fSize: 14.0,
                                         color: Color(0xff292929),
                                       ),
@@ -162,7 +132,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         'Ordenaste',
-                                        style: interLightStyle(
+                                        style: lightStyle(
                                           fSize: 14.0,
                                           color: Color(0xff789090),
                                         ),
@@ -175,7 +145,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         },
                                         child: Text(
                                           'Agregar algo más',
-                                          style: interStyle(
+                                          style: regularStyle(
                                             fSize: 14.0,
                                             color: Color(0xffE51F4F),
                                             decoration: TextDecoration.underline,
@@ -185,13 +155,14 @@ class _OrderScreenState extends State<OrderScreen> {
                                       GestureDetector(
                                         onTap: () {
                                           Application.currentOrder = null;
+                                          model.clearDiscount();
                                           locator<HomePageState>().updateState();
                                           locator<CategoryItemsState>().updateState();
                                           Navigator.pop(context);
                                         },
                                         child: Text(
                                           'Limpiar carrito',
-                                          style: interStyle(
+                                          style: regularStyle(
                                             fSize: 14.0,
                                             color: Color(0xffE51F4F),
                                             decoration: TextDecoration.underline,
@@ -209,12 +180,12 @@ class _OrderScreenState extends State<OrderScreen> {
                                   ListView.builder(
                                     physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
-                                    itemCount: orderItems.length,
+                                    itemCount: model.orderItems.length,
                                     itemBuilder: (BuildContext ctxt, int index) {
-                                      var element = orderItems[index];
+                                      var element = model.orderItems[index];
                                       if (element.name.isEmpty) {
                                         return SizedBox(height: 10.0);
-                                      } else if (element.price.isEmpty) {
+                                      } else if (element.price == 0.0) {
                                         return Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -222,7 +193,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                             children: <Widget>[
                                               Text(
                                                 element.name,
-                                                style: interLightStyle(
+                                                style: lightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xff789090),
                                                 ),
@@ -237,7 +208,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                             children: <Widget>[
                                               Text(
                                                 element.name,
-                                                style: interBoldStyle(fSize: 14.0),
+                                                style: boldStyle(fSize: 14.0),
                                               ),
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -245,13 +216,13 @@ class _OrderScreenState extends State<OrderScreen> {
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: <Widget>[
                                                   Text(
-                                                    element.price,
-                                                    style: avenirHeavyStyle(fSize: 16.0),
+                                                    "\$${element.price}0",
+                                                    style: regularStyle(fSize: 16.0),
                                                   ),
                                                   SizedBox(width: 15.0),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      // TODO: Delete item from cart
+                                                      model.deleteElement(element);
                                                     },
                                                     child: Image(image: menuCross),
                                                   ),
@@ -265,21 +236,27 @@ class _OrderScreenState extends State<OrderScreen> {
                                   SizedBox(height: 32.0),
                                   Text(
                                     'Agregar una nota',
-                                    style: interStyle(fSize: 14.0),
+                                    style: regularStyle(fSize: 14.0),
                                   ),
                                   SizedBox(height: 8.0),
                                   Container(
                                     width: MediaQuery.of(context).size.width,
                                     height: 40.0,
                                     child: TextField(
+                                      onChanged: (value) {
+                                        model.notes = value;
+                                        if (Application.currentOrder != null) {
+                                          Application.currentOrder.notes = value;
+                                        }
+                                      },
                                       textAlignVertical: TextAlignVertical.center,
-                                      style: interLightStyle(
+                                      style: lightStyle(
                                         fSize: 14.0,
                                       ),
                                       decoration: InputDecoration(
                                         contentPadding: EdgeInsets.all(10.0),
                                         hintText: '¿Alérgicos a algun ingrediente? ¿Sin cebolla?',
-                                        hintStyle: interLightStyle(
+                                        hintStyle: lightStyle(
                                           fSize: 14.0,
                                           color: Color(0xffC4C4C4),
                                         ),
@@ -318,11 +295,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                       children: <Widget>[
                                         Text(
                                           '¿Tienes un ',
-                                          style: interStyle(fSize: 14.0),
+                                          style: regularStyle(fSize: 14.0),
                                         ),
                                         Text(
                                           'Código',
-                                          style: interStyle(
+                                          style: regularStyle(
                                             fSize: 14.0,
                                             color: Color(0xffE51F4F),
                                             decoration: TextDecoration.underline,
@@ -330,7 +307,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                         ),
                                         Text(
                                           '?',
-                                          style: interStyle(fSize: 14.0),
+                                          style: regularStyle(fSize: 14.0),
                                         ),
                                       ],
                                     ),
@@ -343,7 +320,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       SizedBox(height: 24.0),
                                       Text(
                                         'Ingrese código',
-                                        style: interStyle(fSize: 14.0),
+                                        style: regularStyle(fSize: 14.0),
                                       ),
                                       SizedBox(height: 8.0),
                                       Row(
@@ -357,13 +334,13 @@ class _OrderScreenState extends State<OrderScreen> {
                                                 model.discountCode = value;
                                               },
                                               textAlignVertical: TextAlignVertical.center,
-                                              style: interLightStyle(
+                                              style: lightStyle(
                                                 fSize: 14.0,
                                               ),
                                               decoration: InputDecoration(
                                                 contentPadding: EdgeInsets.all(10.0),
                                                 hintText: '--------------------',
-                                                hintStyle: interLightStyle(
+                                                hintStyle: lightStyle(
                                                   fSize: 14.0,
                                                   color: Color(0xffC4C4C4),
                                                 ),
@@ -391,30 +368,36 @@ class _OrderScreenState extends State<OrderScreen> {
                                           ),
                                           GestureDetector(
                                             onTap: () async {
-                                              if (!model.hasExchangedCode) {
+                                              if (!model.hasExchangedCode && Application.currentOrder != null) {
                                                 model.updateSpinner(show: true);
-                                                await locator<SquareHTTPRequest>().getDiscountObject(model.discountCode).then((discount) {
+                                                await locator<SquareHTTPRequest>().getDiscountObject(model.discountCode).then((discount) async {
                                                   model.updateSpinner(show: false);
                                                   if (discount != null) {
                                                     if (discount is SquareDiscountModelPercentage) {
                                                       // Update subtotal
                                                       var percentage = double.parse(discount.discountDataPercentage.percentage);
-                                                      model.updateTotalPercentageDiscount(productsSubTotal, percentage.round());
+                                                      model.updateTotalPercentageDiscount(percentage.round());
                                                     } else if (discount is SquareDiscountModelFixed) {
                                                       // Update subtotal
                                                       var amount = discount.discountDataFixed.amountMoney.amount / 100;
-                                                      model.updateTotalFixedDiscount(productsSubTotal, amount);
+                                                      model.updateTotalFixedDiscount(amount);
                                                     }
                                                   } else {
-                                                    // TODO: Error invalid discount
-                                                    print("NULL!");
+                                                    Fluttertoast.showToast(
+                                                        msg: "Código inválido, no existe descuento para el código.",
+                                                        toastLength: Toast.LENGTH_LONG,
+                                                        timeInSecForIos: 4,
+                                                        gravity: ToastGravity.BOTTOM,
+                                                        backgroundColor: Color(0x99E51F4F),
+                                                        textColor: Colors.white
+                                                    );
                                                   }
                                                 });
                                               }
                                             },
                                             child: Text(
                                               'Aplicar',
-                                              style: interStyle(
+                                              style: regularStyle(
                                                 fSize: 14.0,
                                                 color: Color(0xffE51F4F),
                                                 decoration: TextDecoration.underline,
@@ -434,7 +417,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                   SizedBox(height: 24.0),
                                   Text(
                                     'Deja una propina',
-                                    style: interLightStyle(
+                                    style: lightStyle(
                                       fSize: 14.0,
                                       color: Color(0xff789090),
                                     ),
@@ -449,68 +432,72 @@ class _OrderScreenState extends State<OrderScreen> {
                                         },
                                         child: Chip(
                                           label: Text(' Otro '),
-                                          labelStyle: interMediumStyle(
+                                          labelStyle: regularStyle(
                                             fSize: 14.0,
                                             color: model.isTipOther() ? Colors.white : Color(0xff789090),
+                                            fWeight: FontWeight.w600,
                                           ),
-                                          backgroundColor: model.isTipOther() ? Color(0xffF0AB31) : Colors.white,
+                                          backgroundColor: model.isTipOther() ? Color(0xff789090) : Colors.white,
                                           shape: StadiumBorder(
                                             side: BorderSide(
-                                              color: model.isTipOther() ? Color(0xffF0AB31) : Color(0xff789090),
+                                              color: model.isTipOther() ? Color(0xff789090) : Color(0xff789090),
                                             ),
                                           ),
                                         ),
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          model.updateTip(OrderDetailState.TIP_TEN);
+                                          model.updateTip(OrderDetailState.TIP_TEN, isCustomTip: false);
                                         },
                                         child: Chip(
                                           label: Text('\$10.00'),
-                                          labelStyle: interMediumStyle(
+                                          labelStyle: regularStyle(
                                             fSize: 14.0,
                                             color: model.isTipTen() ? Colors.white : Color(0xff789090),
+                                            fWeight: FontWeight.w600,
                                           ),
-                                          backgroundColor: model.isTipTen() ? Color(0xffF0AB31) : Colors.white,
+                                          backgroundColor: model.isTipTen() ? Color(0xff789090) : Colors.white,
                                           shape: StadiumBorder(
                                             side: BorderSide(
-                                              color: model.isTipTen() ? Color(0xffF0AB31) : Color(0xff789090),
+                                              color: model.isTipTen() ? Color(0xff789090) : Color(0xff789090),
                                             ),
                                           ),
                                         ),
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          model.updateTip(OrderDetailState.TIP_FIFTEEN);
+                                          model.updateTip(OrderDetailState.TIP_FIFTEEN, isCustomTip: false);
                                         },
                                         child: Chip(
                                           label: Text('\$15.00'),
-                                          labelStyle: interMediumStyle(
+                                          labelStyle: regularStyle(
                                             fSize: 14.0,
                                             color: model.isTipFifteen() ? Colors.white : Color(0xff789090),
+                                            fWeight: FontWeight.w600,
                                           ),
-                                          backgroundColor: model.isTipFifteen() ? Color(0xffF0AB31) : Colors.white,
+                                          backgroundColor: model.isTipFifteen() ? Color(0xff789090) : Colors.white,
                                           shape: StadiumBorder(
                                             side: BorderSide(
-                                              color: model.isTipFifteen() ? Color(0xffF0AB31) : Color(0xff789090),
+                                              color: model.isTipFifteen() ? Color(0xff789090) : Color(0xff789090),
                                             ),
                                           ),
                                         ),
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          model.updateTip(OrderDetailState.TIP_TWENTY);
+                                          model.updateTip(OrderDetailState.TIP_TWENTY, isCustomTip: false);
                                         },
                                         child: Chip(
                                           label: Text('\$20.00'),
-                                          labelStyle: interMediumStyle(
+                                          labelStyle: regularStyle(
                                             fSize: 14.0,
                                             color: model.isTipTwenty() ? Colors.white : Color(0xff789090),
+                                            fWeight: FontWeight.w600,
                                           ),
-                                          backgroundColor: model.isTipTwenty() ? Color(0xffF0AB31) : Colors.white,
+                                          backgroundColor: model.isTipTwenty() ? Color(0xff789090) : Colors.white,
                                           shape: StadiumBorder(
                                             side: BorderSide(
-                                              color: model.isTipTwenty() ? Color(0xffF0AB31) : Color(0xff789090),
+                                              color: model.isTipTwenty() ? Color(0xff789090) : Color(0xff789090),
                                             ),
                                           ),
                                         ),
@@ -525,7 +512,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       SizedBox(height: 24.0),
                                       Text(
                                         'Ingrese cantidad personalizada',
-                                        style: interStyle(fSize: 14.0),
+                                        style: regularStyle(fSize: 14.0),
                                       ),
                                       SizedBox(height: 8.0),
                                       Container(
@@ -533,17 +520,17 @@ class _OrderScreenState extends State<OrderScreen> {
                                         height: 40.0,
                                         child: TextField(
                                           onChanged: (value) {
-                                            model.updateTip(double.parse(value));
+                                            model.updateTip(double.parse(value), isCustomTip: true);
                                           },
                                           keyboardType: TextInputType.number,
                                           textAlignVertical: TextAlignVertical.center,
-                                          style: interLightStyle(
+                                          style: lightStyle(
                                             fSize: 14.0,
                                           ),
                                           decoration: InputDecoration(
                                             contentPadding: EdgeInsets.all(10.0),
                                             hintText: '\$0.00',
-                                            hintStyle: interLightStyle(
+                                            hintStyle: lightStyle(
                                               fSize: 14.0,
                                               color: Color(0xffC4C4C4),
                                             ),
@@ -583,15 +570,15 @@ class _OrderScreenState extends State<OrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         'Subtotal',
-                                        style: interMediumStyle(
+                                        style: regularStyle(
                                           fSize: 14.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
                                       Text(
-                                        '\$${productsSubTotal.toString()}0',
-                                        style: interMediumStyle(
-                                          fSize: 14.0,
+                                        '\$${model.productsSubTotal.toString()}0',
+                                        style: regularStyle(
+                                          fSize: 16.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
@@ -604,15 +591,15 @@ class _OrderScreenState extends State<OrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         'Propina',
-                                        style: interMediumStyle(
+                                        style: regularStyle(
                                           fSize: 14.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
                                       Text(
                                         '\$${model.currentTip}0',
-                                        style: interMediumStyle(
-                                          fSize: 14.0,
+                                        style: regularStyle(
+                                          fSize: 16.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
@@ -625,15 +612,15 @@ class _OrderScreenState extends State<OrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         'Descuento',
-                                        style: interMediumStyle(
+                                        style: regularStyle(
                                           fSize: 14.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
                                       Text(
                                         '-\$${model.discount}0',
-                                        style: interMediumStyle(
-                                          fSize: 14.0,
+                                        style: regularStyle(
+                                          fSize: 16.0,
                                           color: Color(0xff5A6265),
                                         ),
                                       ),
@@ -646,11 +633,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                     children: <Widget>[
                                       Text(
                                         'Total',
-                                        style: interMediumStyle(),
+                                        style: regularStyle(fSize: 16.0),
                                       ),
                                       Text(
-                                        '\$${model.orderSubtotal + model.currentTip}0',
-                                        style: interMediumStyle(fSize: 18.0),
+                                        '\$${model.orderTotal + model.currentTip - model.discount}0',
+                                        style: regularStyle(fSize: 18.0),
                                       ),
                                     ],
                                   ),
@@ -660,7 +647,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                     color: Color(0xffE5E4E5),
                                   ),
                                   SizedBox(height: 24.0),
-                                  paymentMethod.isEmpty ? getNoPaymentMethod(context) : getPaymentMethod(paymentMethod, context), // TODO: Choose selected payment method if any
+                                  paymentMethod.isEmpty ? getNoPaymentMethod(context) : getPaymentMethod(paymentMethod, context),
                                   SizedBox(height: 36.0),
                                 ],
                               ),
@@ -687,7 +674,7 @@ class _OrderScreenState extends State<OrderScreen> {
       children: <Widget>[
         Text(
           'No tienes métodos de pago',
-          style: interStyle(
+          style: regularStyle(
             fSize: 14.0,
             color: Color(0xff5A6265),
           ),
@@ -698,7 +685,7 @@ class _OrderScreenState extends State<OrderScreen> {
           },
           child: Text(
             'Agregar',
-            style: interStyle(
+            style: regularStyle(
               fSize: 14.0,
               color: Color(0xffE51F4F),
               decoration: TextDecoration.underline,
@@ -723,7 +710,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   SizedBox(width: 12.0),
                   Text(
                     '****  ****  ****',
-                    style: interMediumStyle(
+                    style: regularStyle(
                       fSize: 14.0,
                       color: Color(0xff5A6265),
                     ),
@@ -731,7 +718,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   SizedBox(width: 12.0),
                   Text(
                     card.last4,
-                    style: interMediumStyle(
+                    style: regularStyle(
                       fSize: 14.0,
                       color: Color(0xff5A6265),
                     ),
@@ -744,7 +731,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 },
                 child: Text(
                   'Cambiar',
-                  style: interStyle(
+                  style: regularStyle(
                     fSize: 14.0,
                     color: Color(0xffE51F4F),
                     decoration: TextDecoration.underline,

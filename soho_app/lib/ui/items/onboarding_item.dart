@@ -76,12 +76,12 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                 SizedBox(height: 24.0),
                                 Text(
                                   "¡Recibe un café GRATIS!",
-                                  style: interBoldStyle(fSize: 20.0),
+                                  style: boldStyle(fSize: 20.0),
                                 ),
                                 SizedBox(height: 8.0),
                                 Text(
                                   "Personaliza tu café y estaremos listos para agregarlo al carrito.",
-                                  style: interLightStyle(
+                                  style: lightStyle(
                                     fSize: 14.0,
                                     color: Color(0xff5A6265),
                                   ),
@@ -89,12 +89,12 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                 SizedBox(height: 16.0),
                                 Text(
                                   "GRATIS",
-                                  style: interMediumStyle(fSize: 22.0),
+                                  style: regularStyle(fSize: 22.0),
                                 ),
                                 SizedBox(height: 36.0),
                                 Text(
                                   '― Leche',
-                                  style: interLightStyle(
+                                  style: lightStyle(
                                     fSize: 14.0,
                                     color: Color(0xff789090),
                                   ),
@@ -115,7 +115,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Leche entera",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -134,7 +134,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Leche deslactosada",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -153,7 +153,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Leche de almendras",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -172,7 +172,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Leche de nueces",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -191,7 +191,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Leche de coco",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -210,14 +210,14 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Sin leche",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
                                 SizedBox(height: 36.0),
                                 Text(
                                   '― Endulzante',
-                                  style: interLightStyle(
+                                  style: lightStyle(
                                     fSize: 14.0,
                                     color: Color(0xff789090),
                                   ),
@@ -238,7 +238,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Miel en polvo",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -257,7 +257,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Stevia",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -276,7 +276,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Azúcar",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -295,7 +295,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Azúcar mascabado",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -314,7 +314,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Splenda",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),
@@ -333,7 +333,7 @@ class _OnboardingScreen extends State<OnboardingScreen> {
                                     ),
                                     Text(
                                       "Sin endulzante",
-                                      style: avenirHeavyStyle(fSize: 16.0),
+                                      style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
                                     ),
                                   ],
                                 ),

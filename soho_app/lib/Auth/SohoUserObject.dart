@@ -7,10 +7,12 @@ import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderQR.dart';
 import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:uuid/uuid.dart';
 
 enum CardType {
   visa,
-  masterCard
+  masterCard,
+  amex
 }
 
 class CardInfoReduced {
@@ -84,17 +86,32 @@ class SohoUserObject {
   Future<void> getCardsShortInfo() async {
     if (stripeId.isNotEmpty) {
       await getAllCardsCall(customerId: stripeId).then((response) {
+        // Clear data
+        cardsReduced.clear();
         for (var item in response.data) {
           var month = item.expMonth < 10 ? "0${item.expMonth}" : item.expMonth.toString();
           var year = item.expYear.toString().substring(2);
-          CardInfoReduced info = CardInfoReduced(
-            last4: item.last4,
-            cardName: item.name,
-            expiration: "$month / $year",
-            cardType: item.brand == "MasterCard" ? CardType.masterCard : CardType.visa, //TODO: Handle card type error (!= VISA || MasterCard)
-            cardId: item.id,
-          );
-          cardsReduced.add(info);
+          if (item.brand.contains("MasterCard") || item.brand.contains("Visa") || item.brand.contains("American Express")) {
+            var cardType = CardType.visa;
+            if (item.brand.contains("MasterCard")) {
+              cardType = CardType.masterCard;
+            } else if (item.brand.contains("American Express")) {
+              cardType = CardType.amex;
+            }
+            CardInfoReduced info = CardInfoReduced(
+              last4: item.last4,
+              cardName: item.name,
+              expiration: "$month / $year",
+              cardType: cardType,
+              cardId: item.id,
+            );
+            cardsReduced.add(info);
+          }
+        }
+        if (cardsReduced.isEmpty) {
+          selectedPaymentMethod = "";
+        } else {
+          selectedPaymentMethod = cardsReduced.first.cardId;
         }
       }).catchError((error) {
         print("ERROR getting cards: ${error.toString()}");
@@ -111,8 +128,6 @@ class SohoUserObject {
     order.selectedProducts.add(item);
     order.completionDate = DateTime.now();
     order.orderTotal = 0.0;
-    order.isOrderCompleted = true;
-    order.isQRCodeValid = true;
     var codeObject = SohoOrderQR(order: order, userId: userId, userName: username);
     var codeData = jsonEncode(codeObject.getJson());
     order.qrCodeData = codeData;
@@ -134,9 +149,8 @@ class SohoUserObject {
     for (var product in order.selectedProducts) {
       order.orderTotal += product.price;
     }
-    // Update completion value
-    order.isOrderCompleted = true;
-    order.isQRCodeValid = true;
+    // Add id to order
+    order.id = Uuid().v1();
     // Create QR Code  object
     var codeObject = SohoOrderQR(order: order, userId: userId, userName: username);
     var codeData = jsonEncode(codeObject.getJson());

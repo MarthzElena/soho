@@ -60,7 +60,9 @@ class _MethodsScreen extends State<MethodsScreen> {
     }
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: ScopedModel<MethodsScreenState>(
         model: model,
         child: ScopedModelDescendant<MethodsScreenState>(
@@ -110,14 +112,17 @@ class _MethodsScreen extends State<MethodsScreen> {
                                   children: <Widget>[
                                     Text(
                                       'MÉTODOS\nDE PAGO',
-                                      style: interThinStyle(fSize: 32.0),
+                                      style: lightStyle(fSize: 32.0),
                                     ),
                                     SizedBox(height: 4.0),
-                                    Text(
-                                      'Laboris adipisicing magna\nconsequat excepteur\nconsectetur eu.', //TODO: Change this!
-                                      style: interLightStyle(
-                                        fSize: 14.0,
-                                        color: Color(0xff292929),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width * 0.6,
+                                      child: Text(
+                                        'Administra tus métodos de pago de forma rápida y sencilla.', //TODO: Change this!
+                                        style: lightStyle(
+                                          fSize: 14.0,
+                                          color: Color(0xff292929),
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -150,7 +155,7 @@ class _MethodsScreen extends State<MethodsScreen> {
           SizedBox(height: 24.0),
           Text(
             'No tienes métodos de pago registrados.',
-            style: interBoldStyle(fSize: 16.0),
+            style: boldStyle(fSize: 16.0),
           ),
           SizedBox(height: 32.0),
         ]
@@ -162,20 +167,33 @@ class _MethodsScreen extends State<MethodsScreen> {
     var result = List<Widget>();
     if (Application.currentUser != null) {
       for (var card in Application.currentUser.cardsReduced) {
+        var cardIcon = Image(image: visaCard);
+        // Set card icon
+        switch (card.cardType) {
+          case CardType.visa:
+            cardIcon = Image(image: visaCard);
+            break;
+          case CardType.masterCard:
+            cardIcon = Image(image: masterCard);
+            break;
+          case CardType.amex:
+            cardIcon = Image(image: amexCard);
+            break;
+        }
         var cardDetails = Row(
           children: <Widget>[
-            Image(image: card.cardType == CardType.masterCard ? masterCard : visaCard),
+            cardIcon,
             SizedBox(width: 20.0),
             Text(
               '****  ****  **** ',
-              style: interMediumStyle(
+              style: regularStyle(
                 fSize: 14.0,
                 color: Color(0xff5A6265),
               ),
             ),
             Text(
               card.last4,
-              style: interMediumStyle(
+              style: regularStyle(
                 fSize: 14.0,
                 color: Color(0xff5A6265),
               ),
@@ -206,22 +224,25 @@ class _MethodsScreen extends State<MethodsScreen> {
               );
             }
           },
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 19.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  cardDetails,
-                  Image(image: paymentForward),
-                ],
-              ),
-              SizedBox(height: 19.0),
-              Divider(
-                height: 1.0,
-                color: Color(0xffE5E4E5),
-              )
-            ],
+          child: Container(
+            color: Colors.white,
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 19.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    cardDetails,
+                    Image(image: paymentForward),
+                  ],
+                ),
+                SizedBox(height: 19.0),
+                Divider(
+                  height: 1.0,
+                  color: Color(0xffE5E4E5),
+                )
+              ],
+            ),
           ),
         );
         result.add(cardRow);
@@ -239,7 +260,7 @@ class _MethodsScreen extends State<MethodsScreen> {
           SizedBox(height: 24.0),
           Text(
             'Métodos de pago registrados',
-            style: interBoldStyle(fSize: 16.0),
+            style: boldStyle(fSize: 16.0),
           ),
           SizedBox(height: 32.0),
           Divider(

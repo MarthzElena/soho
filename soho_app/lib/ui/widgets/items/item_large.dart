@@ -46,7 +46,7 @@ class LargeItem extends StatelessWidget {
               child: AutoSizeText(
                 category.subtitle,
                 textAlign: TextAlign.start,
-                style: interLightStyle(fSize: 12.0),
+                style: lightStyle(fSize: 12.0),
               ),
             ),
           ),
@@ -58,7 +58,7 @@ class LargeItem extends StatelessWidget {
               child: AutoSizeText(
                 category.name,
                 textAlign: TextAlign.start,
-                style: interMediumStyle(fSize: 16.0),
+                style: regularStyle(fSize: 16.0),
               ),
             ),
           )

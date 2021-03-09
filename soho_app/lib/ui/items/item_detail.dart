@@ -35,7 +35,12 @@ class _ProductDetailState extends State<ProductDetail> {
     ProductItemObject product = widget.currentProduct;
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        if (Platform.isAndroid) {
+          locator<ProductItemState>().setBottomState(ProductItemState.GO_TO_CHECKOUT_TEXT);
+        }
+        return Platform.isAndroid;
+      },
       child: ScopedModel<ProductItemState>(
         model: _productItemModel,
         child: ScopedModelDescendant<ProductItemState>(
@@ -43,7 +48,7 @@ class _ProductDetailState extends State<ProductDetail> {
             return Scaffold(
               backgroundColor: Colors.white,
               appBar: ProductDetailAppBar(),
-              bottomNavigationBar: _productItemModel.shouldShowBottomForProductDetail()
+              bottomNavigationBar: _productItemModel.shouldShowBottomForProductDetail
                   ? BottomBar(buttonState: ProductItemState.ADD_ITEM_TEXT)
                   : SizedBox.shrink(),
               body: GestureDetector(
@@ -78,17 +83,17 @@ class _ProductDetailState extends State<ProductDetail> {
                                   color: Colors.grey,
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
-                                // TODO: Add child with image
+                                child: Image(image: NetworkImage(product.imageUrl)),
                               ),
                               SizedBox(height: 24.0),
                               Text(
                                 product.name,
-                                style: interBoldStyle(fSize: 20.0),
+                                style: boldStyle(fSize: 20.0),
                               ),
                               SizedBox(height: 8.0),
                               Text(
                                 product.description,
-                                style: interLightStyle(
+                                style: regularStyle(
                                   fSize: 14.0,
                                   color: Color(0xff5A6265),
                                 ),
@@ -96,7 +101,7 @@ class _ProductDetailState extends State<ProductDetail> {
                               SizedBox(height: 16.0),
                               Text(
                                 "\$${product.price.toString()}0",
-                                style: interMediumStyle(fSize: 22.0),
+                                style: regularStyle(fSize: 22.0),
                               ),
                               ListView(
                                 shrinkWrap: true,
@@ -130,7 +135,7 @@ class _ProductDetailState extends State<ProductDetail> {
           SizedBox(height: 23.0),
           Text(
             '― ' + variationType,
-            style: interLightStyle(
+            style: lightStyle(
               fSize: 14.0,
               color: Color(0xff789090),
             ),
@@ -143,9 +148,10 @@ class _ProductDetailState extends State<ProductDetail> {
       Map<VariationItemObject, bool> current = _productItemModel.availableVariations[variationType];
       for (var variationElement in current.keys) {
         var value = current[variationElement];
-        Widget elementRow = _productItemModel.variationRequired
-            ? getRequiredVariations(variationElement, variationType)
-            : getOptionalVariations(value, variationType, variationElement);
+        var blackTeaVariation = _productItemModel.getBlackTeaVariations(variationElement, variationType);
+        Widget elementRow = product.isBlackTeaCategory()
+            ? blackTeaVariation != null ? blackTeaVariation : SizedBox.shrink()
+            : getVariations(variationElement, variationType);
         list.add(elementRow);
       }
     }
@@ -155,8 +161,6 @@ class _ProductDetailState extends State<ProductDetail> {
 
   Widget getOptionalVariations(
       bool value, String variationType, VariationItemObject variationElement) {
-    // Update variation type in model
-    _productItemModel.updateVariationType(isRequired: false);
 
     var widget = Row(
       children: <Widget>[
@@ -175,18 +179,15 @@ class _ProductDetailState extends State<ProductDetail> {
         SizedBox(width: 16.0),
         Text(
           variationElement.name,
-          style: avenirHeavyStyle(fSize: 16.0),
+          style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
         )
       ],
     );
     return widget;
   }
 
-  Widget getRequiredVariations(VariationItemObject selectedVariation, String fromType) {
-    // Update variation type in model
-    _productItemModel.updateVariationType(isRequired: true);
-
-    var widget = Row(
+  Widget getVariations(VariationItemObject selectedVariation, String fromType) {
+    return Row(
       children: <Widget>[
         Theme(
           data: ThemeData(
@@ -201,10 +202,9 @@ class _ProductDetailState extends State<ProductDetail> {
         ),
         Text(
           selectedVariation.name,
-          style: avenirHeavyStyle(fSize: 16.0),
+          style: regularStyle(fSize: 16.0, fWeight: FontWeight.w800),
         ),
       ],
     );
-    return widget;
   }
 }

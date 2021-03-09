@@ -6,11 +6,13 @@ class FeaturedDetailWidget extends StatelessWidget {
   final String image;
   final String text1;
   final String text2;
+  final int backgroundColor;
 
   FeaturedDetailWidget({
     this.image = '',
     this.text1 = 'CEREMONIAS\n DE TÉ',
     this.text2 = 'Una experiencia en tu\n mesa',
+    this.backgroundColor = 0xffF3F1F2,
   });
 
   @override
@@ -19,7 +21,7 @@ class FeaturedDetailWidget extends StatelessWidget {
       height: 300.0,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xffF3F1F2),
+        color: Color(backgroundColor),
         image: DecorationImage(
           image: AssetImage(image),
           fit: BoxFit.fitHeight,
@@ -33,7 +35,7 @@ class FeaturedDetailWidget extends StatelessWidget {
         children: <Widget>[
           AutoSizeText(
             text1,
-            style: interThinStyle(
+            style: lightStyle(
               fSize: 32.0,
             ),
             maxLines: 2,
@@ -43,8 +45,8 @@ class FeaturedDetailWidget extends StatelessWidget {
           SizedBox(height: 8.0),
           AutoSizeText(
             text2,
-            style: interLightStyle(
-              fSize: 14.0,
+            style: lightStyle(
+              fSize: 16.0,
             ),
             maxLines: 2,
             softWrap: true,

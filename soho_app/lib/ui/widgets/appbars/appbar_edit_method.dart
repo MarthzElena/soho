@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:soho_app/Auth/AppController.dart';
 import 'package:soho_app/States/EditCardState.dart';
 import 'package:soho_app/States/EditProfileState.dart';
@@ -62,7 +63,7 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                       SizedBox(width: 10.0),
                       AutoSizeText(
                         title,
-                        style: interLightStyle(fSize: 18.0),
+                        style: lightStyle(fSize: 18.0),
                         maxLines: 1,
                         maxFontSize: 18.0,
                       ),
@@ -89,11 +90,29 @@ class EditMethodAppBar extends StatelessWidget implements PreferredSizeWidget {
                             // Call method to update from model
                             var model = locator<EditCardState>();
                             model.updateSpinner(show: true);
-                            await model.updateCardData().then((_) {
-                              model.updateSpinner(show: false);
-                              Navigator.pop(context);
-                            }).catchError((error) {
-                              // TODO: Handle update card error
+                            await model.updateCardData(context).then((error) {
+                              if (error.isNotEmpty) {
+                                Fluttertoast.showToast(
+                                    msg: error,
+                                    toastLength: Toast.LENGTH_LONG,
+                                    timeInSecForIos: 4,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor: Color(0x99E51F4F),
+                                    textColor: Colors.white
+                                );
+                              } else {
+                                model.updateSpinner(show: false);
+                                Navigator.pop(context);
+                              }
+                            }).catchError((error) async {
+                              Fluttertoast.showToast(
+                                  msg: "Error al actualizar método de pago.",
+                                  toastLength: Toast.LENGTH_LONG,
+                                  timeInSecForIos: 4,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Color(0x99E51F4F),
+                                  textColor: Colors.white
+                              );
                             });
                             break;
                         }

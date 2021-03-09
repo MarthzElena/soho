@@ -90,20 +90,20 @@ class _ThanksScreenState extends State<ThanksScreen> {
                                     children: <Widget>[
                                       Text(
                                         'GRACIAS\nPOR TU\nCOMPRA',
-                                        style: interThinStyle(fSize: 32.0),
+                                        style: thinStyle(fSize: 32.0),
                                       ),
                                       SizedBox(height: 4.0),
                                       RichText(
                                         text: TextSpan(
                                           text: 'Escanea este código en\ntu sucursal de Soho\nfavorita. ',
-                                          style: interLightStyle(
+                                          style: lightStyle(
                                             fSize: 14.0,
                                             color: Color(0xff292929),
                                           ),
                                           children: <TextSpan>[
                                             TextSpan(
                                               text: 'Ver ubicación',
-                                              style: interStyle(
+                                              style: regularStyle(
                                                 fSize: 14.0,
                                                 color: Color(0xffE51F4F),
                                                 decoration: TextDecoration.underline,
@@ -162,13 +162,13 @@ class _ThanksScreenState extends State<ThanksScreen> {
                                 width: double.infinity,
                                 height: 50.0,
                                 decoration: BoxDecoration(
-                                  color: Color(0xffE51F4F),
+                                  color: Color(0xffCCC5BA),
                                   borderRadius: BorderRadius.circular(50.0),
                                 ),
                                 child: Center(
                                   child: Text(
                                     'Guardar en mis pedidos',
-                                    style: interBoldStyle(
+                                    style: boldStyle(
                                       fSize: 14.0,
                                       color: Colors.white,
                                     ),
@@ -191,12 +191,12 @@ class _ThanksScreenState extends State<ThanksScreen> {
                                   children: <Widget>[
                                     Text(
                                       '🎁  ¿Tu orden es un regalo?',
-                                      style: interBoldStyle(fSize: 14.0),
+                                      style: boldStyle(fSize: 14.0),
                                     ),
                                     SizedBox(height: 16.0),
                                     Text(
                                       'Envía esta compra a tu novia, tu mamá, o tu mejor amigo. Él o ella podrá redimirlo en la sucursal de SOHO.',
-                                      style: interLightStyle(fSize: 14.0),
+                                      style: lightStyle(fSize: 14.0),
                                     ),
                                     SizedBox(height: 24.0),
                                     GestureDetector(
@@ -207,15 +207,19 @@ class _ThanksScreenState extends State<ThanksScreen> {
                                         width: double.infinity,
                                         height: 50.0,
                                         decoration: BoxDecoration(
-                                          color: Color(0xffF0AB31),
+                                          color: Colors.white,
                                           borderRadius: BorderRadius.circular(50.0),
+                                          border: Border.all(
+                                            width: 2,
+                                            color: Color(0xffCCC5BA),
+                                          )
                                         ),
                                         child: Center(
                                           child: Text(
                                             'Enviar código QR',
-                                            style: interBoldStyle(
+                                            style: boldStyle(
                                               fSize: 14.0,
-                                              color: Colors.white,
+                                              color: Color(0xff604848),
                                             ),
                                           ),
                                         ),

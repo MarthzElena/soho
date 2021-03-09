@@ -2,16 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mailer/smtp_server.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:soho_app/Auth/AppController.dart';
-import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderItem.dart';
 import 'package:soho_app/SohoMenu/SohoOrders/SohoOrderObject.dart';
+import 'package:soho_app/SquarePOS/SquareHTTPRequest.dart';
 import 'package:soho_app/Utils/Application.dart';
+import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
+import 'package:soho_app/ui/items/item_detail.dart';
 import 'package:soho_app/ui/utils/asset_images.dart';
 import 'package:soho_app/ui/widgets/appbars/appbar_history.dart';
+import 'package:soho_app/ui/widgets/layouts/spinner.dart';
+import 'package:mailer/mailer.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class HistoryScreen extends StatefulWidget {
   final bool isOngoingOrder;
@@ -25,10 +31,19 @@ class HistoryScreen extends StatefulWidget {
 class OrderListElement {
   String price = "";
   String date = "";
+  String validDays = "0";
   String codeData = "";
-  List<String> itemNames;
+  List<OrderSelectedProduct> items;
   SohoOrderObject originalOrder;
-  OrderListElement(this.price, this.date, this.codeData, this.itemNames, this.originalOrder);
+  OrderListElement(this.price, this.date, this.codeData, this.items, this.originalOrder, this.validDays);
+}
+
+class OrderSelectedProduct {
+  String name = "";
+  String squareProductId = "";
+  String squareCategoryId = "";
+  String categoryName = "";
+  OrderSelectedProduct(this.name, this.squareProductId, this.squareCategoryId, this.categoryName);
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
@@ -41,19 +56,30 @@ class _HistoryScreenState extends State<HistoryScreen> {
   List<OrderListElement> orderItems = List<OrderListElement>();
 
   bool showCode = true;
+  bool showSpinner = false;
+  String emailBody = "";
+
+  void updateSpinner({bool show}) {
+    setState(() {
+      showSpinner = show;
+    });
+  }
 
   List<OrderListElement> _prepareOrderElements() {
     var list = List<OrderListElement>();
     if (Application.currentUser != null) {
       var orders = selectedTab == 0 ? Application.currentUser.pastOrders : Application.currentUser.ongoingOrders;
       if (orders != null) {
-        for (var order in orders) {
-          var itemsList = List<String>();
+        for (var order in orders.reversed) {
+          var itemsList = List<OrderSelectedProduct>();
           for (var product in order.selectedProducts) {
-            var orderItem = product.name;
+            var orderItem = OrderSelectedProduct(product.name, product.productID, product.categoryID, product.categoryName);
             itemsList.add(orderItem);
           }
-          var listElement = OrderListElement("\$${order.orderTotal}0", order.getCompletedDateWithTime(), order.qrCodeData, itemsList, order);
+          var daysDifference = DateTime.now().difference(order.completionDate).inDays;
+          var daysLeft = 7 - daysDifference;
+          var daysLeftString = daysLeft <= 0 ? "0" : daysLeft.toString();
+          var listElement = OrderListElement("\$${order.orderTotal}0", order.getCompletedDateWithTime(), order.qrCodeData, itemsList, order, daysLeftString);
           list.add(listElement);
         }
       }
@@ -73,7 +99,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
     orderItems = _prepareOrderElements();
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        return Platform.isAndroid;
+      },
       child: Scaffold(
         resizeToAvoidBottomPadding: true,
         backgroundColor: Colors.white,
@@ -91,29 +119,35 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     statusBarColor: Colors.transparent,
                     statusBarBrightness: Brightness.dark,
                   ),
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Application.currentUser != null ?
-              FutureBuilder(
-                future: locator<AppController>().saveUserToDatabase(Application.currentUser.getJson()),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData && snapshot.data != null) {
-                    return _getDefaultWidget();
-                  } else {
-                    return Center(
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(height: 150.0),
-                          Container(
-                            child: CircularProgressIndicator(),
-                          ),
-                          SizedBox(height: 150.0),
-                        ],
-                      ),
-                    );
-                  }
-                }
-              ) : _getDefaultWidget(),
+            child: Stack(
+              children: <Widget>[
+                SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Application.currentUser != null ?
+                  FutureBuilder(
+                      future: locator<AppController>().getUser(forId: Application.currentUser.userId, updateCurrentUser: true),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        orderItems = _prepareOrderElements();
+                        if (snapshot.hasData && snapshot.data != null) {
+                          return _getDefaultWidget();
+                        } else {
+                          return Center(
+                            child: Column(
+                              children: <Widget>[
+                                SizedBox(height: 150.0),
+                                Container(
+                                  child: CircularProgressIndicator(),
+                                ),
+                                SizedBox(height: 150.0),
+                              ],
+                            ),
+                          );
+                        }
+                      }
+                  ) : _getDefaultWidget(),
+                ),
+                showSpinner ? SohoSpinner() : SizedBox.shrink(),
+              ],
             ),
           ),
         ),
@@ -133,9 +167,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
             width: MediaQuery.of(context).size.width,
             child: MaterialSegmentedControl(
               horizontalPadding: EdgeInsets.all(0),
-              borderColor: Color(0xffF0AB31),
+              borderColor: Color(0xff604848),
               unselectedColor: Colors.white,
-              selectedColor: Color(0xffF0AB31),
+              selectedColor: Color(0xff604848),
               children: controlWidgets,
               onSegmentChosen: (int value) {
                 setState(() {
@@ -170,7 +204,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           child: Center(
             child: Text(
               'Todavía no has realizado ninguna orden.',
-              style: interLightStyle(fSize: 12.0),
+              style: lightStyle(fSize: 12.0),
             ),
           ),
         )
@@ -204,7 +238,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     children: <Widget>[
                       Text(
                         'Orden completa',
-                        style: interBoldStyle(
+                        style: boldStyle(
                           fSize: 14.0,
                           color: Color(0xff5A6265),
                         ),
@@ -212,7 +246,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       SizedBox(height: 8.0),
                       Text(
                         element.date,
-                        style: interLightStyle(
+                        style: lightStyle(
                           fSize: 14.0,
                           color: Color(0xff5A6265),
                         ),
@@ -228,7 +262,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
               SizedBox(height: 16.0),
               Column(
-                children: _getProductsList(element.itemNames),
+                children: _getProductsList(element.items, context),
               ),
               SizedBox(height: 16.0),
               Divider(
@@ -239,60 +273,30 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Center(
                 child: Text(
                   'Total: MX${element.price}',
-                  style: interMediumStyle(fSize: 16.0),
+                  style: regularStyle(fSize: 16.0),
                 ),
               ),
               SizedBox(height: 16.0),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        // TODO: Add Re-order action
-
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: Color(0xffE51F4F),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Ordenar de nuevo',
-                            style: interBoldStyle(
-                              fSize: 14.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+              GestureDetector(
+                onTap: () async {
+                  await sendEmail(context);
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 50.0,
+                  decoration: BoxDecoration(
+                    color: Color(0xffCCC5BA),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '¿Necesitas ayuda?',
+                      style: boldStyle(
+                        fSize: 14.0,
+                        color: Colors.white,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: null,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: Color(0xffF0AB31),
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            '¿Necesitas ayuda?',
-                            style: interBoldStyle(
-                              fSize: 14.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
               SizedBox(height: 52.0),
@@ -328,8 +332,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Código QR listo',
-                        style: interBoldStyle(
+                        'Quedan ${element.validDays} días para canjear el código QR',
+                        style: boldStyle(
                           fSize: 14.0,
                           color: Color(0xff5A6265),
                         ),
@@ -337,7 +341,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       SizedBox(height: 8.0),
                       Text(
                         element.date,
-                        style: interLightStyle(
+                        style: lightStyle(
                           fSize: 14.0,
                           color: Color(0xff5A6265),
                         ),
@@ -353,7 +357,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
               SizedBox(height: 16.0),
               Column(
-                children: _getProductsList(element.itemNames),
+                children: _getProductsList(element.items, context),
               ),
               SizedBox(height: 16.0),
               Divider(
@@ -364,7 +368,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Center(
                 child: Text(
                   'Total: MX${element.price}',
-                  style: interMediumStyle(fSize: 16.0),
+                  style: regularStyle(fSize: 16.0, fWeight: FontWeight.w600),
                 ),
               ),
               SizedBox(height: 16.0),
@@ -384,13 +388,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         width: MediaQuery.of(context).size.width / 2.5,
                         height: 50.0,
                         decoration: BoxDecoration(
-                          color: Color(0xffE51F4F),
+                          color: Color(0xffCCC5BA),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         child: Center(
                           child: Text(
                             showCode ? 'Ocultar código' : 'Mostrar código',
-                            style: interBoldStyle(
+                            style: boldStyle(
                               fSize: 14.0,
                               color: Colors.white,
                             ),
@@ -399,20 +403,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        // TODO: open mailto
+                      onTap: () async {
+                        await sendEmail(context);
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width / 2.5,
                         height: 50.0,
                         decoration: BoxDecoration(
-                          color: Color(0xffF0AB31),
+                          color: Color(0xffCCC5BA),
                           borderRadius: BorderRadius.circular(50.0),
                         ),
                         child: Center(
                           child: Text(
                             '¿Necesitas ayuda?',
-                            style: interBoldStyle(
+                            style: boldStyle(
                               fSize: 14.0,
                               color: Colors.white,
                             ),
@@ -457,32 +461,62 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return list;
   }
 
-  List<Widget> _getProductsList(List<String> products) {
+  List<Widget> _getProductsList(List<OrderSelectedProduct> products, BuildContext context) {
     List<Widget> list = List<Widget>();
     for (var product in products) {
-      list.add(Row(
-        children: <Widget>[
-          Container(
-            width: 24,
-            height: 24.0,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Color(0xffE5E4E5),
+      list.add(GestureDetector(
+        onTap: () async {
+          updateSpinner(show: true);
+          await locator<SquareHTTPRequest>().getProductById(product.squareProductId, product.squareCategoryId, product.categoryName).then((product) async {
+            updateSpinner(show: false);
+            if (product != null) {
+              Navigator.pushReplacement(context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => ProductDetail(
+                    currentProduct: product,
+                  ),
+                ),
+              );
+            } else {
+              await showDialog(
+                context: context,
+                child: SimpleDialog(
+                  title: Text("Product no longer available"),
+                  children: <Widget>[
+                    SimpleDialogOption(
+                      child: Text("OK"),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              );
+            }
+          });
+        },
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 24,
+              height: 24.0,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Color(0xffE5E4E5),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  '1',
+                  style: regularStyle(fSize: 14.0),
+                ),
               ),
             ),
-            child: Center(
-              child: Text(
-                '1',
-                style: interMediumStyle(fSize: 14.0),
-              ),
+            SizedBox(width: 16.0),
+            Text(
+              product.name,
+              style: regularStyle(fSize: 14.0),
             ),
-          ),
-          SizedBox(width: 16.0),
-          Text(
-            product,
-            style: interMediumStyle(fSize: 14.0),
-          ),
-        ],
+          ],
+        ),
       ));
       list.add(SizedBox(height: 5.0));
 
@@ -490,5 +524,143 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return list;
   }
 
+  Future<void> sendEmail(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "¿Necesitas ayuda?",
+            style: thinStyle(fSize: 24.0),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  'Envíanos un correo y nos pondremos en contacto contigo.',
+                  style: boldStyle(fSize: 14.0),
+                ),
+                SizedBox(height: 15.0),
+                TextField(
+                  onChanged: (value) {
+                    emailBody = value;
+                  },
+                  scrollPhysics: BouncingScrollPhysics(),
+                  minLines: 10,
+                  maxLines: 15,
+                  textAlignVertical: TextAlignVertical.center,
+                  textAlign: TextAlign.start,
+                  style: lightStyle(
+                    fSize: 14.0,
+                  ),
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(10.0),
+                    hintText: 'Escribe aquí...',
+                    counterText: "",
+                    hintStyle: lightStyle(
+                      fSize: 14.0,
+                      color: Color(0xffC4C4C4),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(3.0),
+                      borderSide: const BorderSide(
+                        color: Color(0xffE5E4E5),
+                        width: 1.0,
+                      ),
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color(0xffE5E4E5),
+                        width: 1.0,
+                      ),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color(0xffE5E4E5),
+                        width: 1.0,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15.0),
+                GestureDetector(
+                  onTap: () async {
+                    // Make sure there's a logged in user
+                    var loggedUserName = Application.currentUser != null ? Application.currentUser.username : "";
+                    var loggedUserEmail = Application.currentUser != null ? Application.currentUser.email : "";
+                    if (loggedUserEmail.isNotEmpty && loggedUserName.isNotEmpty) {
+                      // Send email
+                      String username = 'sohotestemail@gmail.com';
+                      String pwd = 'J\$8gsgUAhc5\\d4qX';
+                      final smtpServer = gmail(username, pwd);
+                      final message = Message();
+                      message.from = Address(loggedUserEmail, loggedUserName);
+                      message.recipients.add(Constants.SOHO_SUPPORT_EMAIL);
+                      message.subject = "Mensaje de soporte de $loggedUserName [$loggedUserEmail]";
+                      message.text = emailBody;
+                      message.envelopeFrom = loggedUserEmail;
+
+                      try {
+                        Navigator.pop(context);
+                        updateSpinner(show: true);
+                        await send(message, smtpServer);
+                        updateSpinner(show: false);
+                        // Notify user
+                        Fluttertoast.showToast(
+                          msg: "Mensaje enviado.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          timeInSecForIos: 2,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Color(0xCCB9E1D8),
+                          textColor: Colors.white
+                        );
+
+                      } on MailerException catch(e) {
+                        Fluttertoast.showToast(
+                            msg: "Error al enviar email.",
+                            toastLength: Toast.LENGTH_LONG,
+                            timeInSecForIos: 4,
+                            gravity: ToastGravity.BOTTOM,
+                            backgroundColor: Color(0x99E51F4F),
+                            textColor: Colors.white
+                        );
+                        Navigator.pop(context);
+                      }
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "No se encontró un usuario activo.",
+                          toastLength: Toast.LENGTH_LONG,
+                          timeInSecForIos: 4,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Color(0x99E51F4F),
+                          textColor: Colors.white
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: Color(0xffF0AB31),
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Enviar correo',
+                        style: boldStyle(
+                          fSize: 14.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    );
+  }
 
 }

@@ -3,7 +3,7 @@ import 'package:soho_app/States/OnboardingState.dart';
 import 'package:soho_app/Utils/Application.dart';
 import 'package:soho_app/Utils/Fonts.dart';
 import 'package:soho_app/Utils/Locator.dart';
-import 'package:soho_app/Utils/Routes.dart';
+import 'package:soho_app/ui/auth/login.dart';
 import 'package:soho_app/ui/purchases/onboarding_order.dart';
 import 'package:soho_app/ui/purchases/onboarding_thanks.dart';
 
@@ -54,7 +54,9 @@ class _OnboardingBottom extends State<OnboardingBottom> {
                   Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => OnboardingOrderScreen()));
                 } else {
                   // Go to login
-                  Navigator.pushNamed(context, Routes.login);
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => LoginScreen(isShoppingFlow: true))
+                  );
                 }
                 break;
               case "Realizar pedido ahora":
@@ -77,7 +79,7 @@ class _OnboardingBottom extends State<OnboardingBottom> {
                   width: double.infinity,
                   child: Text(
                     widget.instruction,
-                    style: interStyle(
+                    style: regularStyle(
                       fSize: 14.0,
                       color: Color(0xff292929),
                     ),
@@ -89,7 +91,7 @@ class _OnboardingBottom extends State<OnboardingBottom> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50.0),
-                    color: Color(0xffE51F4F),
+                    color: Color(0xffCCC5BA),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -100,7 +102,7 @@ class _OnboardingBottom extends State<OnboardingBottom> {
                       children: <Widget>[
                         Text(
                           widget.buttonText1,
-                          style: interBoldStyle(fSize: 14.0, color: Colors.white),
+                          style: boldStyle(fSize: 14.0, color: Colors.white),
                         ),
                         Text(
                           widget.buttonText2,
@@ -111,7 +113,7 @@ class _OnboardingBottom extends State<OnboardingBottom> {
                     Center(
                       child: Text(
                         widget.buttonText1,
-                        style: interBoldStyle(fSize: 14.0, color: Colors.white),
+                        style: boldStyle(fSize: 14.0, color: Colors.white),
                       ),
                     ),
                   ),

@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:109154806584:android:b4e6bbc13b7b1840",
+        "mobilesdk_app_id": "1:109154806584:android:e00f94082d2a3ee88f6fcd",
         "android_client_info": {
-          "package_name": "mx.tafka.soho_app"
+          "package_name": "mx.tafka.soho"
         }
       },
       "oauth_client": [

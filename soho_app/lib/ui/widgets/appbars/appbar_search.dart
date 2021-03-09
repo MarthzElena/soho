@@ -10,7 +10,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
 
     return Container(
-      color: Color(0xffF3F1F2),
+      color: Colors.white,
       height: preferredSize.height,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -23,68 +23,93 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      width: 30.0,
-                      height: preferredSize.height - 40.0,
-                      alignment: Alignment.centerLeft,
-                      child: Image(
-                        image: detailBack,
-                      ),
-                    ),
-                  ),
                   Container(
-                    width: MediaQuery.of(context).size.width - 70.0,
-                    height: 40.0,
-                    child: TextField(
-                      onChanged: (value) {
-                        var model = locator<SearchState>();
-                        model.currentQuery = value;
-                        if (value.isEmpty) {
-                          model.showSpinner(false);
-                          model.clearResults();
-                        } else {
-                          // Show spinner while search is completed
-                          model.showSpinner(true);
-                          // Execute the search
-                          model.performSearch(value);
-                        }
-
-                      },
-                      textAlignVertical: TextAlignVertical.center,
-                      style: interLightStyle(
-                        fSize: 14.0,
-                      ),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(10.0),
-                        hintText: 'Té, pastel, café...',
-                        hintStyle: interLightStyle(
-                          fSize: 14.0,
-                          color: Color(0xffC4C4C4),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(3.0),
-                          borderSide: const BorderSide(
-                            color: Color(0xffE5E4E5),
-                            width: 1.0,
+                    width: MediaQuery.of(context).size.width - 40,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFC4C4C4),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: Container(
+                            width: 30.0,
+                            child: Image(
+                              image: searchIconDark,
+                            ),
                           ),
                         ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Color(0xffE5E4E5),
-                            width: 1.0,
+                        Container(
+                          width: MediaQuery.of(context).size.width - 115,
+                          child: TextField(
+                            onChanged: (value) async {
+                              var model = locator<SearchState>();
+                              model.currentQuery = value;
+                              if (value.isEmpty) {
+                                model.showSpinner(false);
+                                model.clearResults();
+                              } else {
+                                // Show spinner while search is completed
+                                model.showSpinner(true);
+                                // Execute the search
+                                await model.performSearch(value, context);
+                              }
+                            },
+                            textAlignVertical: TextAlignVertical.center,
+                            style: lightStyle(
+                              fSize: 14.0,
+                            ),
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color(0xFFC4C4C4),
+                              contentPadding: EdgeInsets.all(10.0),
+                              hintText: 'Té, pastel, café...',
+                              hintStyle: lightStyle(
+                                fSize: 14.0,
+                                color: Color(0xff5A6265),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1.0,
+                                ),
+                              ),
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1.0,
+                                ),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1.0,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Color(0xffE5E4E5),
-                            width: 1.0,
+                        GestureDetector(
+                          onTap: () {
+                            locator<SearchState>().clearResults();
+                            locator<SearchState>().showSpinner(false);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            width: 40.0,
+                            alignment: Alignment.center,
+                            child: Image(
+                              image: searchCloseDark,
+                            ),
                           ),
                         ),
-                      ),
+                      ]
                     ),
                   ),
                 ],

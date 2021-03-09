@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:soho_app/Models/requests/update_card.dart';
 import 'package:soho_app/Network/update_card/call.dart';
 import 'package:soho_app/Utils/Application.dart';
+import 'package:soho_app/Utils/Constants.dart';
 import 'package:soho_app/Utils/Locator.dart';
 import 'package:soho_app/ui/payments/check_method.dart';
 
@@ -43,7 +45,8 @@ class EditCardState extends Model {
     selectedCardId = cardId;
   }
 
-  Future<void> updateCardData() async {
+  Future<String> updateCardData(BuildContext context) async {
+    var stringError = "";
     if (Application.currentUser != null) {
       if (updatedMonth.isNotEmpty && updatedYear.isNotEmpty) {
         // Validate date is future date
@@ -63,23 +66,27 @@ class EditCardState extends Model {
               locator<CheckMethodsState>().updateName(updatedName);
             }
 
-            await executeUpdateRequest(cardMonth.toString(), cardYear.toString());
+            stringError = await executeUpdateRequest(cardMonth.toString(), cardYear.toString());
           } else {
-            showInvalidExpirationDate();
+            stringError = Constants.INVALID_DATE_ERROR;
+            showInvalidExpirationDate(context);
           }
         } else {
-          showInvalidExpirationDate();
+          stringError = Constants.INVALID_DATE_ERROR;
+          showInvalidExpirationDate(context);
         }
 
       } else {
         // Update only card name
         locator<CheckMethodsState>().updateName(updatedName);
-        await executeUpdateRequest("", "");
+        stringError = await executeUpdateRequest("", "");
       }
     }
+    return stringError;
   }
 
-  Future<void> executeUpdateRequest(String cardMonth, String cardYear) async {
+  Future<String> executeUpdateRequest(String cardMonth, String cardYear) async {
+    var stringError = "";
     // Validation for empty name is done in the request
     var request = UpdateCardRequest(name: updatedName, expMonth: cardMonth, expYear: cardYear);
     await updateCardCall(request: request, customerId: Application.currentUser.stripeId, cardId: selectedCardId).then((response) {
@@ -94,15 +101,22 @@ class EditCardState extends Model {
           break;
         }
       }
-      print("BACK TO VIEW CARD");
     }).catchError((error) {
-      // TODO: Handle error
+      stringError = "Error al actualizar los datos de la tarjeta.";
       print("Error in updateCardRequest: ${error.toString()}");
     });
+    return stringError;
   }
 
-  void showInvalidExpirationDate() {
-    // TODO: Show UI that expiration date is invalid
-    print("EXPIRATION DATE INVALID");
+  Future<void> showInvalidExpirationDate(BuildContext context) async {
+    updateSpinner(show: false);
+    Fluttertoast.showToast(
+        msg: "La fecha de expiración es inválida.",
+        toastLength: Toast.LENGTH_LONG,
+        timeInSecForIos: 4,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Color(0x99E51F4F),
+        textColor: Colors.white
+    );
   }
 }
