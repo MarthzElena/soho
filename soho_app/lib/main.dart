@@ -6,7 +6,7 @@ import 'package:soho_app/Utils/Routes.dart';
 import 'package:soho_app/ui/splash/splash.dart';
 
 Future main() async {
-  final Router _router = Router();
+  final FluroRouter _router = FluroRouter();
 
   Routes.setUpRouter(_router);
   setUpLocator();

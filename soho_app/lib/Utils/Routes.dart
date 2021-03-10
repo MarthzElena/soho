@@ -27,7 +27,7 @@ class Routes {
       handlerFunc: (BuildContext context, Map<String, dynamic> params) =>
           CategoryItemsWidget(categoryObjectString: params['category'][0]));
 
-  static void setUpRouter(Router router) {
+  static void setUpRouter(FluroRouter router) {
     // Soho Home
     router.define(homePage,
         handler: Handler(handlerFunc: (BuildContext context, Map<String, dynamic> params) {
